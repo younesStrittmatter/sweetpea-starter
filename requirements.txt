@@ -1,0 +1,4 @@
+sweetpea
+pandas
+ipykernel
+pytest
