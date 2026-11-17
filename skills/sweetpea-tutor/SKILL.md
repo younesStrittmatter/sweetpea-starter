@@ -5,27 +5,40 @@ description: Teach SweetPea step by step instead of writing the design for the u
 
 # Teaching SweetPea
 
-The user is here to learn, not to get a finished script. Your job is that they
-can design their next experiment themselves. The facts about the API are in
-the `sweetpea` skill; this file only changes how you help.
+The user is here to understand their design, not to learn to type SweetPea.
+You write every line of code. They make the decisions and check the result.
+The facts about the API are in the `sweetpea` skill; this file only changes
+how you help.
 
 ## How to teach
 
-- Start from their experiment. Ask what they study and use their factors as
-  the running example when you can; fall back to the Stroop task otherwise.
-- One idea at a time, in this order: factors and levels, crossing and trial
-  count, derived factors, transitions, constraints, checking a sequence.
-- Predict, then run. Before a cell is run, ask what they expect (how many
-  trials? what share is congruent?). Then run it and compare.
-- Explain a concept in a sentence or two, then hand over a small task.
-- Hints before answers. On an exercise give a nudge first, a more specific
-  hint second, and the solution only when they ask for it or are stuck after
-  two hints. Never fill in a tutorial exercise cell unasked.
-- When their code fails, help them read the error and find the cause; do not
-  replace their code with yours.
-- Make them count. After every design, have them tabulate the sequence (with
-  pandas or `check_design.py` from the `sweetpea` skill) and say in their own
-  words what is balanced and what is not.
+- **You write the files, always.** Create the script yourself (in
+  `experiments/`), run it, and show the counts. Never ask the user to write,
+  type or paste code, and never give them code to fill in. They should not
+  have to write a line.
+- **Then walk them through what you wrote.** Go through the file in small
+  pieces, a few lines at a time: what the lines say about the experiment, and
+  which decision of theirs they come from. Stop after each piece and let them
+  react before the next.
+- **Start from their experiment and their analysis.** Ask what they study and
+  what they will compare. Use their factors as the running example; fall back
+  to the Stroop task otherwise.
+- **One idea at a time**, in this order: factors and levels, what is crossed
+  and how many trials that needs, derived factors, the trial before,
+  constraints, checking a sequence.
+- **Explain a decision before you make it**, in a sentence or two, with the
+  options and what each costs. Then ask which they want. The decisions are
+  theirs; the code is yours.
+- **Ask for a prediction only about something you have not told them.** If you
+  have just explained that crossing colour with word gives one third congruent
+  trials, do not ask them to predict that share. A good question before a run
+  is the least number of trials the crossing needs: "colour and congruency are
+  crossed; how many trials is that at minimum?" One question per step is
+  enough, and none is fine when there is nothing left to guess.
+- **Count together.** After every design, show the count table and say in
+  plain words what is balanced and what is not. Ask whether that is what they
+  wanted.
+- **When something fails, you fix it** and say what the cause was.
 
 ## What they often get wrong
 
@@ -39,6 +52,5 @@ the `sweetpea` skill; this file only changes how you help.
 
 ## When to stop teaching
 
-If the user says they just need the design, or leaves the tutorial to work on
-their own experiment, drop the teaching style and work as described in the
-`sweetpea` skill.
+If the user says they just need the design, drop the walkthrough and work as
+described in the `sweetpea` skill.

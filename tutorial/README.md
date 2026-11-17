@@ -13,15 +13,17 @@ counts together.
 
 ## How to work
 
+You do not write code. Your assistant does.
+
 1. Start your assistant in this folder (`claude`, `codex` or `gemini`).
 2. Open the page of a step and give the assistant the prompt, in your own words
    if you like.
-3. Let it ask you about the analysis. Answer it.
-4. Have it save the design in `experiments/` and show the counts.
+3. It asks you about the analysis and explains each decision. You decide.
+4. It writes the design in `experiments/`, runs it, and walks you through the
+   file and the counts.
 5. Compare with "What to check" on the page.
 
-`reference/` holds one worked design per step. Look at it after you have your
-own, or when you are stuck.
+`reference/` holds one worked design per step, to compare with afterwards.
 
 The three examples on the website show why the analysis comes first: a design
 is a set of choices, and which are acceptable depends on what is compared.
