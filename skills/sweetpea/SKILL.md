@@ -84,6 +84,16 @@ decide what to give up. Do not silently drop a constraint.
    trial sequence can control (the participant's own choices, errors,
    response times); do not wait to be asked.
 
+6. **Write code the user can read aloud.** The user will look at the design
+   file. Use the experiment's own factors and names (colour, word,
+   congruency, task), one factor per thing the user would name, and crossings
+   and constraints on those. Write each condition as a small named function,
+   not a lambda. Do not fold two factors into one with coded levels (a
+   "sequence" factor with levels cC, cI, Ic, II is congruency crossed with the
+   congruency of the trial before; write it that way). Keep trial runs and
+   probes in one `scratch/` folder beside the design, so the design folder
+   holds only what the user should use.
+
 ## Where differences come from
 
 Three mechanisms produce most differences that nobody chose. They are not tied
@@ -259,6 +269,45 @@ block = CrossBlock([color, size], [color, size],
                     AtMostKInARow(1, size)])
 experiments = synthesize_trials(block, 1, CMSGen)
 assert experiments == []
+```
+
+### Some combinations more often than others
+
+To make some combinations of two crossed factors more frequent (half of the
+trials congruent while every incongruent pair stays equally often), keep the
+experiment's own factors in the crossing and add a second copy of the
+combinations you want more of. Do not invent a factor that renames the
+combinations ("relation", "pair", "offset").
+
+```python
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Exclude, MinimumTrials,
+                      CrossBlock, synthesize_trials, CMSGen)
+
+colour = Factor("colour", ["red", "green", "blue"])
+word = Factor("word", ["red", "green", "blue"])
+copy = Factor("copy", ["first", "second"])
+
+
+def unwanted(copy, colour, word):       # a second copy only of the congruent trials
+    return copy == "second" and colour != word
+
+
+def wanted(copy, colour, word):
+    return not unwanted(copy, colour, word)
+
+
+second_copy = Factor("second_copy", [
+    DerivedLevel("unwanted", WithinTrial(unwanted, [copy, colour, word])),
+    DerivedLevel("wanted", WithinTrial(wanted, [copy, colour, word])),
+])
+block = CrossBlock(
+    design=[colour, word, copy, second_copy],
+    crossing=[colour, word, copy],
+    constraints=[Exclude((second_copy, "unwanted")), MinimumTrials(12)],
+    require_complete_crossing=False,
+)
+trials = synthesize_trials(block, 1, CMSGen)[0]
+assert len(trials["colour"]) == 12      # 3 congruent pairs twice, 6 incongruent pairs once
 ```
 
 ### Sets (mini-blocks) and the trial before
