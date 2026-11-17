@@ -44,16 +44,12 @@ block_mi = CrossBlock(design=[colour, word, mostly_incongruent], crossing=[colou
 
 experiments_mc = synthesize_trials(block_mc, 2, CMSGen)
 experiments_mi = synthesize_trials(block_mi, 2, CMSGen)
-tabulate_experiments(block_mc, experiments_mc, [mostly_congruent])
-tabulate_experiments(block_mi, experiments_mi, [mostly_incongruent])
-
-
-tabulate_experiments(block_mc, experiments_mc[:1], [word, mostly_congruent])
-tabulate_experiments(block_mi, experiments_mi[:1], [word, mostly_incongruent])
-
 
 order = [("mostly congruent", experiments_mc[0]), ("mostly incongruent", experiments_mi[0]),
          ("mostly incongruent", experiments_mi[1]), ("mostly congruent", experiments_mc[1])]
 session = pd.concat([pd.DataFrame(trials).assign(block=number, context=context)
                      for number, (context, trials) in enumerate(order, start=1)], ignore_index=True)
-display(session.head(4))
+display(pd.crosstab([session["block"], session["context"]], session["congruency"]))
+
+
+display(pd.crosstab([session["context"], session["word"]], session["congruency"]))

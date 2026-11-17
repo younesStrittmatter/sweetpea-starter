@@ -51,9 +51,9 @@ trial_before = Factor("trial_before", [
 block = CrossBlock(design=[colour, word, congruency, trial_before],
                    crossing=[colour, congruency, trial_before],
                    constraints=[MinimumTrials(25)])
-experiments = synthesize_trials(block, 1, CMSGen)
-after_first = list(range(1, 25))        # the trials that have a trial before
-tabulate_experiments(block, experiments, [trial_before, congruency], trials=after_first)
+trials = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
+scored = trials[trials["trial_before"] != ""]        # without the first trial
+display(pd.crosstab(scored["trial_before"], scored["congruency"]))
 
 
 def response_repeats(colour):
@@ -72,6 +72,6 @@ response = Factor("response", [
 block = CrossBlock(design=[colour, word, congruency, trial_before, response],
                    crossing=[colour, congruency, trial_before],
                    constraints=[MinimumTrials(25)])
-experiments = synthesize_trials(block, 1, CMSGen)
-tabulate_experiments(block, experiments, [trial_before, congruency, response], trials=after_first)
-trials = pd.DataFrame(experiments[0])
+trials = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
+scored = trials[trials["trial_before"] != ""]
+display(pd.crosstab([scored["trial_before"], scored["congruency"]], scored["response"]))

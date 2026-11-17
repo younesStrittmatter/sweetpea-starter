@@ -87,17 +87,11 @@ between_mini_blocks = CrossBlock(design=[context, context_before, task, task_tra
                                  crossing=[context, context_before, task, task_transition],
                                  constraints=[])
 block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
-experiments = synthesize_trials(block, 1, IterateGen)       # 204 trials: too long for CMSGen
-after_start = list(range(12, 204))                           # without the first mini-block
-tabulate_experiments(block, experiments, [context_before, context, task, task_transition], trials=after_start)
+session = pd.DataFrame(synthesize_trials(block, 1, IterateGen)[0])       # 204 trials: too long for CMSGen
+session.insert(0, "block", session.index // 12 + 1)                      # number the mini-blocks
+counted = session[session["block"] > 1]                                  # without the first mini-block
+display(pd.crosstab([counted["context_before"], counted["context"]], [counted["task"], counted["task_transition"]]))
 
 
-tabulate_experiments(block, experiments, [context, congruency], trials=after_start)
-tabulate_experiments(block, experiments, [context, colour], trials=after_start)
-tabulate_experiments(block, experiments, [context, task, congruency, colour], trials=list(range(12, 24)))
-
-
-session = pd.DataFrame(experiments[0])
-session.insert(0, "block", session.index // 12 + 1)
-counted = session[session["block"] > 1]
-display(session.iloc[10:14])
+display(pd.crosstab([counted["block"], counted["context"], counted["task"]], counted["congruency"]))
+display(pd.crosstab([counted["block"], counted["context"]], counted["colour"]))

@@ -36,18 +36,17 @@ congruency = Factor("congruency", [
 
 block_a = CrossBlock(design=[colour, word, congruency], crossing=[colour, word],
                      constraints=[MinimumTrials(18)])
-experiments_a = synthesize_trials(block_a, 1, CMSGen)
-tabulate_experiments(block_a, experiments_a, [colour, word])
-tabulate_experiments(block_a, experiments_a, [congruency])
+trials_a = pd.DataFrame(synthesize_trials(block_a, 1, CMSGen)[0])
+display(pd.crosstab(trials_a["colour"], trials_a["word"]))
+display(pd.crosstab(trials_a["congruency"], "trials"))
 
 
 block_b = CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
                      constraints=[MinimumTrials(24)])
 experiments_b = synthesize_trials(block_b, 1, CMSGen)
-tabulate_experiments(block_b, experiments_b, [colour, congruency])
-tabulate_experiments(block_b, experiments_b, [colour, word])
-
-
-trials_a = pd.DataFrame(experiments_a[0])
 trials_b = pd.DataFrame(experiments_b[0])
-display(trials_b.head(8))
+display(pd.crosstab(trials_b["colour"], trials_b["congruency"]))
+display(pd.crosstab(trials_b["colour"], trials_b["word"]))
+
+
+tabulate_experiments(block_b, experiments_b, [congruency])

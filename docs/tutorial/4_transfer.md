@@ -129,94 +129,82 @@ between_mini_blocks = CrossBlock(design=[context, context_before, task, task_tra
                                  crossing=[context, context_before, task, task_transition],
                                  constraints=[])
 block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
-experiments = synthesize_trials(block, 1, IterateGen)       # 204 trials: too long for CMSGen
-after_start = list(range(12, 204))                           # without the first mini-block
-tabulate_experiments(block, experiments, [context_before, context, task, task_transition], trials=after_start)
+session = pd.DataFrame(synthesize_trials(block, 1, IterateGen)[0])       # 204 trials: too long for CMSGen
+session.insert(0, "block", session.index // 12 + 1)                      # number the mini-blocks
+counted = session[session["block"] > 1]                                  # without the first mini-block
+display(pd.crosstab([counted["context_before"], counted["context"]], [counted["task"], counted["task_transition"]]))
 ```
 
 <div class="nb-out">
-<pre>Experiment 0:
-context_before mostly congruent   | context mostly congruent   | task name the colour | task_transition repeat | frequency 12 | proportion 6.25%
-context_before mostly congruent   | context mostly congruent   | task name the colour | task_transition switch | frequency 12 | proportion 6.25%
-context_before mostly congruent   | context mostly congruent   | task read the word   | task_transition repeat | frequency 12 | proportion 6.25%
-context_before mostly congruent   | context mostly congruent   | task read the word   | task_transition switch | frequency 12 | proportion 6.25%
-context_before mostly congruent   | context mostly incongruent | task name the colour | task_transition repeat | frequency 12 | proportion 6.25%
-context_before mostly congruent   | context mostly incongruent | task name the colour | task_transition switch | frequency 12 | proportion 6.25%
-context_before mostly congruent   | context mostly incongruent | task read the word   | task_transition repeat | frequency 12 | proportion 6.25%
-context_before mostly congruent   | context mostly incongruent | task read the word   | task_transition switch | frequency 12 | proportion 6.25%
-context_before mostly incongruent | context mostly congruent   | task name the colour | task_transition repeat | frequency 12 | proportion 6.25%
-context_before mostly incongruent | context mostly congruent   | task name the colour | task_transition switch | frequency 12 | proportion 6.25%
-context_before mostly incongruent | context mostly congruent   | task read the word   | task_transition repeat | frequency 12 | proportion 6.25%
-context_before mostly incongruent | context mostly congruent   | task read the word   | task_transition switch | frequency 12 | proportion 6.25%
-context_before mostly incongruent | context mostly incongruent | task name the colour | task_transition repeat | frequency 12 | proportion 6.25%
-context_before mostly incongruent | context mostly incongruent | task name the colour | task_transition switch | frequency 12 | proportion 6.25%
-context_before mostly incongruent | context mostly incongruent | task read the word   | task_transition repeat | frequency 12 | proportion 6.25%
-context_before mostly incongruent | context mostly incongruent | task read the word   | task_transition switch | frequency 12 | proportion 6.25%</pre>
+<table class="dataframe nb-table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>task</th>
+      <th colspan="2" halign="left">name the colour</th>
+      <th colspan="2" halign="left">read the word</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>task_transition</th>
+      <th>repeat</th>
+      <th>switch</th>
+      <th>repeat</th>
+      <th>switch</th>
+    </tr>
+    <tr>
+      <th>context_before</th>
+      <th>context</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">mostly congruent</th>
+      <th>mostly congruent</th>
+      <td>12</td>
+      <td>12</td>
+      <td>12</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>mostly incongruent</th>
+      <td>12</td>
+      <td>12</td>
+      <td>12</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">mostly incongruent</th>
+      <th>mostly congruent</th>
+      <td>12</td>
+      <td>12</td>
+      <td>12</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>mostly incongruent</th>
+      <td>12</td>
+      <td>12</td>
+      <td>12</td>
+      <td>12</td>
+    </tr>
+  </tbody>
+</table>
 </div>
 
 Every kind of border has 12 trials: one mini-block each. The first mini-block has nothing before it; it is the start and is left out of the counts.
 
 ### Within a mini-block
 
-The proportion in each context, and the ink colours. Then one mini-block on its own: the second one.
+The proportion and the ink colours, in every mini-block.
 
 ```python
-tabulate_experiments(block, experiments, [context, congruency], trials=after_start)
-tabulate_experiments(block, experiments, [context, colour], trials=after_start)
-tabulate_experiments(block, experiments, [context, task, congruency, colour], trials=list(range(12, 24)))
-```
-
-<div class="nb-out">
-<pre>Experiment 0:
-context mostly congruent   | congruency congruent   | frequency 72 | proportion 37.5%
-context mostly congruent   | congruency incongruent | frequency 24 | proportion 12.5%
-context mostly incongruent | congruency congruent   | frequency 24 | proportion 12.5%
-context mostly incongruent | congruency incongruent | frequency 72 | proportion 37.5%
-
-Experiment 0:
-context mostly congruent   | colour red   | frequency 32 | proportion 16.666666666666664%
-context mostly congruent   | colour green | frequency 32 | proportion 16.666666666666664%
-context mostly congruent   | colour blue  | frequency 32 | proportion 16.666666666666664%
-context mostly incongruent | colour red   | frequency 32 | proportion 16.666666666666664%
-context mostly incongruent | colour green | frequency 32 | proportion 16.666666666666664%
-context mostly incongruent | colour blue  | frequency 32 | proportion 16.666666666666664%
-
-Experiment 0:
-context mostly congruent   | task name the colour | congruency congruent   | colour red   | frequency 3 | proportion 25.0%
-context mostly congruent   | task name the colour | congruency congruent   | colour green | frequency 3 | proportion 25.0%
-context mostly congruent   | task name the colour | congruency congruent   | colour blue  | frequency 3 | proportion 25.0%
-context mostly congruent   | task name the colour | congruency incongruent | colour red   | frequency 1 | proportion 8.333333333333332%
-context mostly congruent   | task name the colour | congruency incongruent | colour green | frequency 1 | proportion 8.333333333333332%
-context mostly congruent   | task name the colour | congruency incongruent | colour blue  | frequency 1 | proportion 8.333333333333332%
-context mostly congruent   | task read the word   | congruency congruent   | colour red   | frequency 0 | proportion 0.0%
-context mostly congruent   | task read the word   | congruency congruent   | colour green | frequency 0 | proportion 0.0%
-context mostly congruent   | task read the word   | congruency congruent   | colour blue  | frequency 0 | proportion 0.0%
-context mostly congruent   | task read the word   | congruency incongruent | colour red   | frequency 0 | proportion 0.0%
-context mostly congruent   | task read the word   | congruency incongruent | colour green | frequency 0 | proportion 0.0%
-context mostly congruent   | task read the word   | congruency incongruent | colour blue  | frequency 0 | proportion 0.0%
-context mostly incongruent | task name the colour | congruency congruent   | colour red   | frequency 0 | proportion 0.0%
-context mostly incongruent | task name the colour | congruency congruent   | colour green | frequency 0 | proportion 0.0%
-context mostly incongruent | task name the colour | congruency congruent   | colour blue  | frequency 0 | proportion 0.0%
-context mostly incongruent | task name the colour | congruency incongruent | colour red   | frequency 0 | proportion 0.0%
-context mostly incongruent | task name the colour | congruency incongruent | colour green | frequency 0 | proportion 0.0%
-context mostly incongruent | task name the colour | congruency incongruent | colour blue  | frequency 0 | proportion 0.0%
-context mostly incongruent | task read the word   | congruency congruent   | colour red   | frequency 0 | proportion 0.0%
-context mostly incongruent | task read the word   | congruency congruent   | colour green | frequency 0 | proportion 0.0%
-context mostly incongruent | task read the word   | congruency congruent   | colour blue  | frequency 0 | proportion 0.0%
-context mostly incongruent | task read the word   | congruency incongruent | colour red   | frequency 0 | proportion 0.0%
-context mostly incongruent | task read the word   | congruency incongruent | colour green | frequency 0 | proportion 0.0%
-context mostly incongruent | task read the word   | congruency incongruent | colour blue  | frequency 0 | proportion 0.0%</pre>
-</div>
-
-### The sequence as a table
-
-One row per trial, with the mini-blocks numbered.
-
-```python
-session = pd.DataFrame(experiments[0])
-session.insert(0, "block", session.index // 12 + 1)
-counted = session[session["block"] > 1]
-display(session.iloc[10:14])
+display(pd.crosstab([counted["block"], counted["context"], counted["task"]], counted["congruency"]))
+display(pd.crosstab([counted["block"], counted["context"]], counted["colour"]))
 ```
 
 <div class="nb-out">
@@ -224,65 +212,266 @@ display(session.iloc[10:14])
   <thead>
     <tr style="text-align: right;">
       <th></th>
+      <th></th>
+      <th>congruency</th>
+      <th>congruent</th>
+      <th>incongruent</th>
+    </tr>
+    <tr>
       <th>block</th>
       <th>context</th>
       <th>task</th>
-      <th>colour</th>
-      <th>word</th>
-      <th>congruency</th>
-      <th>frequency</th>
-      <th>context_before</th>
-      <th>task_transition</th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
+      <th>2</th>
+      <th>mostly congruent</th>
+      <th>name the colour</th>
+      <td>9</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <th>mostly incongruent</th>
+      <th>name the colour</th>
+      <td>3</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <th>mostly congruent</th>
+      <th>read the word</th>
+      <td>9</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <th>mostly incongruent</th>
+      <th>name the colour</th>
+      <td>3</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <th>mostly incongruent</th>
+      <th>name the colour</th>
+      <td>3</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <th>mostly incongruent</th>
+      <th>read the word</th>
+      <td>3</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <th>mostly incongruent</th>
+      <th>read the word</th>
+      <td>3</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <th>mostly congruent</th>
+      <th>read the word</th>
+      <td>9</td>
+      <td>3</td>
+    </tr>
+    <tr>
       <th>10</th>
-      <td>1</td>
-      <td>mostly incongruent</td>
-      <td>name the colour</td>
-      <td>blue</td>
-      <td>green</td>
-      <td>incongruent</td>
-      <td>frequent</td>
-      <td></td>
-      <td></td>
+      <th>mostly congruent</th>
+      <th>read the word</th>
+      <td>9</td>
+      <td>3</td>
     </tr>
     <tr>
       <th>11</th>
-      <td>1</td>
-      <td>mostly incongruent</td>
-      <td>name the colour</td>
-      <td>green</td>
-      <td>green</td>
-      <td>congruent</td>
-      <td>rare</td>
-      <td></td>
-      <td></td>
+      <th>mostly congruent</th>
+      <th>name the colour</th>
+      <td>9</td>
+      <td>3</td>
     </tr>
     <tr>
       <th>12</th>
-      <td>2</td>
-      <td>mostly congruent</td>
-      <td>name the colour</td>
-      <td>red</td>
-      <td>green</td>
-      <td>incongruent</td>
-      <td>rare</td>
-      <td>mostly incongruent</td>
-      <td>repeat</td>
+      <th>mostly incongruent</th>
+      <th>read the word</th>
+      <td>3</td>
+      <td>9</td>
     </tr>
     <tr>
       <th>13</th>
-      <td>2</td>
-      <td>mostly congruent</td>
-      <td>name the colour</td>
-      <td>blue</td>
-      <td>blue</td>
-      <td>congruent</td>
-      <td>frequent</td>
-      <td>mostly incongruent</td>
-      <td>repeat</td>
+      <th>mostly congruent</th>
+      <th>name the colour</th>
+      <td>9</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <th>mostly congruent</th>
+      <th>name the colour</th>
+      <td>9</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <th>mostly congruent</th>
+      <th>read the word</th>
+      <td>9</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <th>mostly incongruent</th>
+      <th>read the word</th>
+      <td>3</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <th>mostly incongruent</th>
+      <th>name the colour</th>
+      <td>3</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="nb-out">
+<table class="dataframe nb-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>colour</th>
+      <th>blue</th>
+      <th>green</th>
+      <th>red</th>
+    </tr>
+    <tr>
+      <th>block</th>
+      <th>context</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <th>mostly congruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <th>mostly incongruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <th>mostly congruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <th>mostly incongruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <th>mostly incongruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <th>mostly incongruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <th>mostly incongruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <th>mostly congruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <th>mostly congruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <th>mostly congruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <th>mostly incongruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <th>mostly congruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <th>mostly congruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <th>mostly congruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <th>mostly incongruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <th>mostly incongruent</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
     </tr>
   </tbody>
 </table>
