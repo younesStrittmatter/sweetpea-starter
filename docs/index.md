@@ -73,6 +73,11 @@ design leaves unequal, and what can be done about it.
 One Stroop experiment grown in four questions, with an assistant or as
 notebooks: [start here](tutorial/index.md).
 
+## A graphical designer (preview)
+
+The same designs, built by clicking, with the Python code written next to
+it: [screenshots of SweetPea Designer](gui/index.md).
+
 ## Example library
 
 The same kind of experiment in a fixed, short format: the reference the

@@ -49,4 +49,5 @@ nav:
       - 2. The trial before: tutorial/2_sequence.md
       - 3. Adaptation: tutorial/3_adaptation.md
       - 4. Transfer: tutorial/4_transfer.md
+  - Designer (preview): gui/index.md
   - Example library: library/index.md
