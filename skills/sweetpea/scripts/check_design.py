@@ -28,6 +28,7 @@ import csv
 import sys
 from collections import Counter
 from itertools import groupby, product
+from statistics import NormalDist
 
 
 def read_columns(paths):
@@ -68,15 +69,17 @@ def longest_runs(values):
     return runs
 
 
-def differences(columns, compare, noise=3.0, smallest=0.05, back=1):
+def differences(columns, compare, smallest=0.05, back=1):
     """Everything that differs between the conditions formed by the `compare` columns.
 
     For every other column: its level on this trial, its level on the trial before, and
     whether it repeats; for the compared columns: their level on the trial before; and for
     two columns that share levels: whether they are equal, on this trial and across trials.
     A share is reported when it differs between two conditions by more than `smallest`
-    and by more than `noise` standard errors, or when a level never occurs in a condition
-    although it is frequent enough elsewhere to be expected there.
+    and by more than chance allows, or when a level never occurs in a condition although
+    it is frequent enough elsewhere to be expected there. The more shares are looked at,
+    the stricter the test for each, so that a long list of properties does not produce
+    lines by chance alone.
     Returns (findings, number of properties looked at).
     """
     blocks = columns["(block)"]
@@ -118,7 +121,7 @@ def differences(columns, compare, noise=3.0, smallest=0.05, back=1):
                                [None if not has_before[i] or a[i] == "" or b[i - 1] == "" else
                                 ("same" if a[i] == b[i - 1] else "different") for i in range(n)]))
 
-    findings = []
+    candidates = []
     for what, name, values in properties:
         tables = {c: Counter(v for v, cond in zip(values, condition) if cond == c and v is not None) for c in conditions}
         totals = {c: sum(tables[c].values()) for c in conditions}
@@ -139,10 +142,14 @@ def differences(columns, compare, noise=3.0, smallest=0.05, back=1):
             error = (p * (1 - p) * (1 / totals[low] + 1 / totals[high])) ** 0.5
             gap = shares[high] - shares[low]
             never = shares[low] == 0 and tables[high][level] >= 3 and shares[high] * totals[low] >= 3
-            if never or (gap > smallest and gap > noise * error):
-                findings.append((gap, what, name, level, shares, never))
+            candidates.append((gap, what, name, level, shares, never, error))
             if what == "repeats from the trial before" or what.startswith("equals "):
                 break            # the second of two levels is the mirror image of the first
+    # One error in twenty over the whole list, not per line. Each line compares the highest with the
+    # lowest of the conditions, so with more than two conditions every pair of them counts as a test.
+    pairs = max(1, len(conditions) * (len(conditions) - 1) // 2)
+    noise = NormalDist().inv_cdf(1 - 0.025 / max(1, len(candidates) * pairs))
+    findings = [c[:6] for c in candidates if c[5] or (c[0] > smallest and c[0] > noise * c[6])]
     findings.sort(key=lambda f: -f[0])
     return findings, len(properties), conditions
 
@@ -163,8 +170,8 @@ def report_differences(columns, compare, back=1):
               "  choice (then it is a trade-off to put to the user)? Does it plausibly affect the measure?")
     trials = len(columns["(block)"])
     print(f"  Based on {trials} trials. A line is listed when the shares differ by more than 5 points and by more\n"
-          "  than three standard errors. With few trials small differences cannot show, and a listed one can\n"
-          "  still be chance: generate more sequences, pass all the files, and see whether it stays.")
+          "  than chance allows over the whole list. With few trials small differences cannot show: generate\n"
+          "  more sequences, pass all the files, and see whether a line stays.")
 
 
 def report(columns, balance=(), runs=()):

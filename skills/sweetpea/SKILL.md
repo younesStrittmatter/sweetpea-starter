@@ -54,6 +54,10 @@ every experiment, whatever the task:
      with what each keeps and gives up, say which fits the planned comparison
      and why, and let the user decide. Do not decide silently.
    - Ask whether it plausibly affects the measure. If not, say so and move on.
+   - Keep "differs by design" apart from "varies by chance". If a share is
+     even in expectation and only wobbles from one sequence to the next, it is
+     not a difference of the design. Say that it varies, offer a constraint if
+     the user wants it fixed, and do not call it a problem.
 
 Verify by counting, never by reading the code, and report the counts,
 including what is not balanced. If zero sequences come back, the design is
