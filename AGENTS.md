@@ -8,8 +8,9 @@ This repository is a starting point for designing experiments with
   most likely outdated.
 - `skills/sweetpea-tutor/SKILL.md` describes how to teach. Read and follow it
   when the user wants to learn SweetPea or is working in `tutorial/`.
-- `tutorial/` holds the tutorial notebooks. Do not fill in exercise cells
-  unless the user asks for the solution.
+- `tutorial/` holds the tutorial: one page per step, each with the analysis
+  the user wants to run. Help the user get to their own design. Do not open
+  or copy `tutorial/reference/` unless the user asks for the solution.
 - `experiments/` is where the user's own designs go.
 
 Run Python with the environment that has `sweetpea` installed
