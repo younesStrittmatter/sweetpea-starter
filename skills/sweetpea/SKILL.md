@@ -129,6 +129,24 @@ decide what to give up. Do not silently drop a constraint.
    What you tell the user in the chat and what the file says must be the
    same. If it was said and matters, it is in the file.
 
+**Keep the chat short; the file holds the rest.** The user reads the chat
+aloud and reads `DESIGN.md` later. A simple question gets a simple answer:
+
+- A first answer about a goal: what it is about in two or three sentences,
+  the one alternative explanation that matters most, and the two or three
+  decisions that cannot wait. Not a list of everything that could matter.
+- A report of a built design: the design code, the table of requirements,
+  and at most three lines on what else you found. Mention a difference only
+  if it differs by design and could affect the measure; the rest goes into
+  `DESIGN.md`.
+- "What a reviewer would attack" is one or two points, the strongest ones.
+- Do not raise a complication the current step does not need. A plain
+  congruency block is not the place for the trial before, neutral trials or
+  session length; say them when the user gets there or asks.
+- Use a helper factor only when the user's requirement cannot be written
+  with the experiment's own factors, and say in one sentence why it is
+  there.
+
 ## Where differences come from
 
 Three mechanisms produce most differences that nobody chose. They are not tied
