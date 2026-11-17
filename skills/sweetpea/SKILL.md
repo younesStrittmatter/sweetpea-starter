@@ -339,11 +339,48 @@ assert experiments == []
 
 ### Some combinations more often than others
 
-To make some combinations of two crossed factors more frequent (half of the
-trials congruent while every incongruent pair stays equally often), keep the
-experiment's own factors in the crossing and add a second copy of the
-combinations you want more of. Do not invent a factor that renames the
-combinations ("relation", "pair", "offset").
+**First choice: cross the derived factor, and give it a weight.** "Half of
+the trials congruent" is colour crossed with congruency. "Three quarters
+congruent" is the same with a weight on the level (the third argument of
+`DerivedLevel`). Only the experiment's own factors, no helper:
+
+```python
+from sweetpea import (Factor, DerivedLevel, WithinTrial, MinimumTrials,
+                      CrossBlock, synthesize_trials, CMSGen)
+
+colour = Factor("colour", ["red", "green", "blue"])
+word = Factor("word", ["red", "green", "blue"])
+
+
+def same(colour, word):
+    return colour == word
+
+
+def different(colour, word):
+    return colour != word
+
+
+congruency = Factor("congruency", [
+    DerivedLevel("congruent", WithinTrial(same, [colour, word]), 3),        # weight 3: three quarters
+    DerivedLevel("incongruent", WithinTrial(different, [colour, word]), 1),
+])
+block = CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
+                   constraints=[MinimumTrials(24)])
+trials = synthesize_trials(block, 1, CMSGen)[0]
+assert trials["congruency"].count("congruent") == 18
+assert all(trials["colour"].count(c) == 8 for c in ("red", "green", "blue"))
+```
+
+Without the weights (or with 1 and 1) it is half congruent. What this leaves
+open: which word goes with an incongruent ink is not in the crossing, so the
+incongruent pairs come out uneven (in one run 1, 3 and 4 times). Say that in
+one line and offer the version below.
+
+**Only when the user asks for every pair equally often:** keep colour and
+word in the crossing and add a second copy of the combinations you want more
+of. This needs two helper factors; say that they are helpers and why. Do not
+invent a factor that renames the combinations ("relation", "pair",
+"offset").
 
 ```python
 from sweetpea import (Factor, DerivedLevel, WithinTrial, Exclude, MinimumTrials,
