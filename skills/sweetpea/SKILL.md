@@ -354,13 +354,13 @@ colour_repeats = Factor("colour_repeats", [
 ])
 
 start = AlignmentMode.PARALLEL_START
-# The sets: each of the 4 combinations once in every 4 trials (repeat mode).
-sets = MultiCrossBlock([side, colour], [[side, colour]], [MinimumTrials(32)],
-                       mode=RepeatMode.REPEAT, alignment=start)
-# The transitions: the four cases equally often over the whole block, anywhere (weight mode).
+# One set: 4 trials, each of the 4 combinations once. MinimumTrials is the set size.
+one_set = MultiCrossBlock([side, colour], [[side, colour]], [MinimumTrials(4)],
+                          mode=RepeatMode.WEIGHT, alignment=start)
+# The whole block: 33 trials (8 sets and a first trial), the four cases equally often anywhere in it.
 transitions = MultiCrossBlock([side, colour, side_repeats, colour_repeats], [[side_repeats, colour_repeats]],
                               [MinimumTrials(33)], mode=RepeatMode.WEIGHT, alignment=start)
-block = Merge([sets, transitions], alignment=start)
+block = Merge([one_set, transitions], alignment=start)       # the set is repeated until the block is full
 trials = synthesize_trials(block, 1, CMSGen)[0]
 
 squares = list(zip(trials["side"], trials["colour"]))
@@ -372,6 +372,9 @@ assert sum(a == b for a, b in zip(squares, squares[1:])) == 8                  #
 - Describe it as two blocks and `Merge` them: one block says what is even
   within a set, the other what is even over the whole block. Do not count
   the cases by hand with `ExactlyK` when a crossing says the same.
+- Each block says what is even within its own length, and `Merge` repeats
+  the shorter one. The set size is the `MinimumTrials` of the set: for sets
+  of 8 with each combination twice, write `MinimumTrials(8)`.
 - Each merged block keeps its own mode. `Merge` needs the same `alignment`
   on every block and on itself, so build the blocks as `MultiCrossBlock`
   (a `CrossBlock` has no `alignment`).

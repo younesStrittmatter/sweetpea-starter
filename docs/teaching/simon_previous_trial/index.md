@@ -37,7 +37,7 @@ The code for the sets chosen above.
 
 <div class="sm-variant" data-v="2" markdown="1">
 
-A set is one congruent and one incongruent square. Two blocks, merged. The first keeps the sets. The second crosses what repeats from the trial before over the whole block. So inside a set congruency is even and the transitions are free; over the block the transitions are even.
+A set is one congruent and one incongruent square. Two blocks, merged. Each says what is even within its own length: the first is one set, the second the whole block. `Merge` repeats the set until the block is full. So inside a set congruency is even and the transitions are free; over the block the transitions are even.
 
 ```python
 from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
@@ -76,21 +76,20 @@ colour_repeats = Factor("colour_repeats", [
     DerivedLevel("changes", Transition(changes, [colour])),
 ])
 
-# The sets: one congruent and one incongruent square in every two trials.
-sets = MultiCrossBlock(design=[side, colour, congruency], crossings=[[congruency]],
-                       constraints=[MinimumTrials(32)],
-                       mode=RepeatMode.REPEAT,                  # once in every set
-                       alignment=AlignmentMode.PARALLEL_START)
+# One set: 2 trials, one congruent and one incongruent square.
+one_set = MultiCrossBlock(design=[side, colour, congruency], crossings=[[congruency]],
+                          constraints=[MinimumTrials(2)],             # the set size
+                          mode=RepeatMode.WEIGHT, alignment=AlignmentMode.PARALLEL_START)
 
-# The transitions: side repeats or not, crossed with colour repeats or not, over the whole block.
+# The whole block: 33 trials (16 sets, and a first trial that has no trial before).
+# Side repeats or not, crossed with colour repeats or not, equally often anywhere in it.
 transitions = MultiCrossBlock(design=[side, colour, side_repeats, colour_repeats],
                               crossings=[[side_repeats, colour_repeats]],
-                              constraints=[MinimumTrials(33)],          # one more: the first trial has no trial before
-                              mode=RepeatMode.WEIGHT,           # equally often, anywhere in the block
-                              alignment=AlignmentMode.PARALLEL_START)
+                              constraints=[MinimumTrials(33)],         # the block length
+                              mode=RepeatMode.WEIGHT, alignment=AlignmentMode.PARALLEL_START)
 
-# Both at once.
-block = Merge([sets, transitions], alignment=AlignmentMode.PARALLEL_START)
+# Both at once: the set is repeated until the block is full.
+block = Merge([one_set, transitions], alignment=AlignmentMode.PARALLEL_START)
 trials = synthesize_trials(block, 1, CMSGen)[0]
 ```
 
@@ -100,7 +99,7 @@ The generated block: 33 trials, every set intact; trial type, side and response 
 
 <div class="sm-variant" data-v="4" markdown="1">
 
-A set is each of the four squares once. Two blocks, merged. The first keeps the sets. The second crosses what repeats from the trial before over the whole block. So inside a set the squares are even and the transitions are free; over the block the transitions are even.
+A set is each of the four squares once. Two blocks, merged. Each says what is even within its own length: the first is one set, the second the whole block. `Merge` repeats the set until the block is full. So inside a set the squares are even and the transitions are free; over the block the transitions are even.
 
 ```python
 from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials,
@@ -125,21 +124,20 @@ colour_repeats = Factor("colour_repeats", [
     DerivedLevel("changes", Transition(changes, [colour])),
 ])
 
-# The sets: each of the four squares once in every four trials.
-sets = MultiCrossBlock(design=[side, colour], crossings=[[side, colour]],
-                       constraints=[MinimumTrials(32)],
-                       mode=RepeatMode.REPEAT,                  # once in every set
-                       alignment=AlignmentMode.PARALLEL_START)
+# One set: 4 trials, each of the four squares once.
+one_set = MultiCrossBlock(design=[side, colour], crossings=[[side, colour]],
+                          constraints=[MinimumTrials(4)],             # the set size
+                          mode=RepeatMode.WEIGHT, alignment=AlignmentMode.PARALLEL_START)
 
-# The transitions: side repeats or not, crossed with colour repeats or not, over the whole block.
+# The whole block: 33 trials (8 sets, and a first trial that has no trial before).
+# Side repeats or not, crossed with colour repeats or not, equally often anywhere in it.
 transitions = MultiCrossBlock(design=[side, colour, side_repeats, colour_repeats],
                               crossings=[[side_repeats, colour_repeats]],
-                              constraints=[MinimumTrials(33)],          # one more: the first trial has no trial before
-                              mode=RepeatMode.WEIGHT,           # equally often, anywhere in the block
-                              alignment=AlignmentMode.PARALLEL_START)
+                              constraints=[MinimumTrials(33)],         # the block length
+                              mode=RepeatMode.WEIGHT, alignment=AlignmentMode.PARALLEL_START)
 
-# Both at once.
-block = Merge([sets, transitions], alignment=AlignmentMode.PARALLEL_START)
+# Both at once: the set is repeated until the block is full.
+block = Merge([one_set, transitions], alignment=AlignmentMode.PARALLEL_START)
 trials = synthesize_trials(block, 1, CMSGen)[0]
 ```
 
@@ -149,7 +147,7 @@ The generated block: 33 trials, every set intact; trial type, side and response 
 
 <div class="sm-variant" data-v="12" markdown="1">
 
-A set is the twelve combinations, each once. Two blocks, merged. The first keeps the sets. The second crosses what repeats from the trial before over the whole block. So inside a set the combinations are even and the transitions are free; over the block the transitions are even.
+A set is the twelve combinations, each once. Two blocks, merged. Each says what is even within its own length: the first is one set, the second the whole block. `Merge` repeats the set until the block is full. So inside a set the combinations are even and the transitions are free; over the block the transitions are even.
 
 ```python
 from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials,
@@ -175,25 +173,24 @@ colour_repeats = Factor("colour_repeats", [
     DerivedLevel("changes", Transition(changes, [colour])),
 ])
 
-# The sets: each of the twelve combinations once in every twelve trials.
-sets = MultiCrossBlock(design=[word, side, colour], crossings=[[word, side, colour]],
-                       constraints=[MinimumTrials(48)],
-                       mode=RepeatMode.REPEAT,                  # once in every set
-                       alignment=AlignmentMode.PARALLEL_START)
+# One set: 12 trials, each of the twelve combinations once.
+one_set = MultiCrossBlock(design=[word, side, colour], crossings=[[word, side, colour]],
+                          constraints=[MinimumTrials(12)],             # the set size
+                          mode=RepeatMode.WEIGHT, alignment=AlignmentMode.PARALLEL_START)
 
-# The transitions: side repeats or not, crossed with colour repeats or not, over the whole block.
+# The whole block: 49 trials (4 sets, and a first trial that has no trial before).
+# Side repeats or not, crossed with colour repeats or not, equally often anywhere in it.
 transitions = MultiCrossBlock(design=[side, colour, side_repeats, colour_repeats],
                               crossings=[[side_repeats, colour_repeats]],
-                              constraints=[MinimumTrials(49)],          # one more: the first trial has no trial before
-                              mode=RepeatMode.WEIGHT,           # equally often, anywhere in the block
-                              alignment=AlignmentMode.PARALLEL_START)
+                              constraints=[MinimumTrials(49)],         # the block length
+                              mode=RepeatMode.WEIGHT, alignment=AlignmentMode.PARALLEL_START)
 
-# Both at once.
-block = Merge([sets, transitions], alignment=AlignmentMode.PARALLEL_START)
+# Both at once: the set is repeated until the block is full.
+block = Merge([one_set, transitions], alignment=AlignmentMode.PARALLEL_START)
 trials = synthesize_trials(block, 1, CMSGen)[0]
 ```
 
-The generated block: 49 trials, every set intact; trial type, side and response each repeat on half of the trials, the same square on a quarter. The full block of 9 sets (109 trials) took about four minutes to generate.
+The generated block: 49 trials, every set intact; trial type, side and response each repeat on half of the trials, the same square on a quarter. For sets of 24 with every combination twice, write `MinimumTrials(24)` in the set. The full block of 9 sets (109 trials) took about four minutes to generate.
 
 </div>
 

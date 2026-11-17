@@ -91,10 +91,10 @@ def designed(size):
             DerivedLevel("incongruent", WithinTrial(lambda s, c: KEY[c] != s, [side, colour]))])
         set_design, set_crossing = [side, colour, congruency], [congruency]
     start = AlignmentMode.PARALLEL_START
-    sets = MultiCrossBlock(set_design, [set_crossing], [MinimumTrials(n)], mode=RepeatMode.REPEAT, alignment=start)
+    one_set = MultiCrossBlock(set_design, [set_crossing], [MinimumTrials(size)], mode=RepeatMode.WEIGHT, alignment=start)
     transitions = MultiCrossBlock([side, colour, side_repeats, colour_repeats], [[side_repeats, colour_repeats]],
                                   [MinimumTrials(n + 1)], mode=RepeatMode.WEIGHT, alignment=start)
-    trials = synthesize_trials(Merge([sets, transitions], alignment=start), 1, CMSGen)[0]
+    trials = synthesize_trials(Merge([one_set, transitions], alignment=start), 1, CMSGen)[0]
     return list(zip(trials["side"], trials["colour"]))
 
 

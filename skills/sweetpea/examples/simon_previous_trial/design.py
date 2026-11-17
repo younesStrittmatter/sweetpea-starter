@@ -66,8 +66,8 @@ def repeats(factor, name):
 def proposed():
     """Sets of twelve kept, and what repeats from the trial before crossed over the whole block.
 
-    Two blocks, merged. `sets` holds the twelve combinations once in every twelve trials.
-    `transitions` crosses "the side repeats" with "the colour repeats" over the whole block:
+    Two blocks, merged. `one_set` is one set: twelve trials, every combination once; `Merge`
+    repeats it until the block is full. `transitions` crosses "the side repeats" with "the colour repeats" over the whole block:
     each of the four cases equally often, anywhere. So inside a set the combinations are even
     and the transitions are free; over the block the transitions are even. Simon congruency,
     side and response then each repeat on half of the trials, and the same square on a quarter.
@@ -77,11 +77,11 @@ def proposed():
     side_repeats, colour_repeats = repeats(side, "side_repeats"), repeats(colour, "colour_repeats")
     n = SET * SETS_PER_BLOCK
     start = AlignmentMode.PARALLEL_START
-    sets = MultiCrossBlock([word, side, colour, prime, simon], [[word, side, colour]],
-                           [MinimumTrials(n)], mode=RepeatMode.REPEAT, alignment=start)
+    one_set = MultiCrossBlock([word, side, colour, prime, simon], [[word, side, colour]],
+                              [MinimumTrials(SET)], mode=RepeatMode.WEIGHT, alignment=start)
     transitions = MultiCrossBlock([side, colour, side_repeats, colour_repeats], [[side_repeats, colour_repeats]],
                                   [MinimumTrials(n + 1)], mode=RepeatMode.WEIGHT, alignment=start)
-    return Merge([sets, transitions], alignment=start)
+    return Merge([one_set, transitions], alignment=start)
 
 
 def within_every_four():
