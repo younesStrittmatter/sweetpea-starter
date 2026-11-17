@@ -17,10 +17,10 @@ colours = ["red", "green", "blue"]
 # regular factors: set freely on every trial
 colour = Factor("colour", colours)      # the ink
 word = Factor("word", colours)          # what the word says
-from sweetpea import Nest, Repeat
+from sweetpea import Nest
 
-task = Factor("task", ["name the colour", "read the word"])              # new: a second task, with a cue
 context = Factor("context", ["mostly congruent", "mostly incongruent"])  # new: held for a whole mini-block
+task = Factor("task", ["name the colour", "read the word"])              # new: held for a whole mini-block
 
 
 def task_repeats(task):
@@ -31,7 +31,7 @@ def task_switches(task):
     return task[0] != task[-1]
 
 
-transition = Factor("transition", [
+task_transition = Factor("task_transition", [
     DerivedLevel("repeat", Transition(task_repeats, [task])),
     DerivedLevel("switch", Transition(task_switches, [task])),
 ])
@@ -52,28 +52,32 @@ frequency = Factor("frequency", [
 ])
 
 
-contexts = Repeat(CrossBlock(design=[context], crossing=[context], constraints=[]),
-                  constraints=[MinimumTrials(4)])            # four mini-blocks: each context twice
-mini_block = CrossBlock(design=[colour, word, task, transition, frequency, context],
-                        crossing=[frequency, task, transition],
+mini_block = CrossBlock(design=[colour, word, frequency, context],
+                        crossing=[frequency, colour],
                         constraints=[])
-block = Nest(contexts, mini_block, alignment="parallel start")
+between_mini_blocks = CrossBlock(design=[context, task, task_transition],
+                                 crossing=[context, task, task_transition],
+                                 constraints=[])
+block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
 session = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
 
-# congruency as a column: inside a nested block, SweetPea 0.2.14 fails on a derived factor that is in no crossing
+# columns for counting
 session["congruency"] = ["congruent" if colour == word else "incongruent"
                          for colour, word in zip(session["colour"], session["word"])]
-session.insert(0, "block", session.index // 16 + 1)
-display(pd.crosstab([session["block"], session["context"]], session["congruency"]))
+session.insert(0, "block", session.index // 12 + 1)
+overview = session.groupby("block")[["context", "task", "task_transition"]].first()
+overview["congruent trials"] = session.groupby("block")["congruency"].apply(lambda c: (c == "congruent").sum())
+display(overview)
 
 
-counted = session[session["transition"] != ""]
-display(pd.crosstab([counted["block"], counted["context"]], [counted["transition"], counted["task"], counted["congruency"]]))
+counted = session[session["task_transition"] != ""]          # without the first mini-block
+mini_blocks = counted.groupby("block")[["context", "task", "task_transition"]].first()
+display(pd.crosstab([mini_blocks["context"], mini_blocks["task"]], mini_blocks["task_transition"]))
 
 
-counted = counted.assign(stretch=(counted.index - 1) // 16 + 1)
-display(pd.crosstab(counted["stretch"], [counted["transition"], counted["task"], counted["frequency"]]))
+display(pd.crosstab([counted["block"], counted["context"]], [counted["congruency"], counted["colour"]]))
 
 
-display(pd.crosstab(session["context"], session["colour"]))
-display(pd.crosstab([session["context"], session["colour"]], session["word"]))
+mini_blocks["context_before"] = session.groupby("block")["context"].first().shift()
+reading = mini_blocks[mini_blocks["task"] == "read the word"]
+display(reading[["context", "task_transition", "context_before"]])

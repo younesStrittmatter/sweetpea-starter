@@ -173,23 +173,23 @@ display(pd.crosstab(session["context"], session["congruency"]))'''),
 display(session.groupby(["context", "word"])["word_is_ink"].mean().round(2).unstack())'''),
 ("md", "**Check.** Are the proportions what was asked for? How many incongruent trials does a mostly congruent block have: is that enough to measure the effect there? A word is in its own colour on 75% of the trials in one context and 25% in the other: how could learning and control be told apart?\n\n**Try.** Change the copies to `(4, 1)` and `(1, 2)`. What are the proportions and the block lengths now?\n\n**Next.** Step 4 asks whether this adjustment has a price when the task changes."),
 ]),
-("4_transfer", "Step 4. Transfer", "session", "Last question. I want to know whether this control setting has a price: if people shield the task more in a mostly incongruent context, are they then worse at switching to another task? I add a second task: on some trials people read the word instead of naming the ink, and a cue says which. I want mini-blocks that are mostly congruent or mostly incongruent, and to compare the switch cost between them. What is the hypothesis, and what does the design need?", [
-("md", '''**So far.** Step 2 made the trial before a factor, and step 3 made blocks that are mostly congruent or mostly incongruent. This step puts both ideas together and adds a second task.
+("4_transfer", "Step 4. Transfer", "session", "Last question: does the adaptation transfer to another task? I want mini-blocks that are mostly congruent or mostly incongruent, and each mini-block is either colour naming or word reading. I want the switch cost between mini-blocks: word reading after colour naming against word reading after word reading, compared between the two contexts. I take word reading because it has almost no congruency effect. What is the hypothesis, and can nested blocks keep all of that counterbalanced?", [
+("md", '''**So far.** Step 2 made the trial before a factor. Step 3 made blocks that are mostly congruent or mostly incongruent, generated one by one. This step uses both ideas one level up: the mini-block is the unit, and the whole session is one design.
 
-**The question.** Does adapting to frequent conflict make it harder to switch to another task?
+**The question.** Does adapting to frequent conflict make it harder to change the task?
 
-**Prediction if shielding and switching are one control setting.** The switch cost is larger in a mostly incongruent context than in a mostly congruent one.
+**Prediction if it is one control setting.** Where conflict is frequent the current task is shielded more, so a change of task costs more: the switch cost is larger in the mostly incongruent context.
 
-**The alternative to rule out.** A mostly incongruent context is simply harder, so everything is slower there.
+**Why word reading.** The switch cost is taken on word-reading mini-blocks. Word reading has almost no congruency effect, so the proportion itself hardly touches the trials the cost is measured on.
 
-**The analysis.** The switch cost (switch against repeat trials) in mostly incongruent mini-blocks against mostly congruent mini-blocks.'''),
-("md", "### As before, plus a second task and the context\n\nA cue says on each trial whether to name the ink or read the word. The task is a regular factor. So is the context now: in step 3 it was a column added by hand, here it is part of the design."),
+**The analysis.** Switch cost = response time in word-reading mini-blocks that follow colour naming (switch) minus response time in word-reading mini-blocks that follow word reading (repeat). Compare it between the two contexts.'''),
+("md", "### As before, plus the task and the context\n\nBoth are regular factors. Neither changes from trial to trial: each is held for a whole mini-block."),
 ("code", BASE + '''
-from sweetpea import Nest, Repeat
+from sweetpea import Nest
 
-task = Factor("task", ["name the colour", "read the word"])              # new: a second task, with a cue
-context = Factor("context", ["mostly congruent", "mostly incongruent"])  # new: held for a whole mini-block'''),
-("md", "### New: the task transition\n\nA transition factor, as in step 2, but on the task: does it repeat or switch? Without repeat trials in the same context there is no switch cost to measure."),
+context = Factor("context", ["mostly congruent", "mostly incongruent"])  # new: held for a whole mini-block
+task = Factor("task", ["name the colour", "read the word"])              # new: held for a whole mini-block'''),
+("md", "### New: does the task change from one mini-block to the next?\n\nA transition factor, as in step 2. Here it will look back one mini-block, not one trial."),
 ("code", '''def task_repeats(task):
     return task[0] == task[-1]
 
@@ -198,7 +198,7 @@ def task_switches(task):
     return task[0] != task[-1]
 
 
-transition = Factor("transition", [
+task_transition = Factor("task_transition", [
     DerivedLevel("repeat", Transition(task_repeats, [task])),
     DerivedLevel("switch", Transition(task_switches, [task])),
 ])'''),
@@ -216,30 +216,34 @@ frequency = Factor("frequency", [
     DerivedLevel("frequent", WithinTrial(frequent_here, [colour, word, context]), 3),
     DerivedLevel("rare", WithinTrial(rare_here, [colour, word, context]), 1),
 ])'''),
-("md", "### Something has to give\n\nThe blocks of step 3 hold 24 trials. Crossed with 2 tasks and 2 transitions that is 96 trials per mini-block: too long for a context that should change often.\n\nSo a mini-block crosses what the analysis compares: the frequency (and with it congruency), the task and the transition. That is 16 trials. The even pairs of colour and word are given up.\n\n### New: a block inside a block\n\nStep 3 generated every block on its own and put them one after the other. `Nest` makes it one design. The outer block crosses the context; `Repeat` asks for it twice, so four mini-blocks. The inner block is the mini-block. `Nest` holds each context for the length of one mini-block and draws the order of the contexts."),
-("code", '''contexts = Repeat(CrossBlock(design=[context], crossing=[context], constraints=[]),
-                  constraints=[MinimumTrials(4)])            # four mini-blocks: each context twice
-mini_block = CrossBlock(design=[colour, word, task, transition, frequency, context],
-                        crossing=[frequency, task, transition],
+("md", "### New: a block inside a block\n\nTwo blocks, each with its own crossing:\n\n- **within a mini-block**: the frequency crossed with the ink colour, 12 trials;\n- **between mini-blocks**: the context, the task and the task transition, 8 mini-blocks, plus a first one that has no mini-block before it.\n\n`Nest` puts the first inside the second: every combination of the outer block is held for one whole mini-block."),
+("code", '''mini_block = CrossBlock(design=[colour, word, frequency, context],
+                        crossing=[frequency, colour],
                         constraints=[])
-block = Nest(contexts, mini_block, alignment="parallel start")
+between_mini_blocks = CrossBlock(design=[context, task, task_transition],
+                                 crossing=[context, task, task_transition],
+                                 constraints=[])
+block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
 session = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
 
-# congruency as a column: inside a nested block, SweetPea 0.2.14 fails on a derived factor that is in no crossing
+# columns for counting
 session["congruency"] = ["congruent" if colour == word else "incongruent"
                          for colour, word in zip(session["colour"], session["word"])]
-session.insert(0, "block", session.index // 16 + 1)
-display(pd.crosstab([session["block"], session["context"]], session["congruency"]))'''),
-("md", "Every mini-block holds one context, and each context comes twice.\n\n### Where does the crossing sit?\n\nCount the eight combinations the switch cost is computed from, in every mini-block. The first trial of the session has no transition."),
-("code", '''counted = session[session["transition"] != ""]
-display(pd.crosstab([counted["block"], counted["context"]], [counted["transition"], counted["task"], counted["congruency"]]))'''),
-("md", "Almost 3 to 1 in every mini-block, but not exactly. The reason: a transition needs a trial before, so the crossing starts at the second trial and runs one trial ahead of the context. Count again in stretches of 16 that start at the second trial:"),
-("code", '''counted = counted.assign(stretch=(counted.index - 1) // 16 + 1)
-display(pd.crosstab(counted["stretch"], [counted["transition"], counted["task"], counted["frequency"]]))'''),
-("md", "There it is exact (the last stretch is one trial short). So a mini-block is the exact crossing except for one trial: its first trial, right after the context changed, belongs to the stretch before. Most analyses drop that trial anyway.\n\n### What gave way?\n\nThe ink colour and the pairs are not in the crossing. Count them."),
-("code", '''display(pd.crosstab(session["context"], session["colour"]))
-display(pd.crosstab([session["context"], session["colour"]], session["word"]))'''),
-("md", "**Check.** Is there a repeat baseline in each context? How many incongruent switch trials does a mostly congruent mini-block have? Are the ink colours and the pairs still even, and does that matter for the switch cost? The first trial of a mini-block is a switch or a repeat relative to a trial from the other context: keep it or drop it?\n\n**Try.** Put `colour` into the crossing of the mini-block. How long is a mini-block now?\n\n**The idea.** Each question added a factor, and each factor multiplies the design. At some point not everything fits, and the design becomes a choice about what to leave open. Which choice is acceptable depends on what you compare."),
+session.insert(0, "block", session.index // 12 + 1)
+overview = session.groupby("block")[["context", "task", "task_transition"]].first()
+overview["congruent trials"] = session.groupby("block")["congruency"].apply(lambda c: (c == "congruent").sum())
+display(overview)'''),
+("md", "One row per mini-block. The first has no task transition; it is the start. After it, every combination of context, task and transition comes once, and every mini-block has the proportion of its context: 9 or 3 of 12.\n\n### Between mini-blocks: is everything crossed?"),
+("code", '''counted = session[session["task_transition"] != ""]          # without the first mini-block
+mini_blocks = counted.groupby("block")[["context", "task", "task_transition"]].first()
+display(pd.crosstab([mini_blocks["context"], mini_blocks["task"]], mini_blocks["task_transition"]))'''),
+("md", "### Within a mini-block: is the ink colour even?"),
+("code", '''display(pd.crosstab([counted["block"], counted["context"]], [counted["congruency"], counted["colour"]]))'''),
+("md", "### What is not in the design?\n\nThe adaptation that is supposed to carry over was built up in the mini-block before. Its context is not in the crossing. Count it for the mini-blocks the switch cost is taken from."),
+("code", '''mini_blocks["context_before"] = session.groupby("block")["context"].first().shift()
+reading = mini_blocks[mini_blocks["task"] == "read the word"]
+display(reading[["context", "task_transition", "context_before"]])'''),
+("md", "**Check.** Both crossings are exact. What is thin? Each cell of the comparison is one mini-block of 12 trials; more need a longer session or several sequences. Is the context of the mini-block before the same for switch and repeat? It is left to chance: run the block cell again and look. Should it be a factor too, and how many mini-blocks would that take?\n\n**Try.** Add `MinimumTrials(17)` to the outer block: it counts mini-blocks, so that is two rounds plus the start.\n\n**The idea.** Each question added a factor, and each factor multiplies the design. Nesting keeps both levels counterbalanced at once. What it leaves open is still a choice, and which choice is acceptable depends on what you compare."),
 ]),
 ]
 
@@ -271,7 +275,8 @@ def source(text):
     return [line + "\n" for line in lines[:-1]] + [lines[-1]]
 
 
-DEMO_COLUMNS = ["block", "context", "task", "colour", "word", "congruency", "trial_before", "transition"]
+DEMO_COLUMNS = ["block", "context", "task", "colour", "word", "congruency", "trial_before", "task_transition"]
+DEMO_LENGTH = 48
 for name, title, play, ask, cells in STEPS:
     shown, namespace = run(cells)
     number = name[0]
@@ -333,7 +338,7 @@ index = ["# Tutorial: four questions about one task", "",
          "| [1. Congruency](1_congruency.md) | Does an irrelevant word interfere? | Regular factors, a derived factor, what is crossed |",
          "| [2. The trial before](2_sequence.md) | Does a conflict change how the next trial is handled? | A transition factor |",
          "| [3. Adaptation](3_adaptation.md) | Do people adjust to how frequent conflict is? | Blocks that differ in proportion |",
-         "| [4. Transfer](4_transfer.md) | Does adapting to conflict make switching to another task harder? | A second task, a block nested in a block |", "",
+         "| [4. Transfer](4_transfer.md) | Does adapting to conflict carry over to the next task? | A second task, mini-blocks nested in one design |", "",
          "## With an assistant", "",
          f"Open the [repository](https://github.com/{REPO}) in a Codespace, start your assistant (`claude`, `codex` or `gemini`),",
          "and say the line under \"With your assistant\" on each page, in your own words. Stuck? Say **\"Run the guided tutorial.\"**", "",

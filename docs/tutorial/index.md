@@ -9,7 +9,7 @@ pieces, a playable block of the experiment, and the count tables.
 | [1. Congruency](1_congruency.md) | Does an irrelevant word interfere? | Regular factors, a derived factor, what is crossed |
 | [2. The trial before](2_sequence.md) | Does a conflict change how the next trial is handled? | A transition factor |
 | [3. Adaptation](3_adaptation.md) | Do people adjust to how frequent conflict is? | Blocks that differ in proportion |
-| [4. Transfer](4_transfer.md) | Does adapting to conflict make switching to another task harder? | A second task, a block nested in a block |
+| [4. Transfer](4_transfer.md) | Does adapting to conflict carry over to the next task? | A second task, mini-blocks nested in one design |
 
 ## With an assistant
 

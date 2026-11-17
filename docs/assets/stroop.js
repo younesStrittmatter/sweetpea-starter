@@ -2,7 +2,7 @@
    <div class="stroop-demo" data-trials='[{"colour":"red","word":"green","congruency":"incongruent", ...}]'></div> */
 (function () {
   var INK = { red: "#e5484d", green: "#30a46c", blue: "#3e8bff", yellow: "#e2b100" };
-  var LABELS = [["congruency", "this trial"], ["trial_before", "trial before"], ["transition", "task"], ["context", "context"]];
+  var LABELS = [["congruency", "this trial"], ["trial_before", "trial before"], ["task_transition", "task"], ["context", "context"]];
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);

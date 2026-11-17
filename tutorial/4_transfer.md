@@ -4,48 +4,49 @@ Without an assistant: [notebook](notebooks/4_transfer.ipynb) · [![Open In Colab
 
 ## The question
 
-Does adapting to frequent conflict make it harder to switch to another task?
+Does adapting to frequent conflict make it harder to change the task?
 
 **What it is about.** Whether shielding a task and switching between tasks
-are the same control setting. Stability (keeping the word out) and
-flexibility (moving to another task) may pull against each other.
-**Prediction if they are one setting:** in a mostly incongruent context,
-where the task is shielded more, the switch cost is larger than in a mostly
-congruent context. **If they are separate:** the switch cost is the same in
-both. **The alternative to rule out:** a mostly incongruent context is simply
-harder, so everything is slower there, switches included.
+are the same control setting. **Prediction if they are one setting:** where
+conflict is frequent the current task is shielded more, so a change of task
+costs more: the switch cost is larger in the mostly incongruent context.
+**If they are separate:** the switch cost is the same in both.
+**Why word reading:** it has almost no congruency effect, so the proportion
+itself hardly touches the trials the switch cost is measured on.
 
 ## The analysis
 
-The switch cost (switch trials against repeat trials) in mostly incongruent
-mini-blocks against the switch cost in mostly congruent mini-blocks.
+Mini-blocks are mostly congruent or mostly incongruent, and each is either
+colour naming or word reading. Switch cost = response time in word-reading
+mini-blocks that follow colour naming (switch) minus response time in
+word-reading mini-blocks that follow word reading (repeat). Compare it
+between the two contexts.
 
 ## Ask your assistant
 
-> Last question. I want to know whether this control setting has a price: if
-> people shield the task more in a mostly incongruent context, are they then
-> worse at switching to another task? I add a second task: on some trials
-> people read the word instead of naming the ink, and a cue says which. I want
-> mini-blocks that are mostly congruent or mostly incongruent, and to compare
-> the switch cost between them. What is the hypothesis, and what does the
-> design need?
+> Last question: does the adaptation transfer to another task? I want
+> mini-blocks that are mostly congruent or mostly incongruent, and each
+> mini-block is either colour naming or word reading. I want the switch cost
+> between mini-blocks: word reading after colour naming against word reading
+> after word reading, compared between the two contexts. I take word reading
+> because it has almost no congruency effect. What is the hypothesis, and can
+> nested blocks keep all of that counterbalanced?
 
 ## What to check
 
-- **Is there a repeat baseline?** A switch cost needs switch trials and repeat
-  trials in the same context. Count both, in each kind of mini-block.
-- **The thin cells.** How many incongruent switch trials does a mostly
-  congruent mini-block have? Is that enough?
-- **What gave way?** Count the ink colour. Is it still even? Did the assistant
-  say what it left out of the crossing, and why?
-- **One design or blocks put one after the other?** With `Nest` the context is
-  a factor of the design and SweetPea draws its order. Where does the crossing
-  sit then: does it line up with the mini-blocks, or is it off by a trial?
-- **The first trial of a mini-block.** It is a switch or a repeat relative to
-  a trial from the other context. Keep it or drop it?
+- **Two crossings.** Within a mini-block: is the proportion right and the ink
+  colour even? Between mini-blocks: does every combination of context, task
+  and switch or repeat occur equally often?
+- **The first mini-block.** It has no mini-block before it. Is it left out of
+  the counts?
+- **How much data per cell?** Each combination is one mini-block. How many
+  trials does the switch cost in one context rest on?
+- **What is in neither crossing?** The adaptation that should carry over was
+  built up in the mini-block before. Is its context the same for switch and
+  repeat? Did the assistant say so without being asked?
 
 ## The idea
 
-Each question added a factor, and each factor multiplies the design. At some
-point not everything fits, and the design becomes a choice about what to
-leave open. The assistant should make that choice with you, not for you.
+Each question added a factor, and each factor multiplies the design. Nesting
+keeps both levels counterbalanced at once. What it leaves open is still a
+choice, and the assistant should make that choice with you, not for you.

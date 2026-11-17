@@ -35,17 +35,16 @@ def test_step3_blocks_have_the_proportions_asked_for_and_even_pairs():
     assert (session.groupby(["block", "congruency", "colour", "word"]).size().groupby(["block", "congruency"]).nunique() == 1).all()
 
 
-def test_step4_nests_the_mini_blocks_and_crosses_what_the_switch_cost_needs():
+def test_step4_nests_the_mini_blocks_and_both_crossings_are_exact():
     made = run("step4_transfer.py")
     session, counted = made["session"], made["counted"]
-    # four mini-blocks of 16, one context each, each context twice
-    assert len(session) == 64
-    assert (session.groupby("block")["context"].nunique() == 1).all()
-    assert (session.groupby("context")["block"].nunique() == 2).all()
-    # the crossing runs one trial ahead of the context: exact in stretches that start at the second trial
-    full = counted[counted["stretch"] <= 3]
-    cells = full.groupby(["stretch", "frequency", "task", "transition"]).size()
-    assert all(n == (3 if frequency == "frequent" else 1) for (_, frequency, _, _), n in cells.items())
-    # so every mini-block is within one trial of three quarters
-    frequent = session.groupby("block")["frequency"].apply(lambda f: (f == "frequent").sum())
-    assert frequent.between(11, 13).all()
+    assert len(session) == 108 and len(counted) == 96            # a first mini-block, then 8 of 12 trials
+    # one context, one task and one transition per mini-block
+    assert (counted.groupby("block")[["context", "task", "task_transition"]].nunique() == 1).all().all()
+    # between mini-blocks: every combination of context, task and transition once
+    assert (counted.groupby(["context", "task", "task_transition"])["block"].nunique() == 1).all()
+    assert counted.groupby(["context", "task", "task_transition"]).ngroups == 8
+    # within a mini-block: the proportion of its context and every ink colour four times
+    for (_, context), mini_block in counted.groupby(["block", "context"]):
+        assert (mini_block["congruency"] == "congruent").sum() == (9 if context == "mostly congruent" else 3)
+        assert (mini_block["colour"].value_counts() == 4).all()

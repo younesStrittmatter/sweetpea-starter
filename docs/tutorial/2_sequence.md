@@ -6,7 +6,7 @@
 
 A block from the design built on this page. Press play, or step through it.
 
-<div class="stroop-demo" data-trials='[{"colour": "green", "word": "blue", "congruency": "incongruent", "trial_before": ""}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "green", "word": "red", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent", "trial_before": "congruent"}]'></div>
+<div class="stroop-demo" data-trials='[{"colour": "blue", "word": "green", "congruency": "incongruent", "trial_before": ""}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "green", "word": "red", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent", "trial_before": "incongruent"}]'></div>
 
 ## With your assistant
 
@@ -168,24 +168,24 @@ display(pd.crosstab([rest["trial_before"], rest["congruency"]], rest["response_r
     <tr>
       <th rowspan="2" valign="top">congruent</th>
       <th>congruent</th>
-      <td>4</td>
-      <td>2</td>
+      <td>5</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>incongruent</th>
-      <td>6</td>
-      <td>0</td>
+      <td>3</td>
+      <td>3</td>
     </tr>
     <tr>
       <th rowspan="2" valign="top">incongruent</th>
       <th>congruent</th>
-      <td>2</td>
       <td>4</td>
+      <td>2</td>
     </tr>
     <tr>
       <th>incongruent</th>
-      <td>5</td>
-      <td>1</td>
+      <td>4</td>
+      <td>2</td>
     </tr>
   </tbody>
 </table>

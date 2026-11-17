@@ -36,7 +36,7 @@ every experiment, whatever the task:
    number of trials: a plain 2 x 2 x 2 crossing took 0.6 s at 40 trials, 2.6 s
    at 80, and more than 100 s at 160 (CMSGen). Build a long session from
    several short blocks, each generated on its own (or, when something differs
-   between the blocks and its order matters, nested in one design with `Nest`,
+   between mini-blocks, nested in one design with `Nest`,
    see below), and always run generation
    with a time limit: `python scripts/limit.py 60 your_design.py` stops it
    after 60 seconds. Never wait on a generation without a limit. When it is
@@ -365,23 +365,24 @@ assert sum(a == b for a, b in zip(squares, squares[1:])) == 8                  #
 
 ### A block inside a block (`Nest`)
 
-When something is held constant for a stretch of trials and differs between
-stretches (a context, a task set, a proportion), make it a factor and nest
-the blocks: the outer block crosses what differs between mini-blocks, the
-inner block is one mini-block. `Nest` holds each outer level for the length
-of the inner block, draws the order of the outer levels, and lets inner
-factors depend on the outer one. Prefer it to generating the blocks one by
-one and appending them when the order of the blocks should be balanced by
-the design, or when a derived factor or a constraint has to see the context.
+When something is held constant for a mini-block and differs between
+mini-blocks (a context, a task, a proportion), make it a factor and nest
+two blocks: the inner block is one mini-block with its own crossing, the
+outer block crosses what differs between mini-blocks. `Nest` holds each
+outer combination for one whole inner block. A transition factor in the
+outer block looks back one mini-block, not one trial, so "the task switches
+from one mini-block to the next" can be crossed too. Prefer this to
+generating blocks one by one and appending them whenever the order of the
+mini-blocks matters or an inner factor has to see the outer one.
 
 ```python
-from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
-                      CrossBlock, Nest, Repeat, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition,
+                      CrossBlock, Nest, synthesize_trials, CMSGen)
 
 colour = Factor("colour", ["red", "green", "blue"])
 word = Factor("word", ["red", "green", "blue"])
-task = Factor("task", ["name the colour", "read the word"])
 context = Factor("context", ["mostly congruent", "mostly incongruent"])   # held for a whole mini-block
+task = Factor("task", ["name the colour", "read the word"])               # held for a whole mini-block
 
 
 def task_repeats(task):
@@ -392,7 +393,7 @@ def task_switches(task):
     return task[0] != task[-1]
 
 
-transition = Factor("transition", [
+task_transition = Factor("task_transition", [                             # from one mini-block to the next
     DerivedLevel("repeat", Transition(task_repeats, [task])),
     DerivedLevel("switch", Transition(task_switches, [task])),
 ])
@@ -412,40 +413,51 @@ frequency = Factor("frequency", [
     DerivedLevel("rare", WithinTrial(rare_here, [colour, word, context]), 1),
 ])
 
-contexts = Repeat(CrossBlock([context], [context], []), [MinimumTrials(4)])      # four mini-blocks, each context twice
-mini_block = CrossBlock([colour, word, task, transition, frequency, context],
-                        [frequency, task, transition], [])                       # 16 trials
-block = Nest(contexts, mini_block, alignment="parallel start")
+mini_block = CrossBlock([colour, word, frequency, context], [frequency, colour], [])            # 12 trials
+between_mini_blocks = CrossBlock([context, task, task_transition],
+                                 [context, task, task_transition], [])                          # 8 mini-blocks + a first one
+block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
 trials = synthesize_trials(block, 1, CMSGen)[0]
 
-assert len(trials["context"]) == 64
-assert all(len(set(trials["context"][i:i + 16])) == 1 for i in range(0, 64, 16))  # one context per mini-block
+assert len(trials["context"]) == 9 * 12
+for start in range(12, 108, 12):                                                                # after the first mini-block
+    one = range(start, start + 12)
+    assert len({(trials["context"][i], trials["task"][i], trials["task_transition"][i]) for i in one}) == 1
+    congruent = sum(trials["colour"][i] == trials["word"][i] for i in one)
+    assert congruent == (9 if trials["context"][start] == "mostly congruent" else 3)
 ```
 
 Checked with 0.2.14; tell the user these when you use it:
 
-- **A transition factor shifts the inner crossing by one trial.** The
-  crossing needs a trial before, so it is exact in stretches that start at
-  the second trial (trials 2 to 17, 18 to 33, ...), one trial ahead of the
-  context. Each mini-block is the exact crossing except for its first trial,
-  which follows a trial from the other context. Count per mini-block and say
-  so; most analyses drop that trial.
-- **`alignment`** is needed when the inner block has a transition factor and
-  the outer has none (`"parallel start"` or `"post preamble"`); without it
-  `Nest` raises "EQUAL_PREAMBLE not allowed with different preamble sizes".
+- **Both crossings are exact**: within every mini-block and between
+  mini-blocks. What stays open is what is in neither crossing, for example
+  the context of the mini-block before. Count it.
+- **The first mini-block is a start.** With a transition factor in the outer
+  block it has no transition, and its trials are not crossed. Leave it out of
+  the counts and the analysis.
+- **Each outer combination is one mini-block.** A comparison between two
+  outer cells rests on two mini-blocks per sequence. Say how many trials that
+  is; more need `MinimumTrials` on the outer block (it counts mini-blocks,
+  not trials) or several sequences.
+- **`alignment="post preamble"`** is needed when one block has a transition
+  factor and the other has none; without it `Nest` raises "EQUAL_PREAMBLE not
+  allowed with different preamble sizes".
+- **A transition factor in the inner block** makes its crossing start at the
+  second trial: it is exact in stretches that run one trial ahead of the
+  mini-blocks, so each mini-block is off by its first trial. Say so, or keep
+  trial-to-trial transitions out of the inner crossing.
 - **A derived factor that is in the design but in no crossing and no
   constraint makes generation fail** inside `Nest` ("... is not in list").
-  Leave it out of the design and add it as a column afterwards (congruency
-  above), or use it in a constraint.
+  Leave it out of the design and add it as a column afterwards, or use it in
+  a constraint.
 - **A proportion that depends on the outer factor** goes into one derived
   factor with weights, as `frequency` above. The copies pattern with an
   `Exclude` that depends on the outer factor does not work inside `Nest`
   (the trial count comes out wrong and no sequence is found).
-- `MinimumTrials` on the outer block counts mini-blocks, not trials.
-- A factor cannot be in the crossing of both the outer and the inner block.
-- Appending separately generated blocks is still right when the blocks share
-  nothing but their order and that order is fixed by hand. Then every block
-  is exact, and its first trial has no transition.
+- A factor cannot be in the crossing of both blocks. A `Nest` can be the
+  inner block of another `Nest`.
+- SweetPea's own examples: `example_programs/MiniBlocks.py` and
+  `example_programs/mini_blocks_with_task_switches.py` in its repository.
 
 ### Continuous values (jittered intervals and similar)
 
