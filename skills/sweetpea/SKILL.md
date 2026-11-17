@@ -74,6 +74,16 @@ including what is not balanced. If zero sequences come back, the design is
 impossible as written: find the conflicting requirement and let the user
 decide what to give up. Do not silently drop a constraint.
 
+5. **Carry the alternative explanations through, unasked.** Each alternative
+   you named in step 1 is a decision: before you build, say for each one
+   whether the design rules it out, what that costs (more levels, more
+   trials, another factor), or that it stays open. Do not pick the smallest
+   stimulus set and mention only afterwards that it leaves the main
+   alternative open. When you report a built design, end with what a reviewer
+   would attack first, split into what the design can still fix and what no
+   trial sequence can control (the participant's own choices, errors,
+   response times); do not wait to be asked.
+
 ## Where differences come from
 
 Three mechanisms produce most differences that nobody chose. They are not tied
