@@ -390,3 +390,33 @@ html[data-sm-sets="2"] .sm-variant[data-v="2"], html[data-sm-sets="4"] .sm-varia
 .dl-story .mp-balance-row { height: 3.3rem; }
 .dl-chart-row { grid-template-columns: 9.6rem 1fr 4.4rem; }
 .dl-story .sm-note { height: 1.2rem; }
+
+/* Tutorial pages: a playable block of the Stroop experiment, and the tables of the notebooks. */
+.stroop-demo { max-width: 36rem; margin: 1em 0 1.4em; }
+.st-screen { background: #1f1f1f; border: 4px solid #1f1f1f; border-radius: 8px; height: 11rem; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .5rem; }
+.st-screen.st-context-b { border-color: #6b6b6b; }
+.st-cue { font-size: .62rem; letter-spacing: .12em; color: #a8a8a8; border: 1px solid #555; border-radius: 99px; padding: .1rem .7rem; }
+.st-cue.st-cue-read { color: #1f1f1f; background: #d9d9d9; border-color: #d9d9d9; }
+.st-word { font: 700 2.8rem "Courier New", monospace; letter-spacing: .06em; color: #d9d9d9; min-height: 3.4rem; line-height: 3.4rem; }
+.st-keys { font-size: .62rem; color: #8a8a8a; min-height: 1em; }
+.st-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: .5rem 0; min-height: 2.5rem; }
+.st-chip { border: 1px solid var(--md-default-fg-color--lighter); border-radius: 6px; padding: .2rem .6rem; }
+.st-chip small { display: block; font-size: .58rem; color: var(--md-default-fg-color--light); }
+.st-chip b { font-size: .75rem; }
+.st-strip { display: flex; flex-wrap: wrap; gap: 3px; margin: .4rem 0; }
+.st-tile { width: 1.15rem; height: 1.15rem; padding: 0; border-radius: 3px; border: 1px solid transparent; cursor: pointer;
+  font: 700 .55rem/1 sans-serif; color: var(--md-default-fg-color); background: var(--md-code-bg-color); }
+.st-tile.st-congruent { background: rgba(42, 120, 214, .28); }
+.st-tile.st-incongruent { background: rgba(235, 104, 52, .30); }
+.st-tile.st-newblock { margin-left: .7rem; }
+.st-tile.on { border-color: var(--md-default-fg-color); outline: 2px solid var(--md-default-fg-color); }
+.st-controls { display: flex; gap: .5rem; align-items: center; font-size: .7rem; color: var(--md-default-fg-color--light); }
+.st-controls button { font: inherit; padding: .2rem .7rem; border-radius: 4px; cursor: pointer;
+  border: 1px solid var(--md-default-fg-color--lighter); background: none; color: var(--md-default-fg-color); }
+.st-controls button.on { background: var(--md-default-fg-color); color: var(--md-default-bg-color); }
+.st-count { margin-left: auto; }
+.nb-out { margin: -.4em 0 1.2em; overflow-x: auto; font-size: .72rem; }
+.md-typeset .nb-out table.nb-table { display: table; border: 0; font-size: inherit; margin: 0; }
+.md-typeset .nb-out table.nb-table th, .md-typeset .nb-out table.nb-table td { padding: .25em .8em; text-align: right; min-width: 0; }
+.nb-out pre { margin: 0; }

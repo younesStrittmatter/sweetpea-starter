@@ -33,6 +33,11 @@ design leaves unequal, and what can be done about it.
 2. [The trial before](teaching/simon_previous_trial/index.md): a side effect of shuffling in small sets.
 3. [Two things in one place](teaching/distractor_location/index.md): no design without a cost, only a choice between costs.
 
+## Tutorial
+
+One Stroop experiment grown in four questions, with an assistant or as
+notebooks: [start here](tutorial/index.md).
+
 ## Example library
 
 The same kind of experiment in a fixed, short format: the reference the

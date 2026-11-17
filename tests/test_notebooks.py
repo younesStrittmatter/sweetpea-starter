@@ -11,7 +11,7 @@ NOTEBOOKS = sorted((Path(__file__).resolve().parents[1] / "tutorial" / "notebook
 def test_notebook_runs(path):
     cells = json.loads(path.read_text())["cells"]
     code = ["".join(c["source"]) for c in cells if c["cell_type"] == "code"]
-    namespace = {}
+    namespace = {"display": lambda value: None}
     for source in code:
         if source.startswith("%pip"):
             continue
