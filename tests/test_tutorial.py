@@ -38,12 +38,12 @@ def test_step3_blocks_have_the_proportions_asked_for_and_even_pairs():
 def test_step4_nests_the_mini_blocks_and_both_crossings_are_exact():
     made = run("step4_transfer.py")
     session, counted = made["session"], made["counted"]
-    assert len(session) == 108 and len(counted) == 96            # a first mini-block, then 8 of 12 trials
-    # one context, one task and one transition per mini-block
-    assert (counted.groupby("block")[["context", "task", "task_transition"]].nunique() == 1).all().all()
-    # between mini-blocks: every combination of context, task and transition once
-    assert (counted.groupby(["context", "task", "task_transition"])["block"].nunique() == 1).all()
-    assert counted.groupby(["context", "task", "task_transition"]).ngroups == 8
+    border = ["context_before", "context", "task", "task_transition"]
+    assert len(session) == 204 and len(counted) == 192          # a first mini-block, then 16 of 12 trials
+    # one kind of border per mini-block, and every kind of border once
+    assert (counted.groupby("block")[border].nunique() == 1).all().all()
+    assert counted.groupby(border).ngroups == 16
+    assert (counted.groupby(border)["block"].nunique() == 1).all()
     # within a mini-block: the proportion of its context and every ink colour four times
     for (_, context), mini_block in counted.groupby(["block", "context"]):
         assert (mini_block["congruency"] == "congruent").sum() == (9 if context == "mostly congruent" else 3)

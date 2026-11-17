@@ -173,7 +173,7 @@ display(pd.crosstab(session["context"], session["congruency"]))'''),
 display(session.groupby(["context", "word"])["word_is_ink"].mean().round(2).unstack())'''),
 ("md", "**Check.** Are the proportions what was asked for? How many incongruent trials does a mostly congruent block have: is that enough to measure the effect there? A word is in its own colour on 75% of the trials in one context and 25% in the other: how could learning and control be told apart?\n\n**Try.** Change the copies to `(4, 1)` and `(1, 2)`. What are the proportions and the block lengths now?\n\n**Next.** Step 4 asks whether this adjustment has a price when the task changes."),
 ]),
-("4_transfer", "Step 4. Transfer", "session", "Last question: does the adaptation transfer to another task? I want mini-blocks that are mostly congruent or mostly incongruent, and each mini-block is either colour naming or word reading. I want the switch cost between mini-blocks: word reading after colour naming against word reading after word reading, compared between the two contexts. I take word reading because it has almost no congruency effect. What is the hypothesis, and can nested blocks keep all of that counterbalanced?", [
+("4_transfer", "Step 4. Transfer", "session", "Last question: does the adaptation transfer to another task? I want mini-blocks that are mostly congruent or mostly incongruent, and each mini-block is either colour naming or word reading. I want the switch cost between mini-blocks: word reading after colour naming against word reading after word reading, compared between the two contexts. I take word reading because it has almost no congruency effect. What is the hypothesis, and can nested blocks keep everything counterbalanced, also at the border between two mini-blocks: which context and which task came before?", [
 ("md", '''**So far.** Step 2 made the trial before a factor. Step 3 made blocks that are mostly congruent or mostly incongruent, generated one by one. This step uses both ideas one level up: the mini-block is the unit, and the whole session is one design.
 
 **The question.** Does adapting to frequent conflict make it harder to change the task?
@@ -185,11 +185,11 @@ display(session.groupby(["context", "word"])["word_is_ink"].mean().round(2).unst
 **The analysis.** Switch cost = response time in word-reading mini-blocks that follow colour naming (switch) minus response time in word-reading mini-blocks that follow word reading (repeat). Compare it between the two contexts.'''),
 ("md", "### As before, plus the task and the context\n\nBoth are regular factors. Neither changes from trial to trial: each is held for a whole mini-block."),
 ("code", BASE + '''
-from sweetpea import Nest
+from sweetpea import Nest, IterateGen
 
 context = Factor("context", ["mostly congruent", "mostly incongruent"])  # new: held for a whole mini-block
 task = Factor("task", ["name the colour", "read the word"])              # new: held for a whole mini-block'''),
-("md", "### New: does the task change from one mini-block to the next?\n\nA transition factor, as in step 2. Here it will look back one mini-block, not one trial."),
+("md", "### New: what happens at the border between two mini-blocks?\n\nTwo transition factors, as in step 2. Here they will look back one mini-block, not one trial: does the task change, and which context came before?"),
 ("code", '''def task_repeats(task):
     return task[0] == task[-1]
 
@@ -201,8 +201,22 @@ def task_switches(task):
 task_transition = Factor("task_transition", [
     DerivedLevel("repeat", Transition(task_repeats, [task])),
     DerivedLevel("switch", Transition(task_switches, [task])),
+])
+
+
+def after_mostly_congruent(context):
+    return context[-1] == "mostly congruent"
+
+
+def after_mostly_incongruent(context):
+    return context[-1] == "mostly incongruent"
+
+
+context_before = Factor("context_before", [
+    DerivedLevel("mostly congruent", Transition(after_mostly_congruent, [context])),
+    DerivedLevel("mostly incongruent", Transition(after_mostly_incongruent, [context])),
 ])'''),
-("md", "### New: what the context makes frequent\n\nIn a mostly congruent mini-block the congruent trials are the frequent ones, in a mostly incongruent mini-block the incongruent ones. One derived factor says that for both: it follows from the colour, the word and the context. The third argument of a level is its weight: 3 to 1 is three quarters."),
+("md", "### New: what the context makes frequent\n\nA weight makes a level more frequent: the third argument of a level, and 3 to 1 is three quarters. But a level has one weight, and here the proportion depends on the context. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one."),
 ("code", '''def frequent_here(colour, word, context):
     congruent = colour == word
     return congruent == (context == "mostly congruent")
@@ -216,34 +230,35 @@ frequency = Factor("frequency", [
     DerivedLevel("frequent", WithinTrial(frequent_here, [colour, word, context]), 3),
     DerivedLevel("rare", WithinTrial(rare_here, [colour, word, context]), 1),
 ])'''),
-("md", "### New: a block inside a block\n\nTwo blocks, each with its own crossing:\n\n- **within a mini-block**: the frequency crossed with the ink colour, 12 trials;\n- **between mini-blocks**: the context, the task and the task transition, 8 mini-blocks, plus a first one that has no mini-block before it.\n\n`Nest` puts the first inside the second: every combination of the outer block is held for one whole mini-block."),
+("md", "### New: a block inside a block\n\nTwo blocks, each with its own crossing:\n\n- **within a mini-block**: the frequency crossed with the ink colour, 12 trials;\n- **between mini-blocks**: the context, the context before, the task and the task transition. That is every kind of border, 16 mini-blocks, plus a first one that has no mini-block before it.\n\n`Nest` puts the first inside the second: every combination of the outer block is held for one whole mini-block."),
 ("code", '''mini_block = CrossBlock(design=[colour, word, frequency, context],
                         crossing=[frequency, colour],
                         constraints=[])
-between_mini_blocks = CrossBlock(design=[context, task, task_transition],
-                                 crossing=[context, task, task_transition],
+between_mini_blocks = CrossBlock(design=[context, context_before, task, task_transition],
+                                 crossing=[context, context_before, task, task_transition],
                                  constraints=[])
 block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
-session = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
+session = pd.DataFrame(synthesize_trials(block, 1, IterateGen)[0])       # 204 trials: too long for CMSGen
 
 # columns for counting
 session["congruency"] = ["congruent" if colour == word else "incongruent"
                          for colour, word in zip(session["colour"], session["word"])]
 session.insert(0, "block", session.index // 12 + 1)
-overview = session.groupby("block")[["context", "task", "task_transition"]].first()
+overview = session.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
 overview["congruent trials"] = session.groupby("block")["congruency"].apply(lambda c: (c == "congruent").sum())
 display(overview)'''),
-("md", "One row per mini-block. The first has no task transition; it is the start. After it, every combination of context, task and transition comes once, and every mini-block has the proportion of its context: 9 or 3 of 12.\n\n### Between mini-blocks: is everything crossed?"),
+("md", "One row per mini-block. The first has nothing before it; it is the start, and its trials are not crossed. After it, every mini-block has the proportion of its context: 9 or 3 of 12.\n\n### Between mini-blocks: is every kind of border there?"),
 ("code", '''counted = session[session["task_transition"] != ""]          # without the first mini-block
-mini_blocks = counted.groupby("block")[["context", "task", "task_transition"]].first()
-display(pd.crosstab([mini_blocks["context"], mini_blocks["task"]], mini_blocks["task_transition"]))'''),
+mini_blocks = counted.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
+display(pd.crosstab([mini_blocks["context_before"], mini_blocks["context"]], [mini_blocks["task"], mini_blocks["task_transition"]]))'''),
 ("md", "### Within a mini-block: is the ink colour even?"),
 ("code", '''display(pd.crosstab([counted["block"], counted["context"]], [counted["congruency"], counted["colour"]]))'''),
-("md", "### What is not in the design?\n\nThe adaptation that is supposed to carry over was built up in the mini-block before. Its context is not in the crossing. Count it for the mini-blocks the switch cost is taken from."),
-("code", '''mini_blocks["context_before"] = session.groupby("block")["context"].first().shift()
-reading = mini_blocks[mini_blocks["task"] == "read the word"]
-display(reading[["context", "task_transition", "context_before"]])'''),
-("md", "**Check.** Both crossings are exact. What is thin? Each cell of the comparison is one mini-block of 12 trials; more need a longer session or several sequences. Is the context of the mini-block before the same for switch and repeat? It is left to chance: run the block cell again and look. Should it be a factor too, and how many mini-blocks would that take?\n\n**Try.** Add `MinimumTrials(17)` to the outer block: it counts mini-blocks, so that is two rounds plus the start.\n\n**The idea.** Each question added a factor, and each factor multiplies the design. Nesting keeps both levels counterbalanced at once. What it leaves open is still a choice, and which choice is acceptable depends on what you compare."),
+("md", "### What is not in the design?\n\nThe two trials at the border themselves: the last trial of one mini-block and the first trial of the next. Count them for the mini-blocks where the task switches."),
+("code", '''first = session.groupby("block")["congruency"].first().rename("first trial after the border")
+last_before = session.groupby("block")["congruency"].last().shift().rename("last trial before the border")
+switches = mini_blocks[mini_blocks["task_transition"] == "switch"].index
+display(pd.crosstab(last_before[switches], first[switches]))'''),
+("md", "**Check.** Both crossings are exact, and every kind of border occurs once. What is thin? Each kind of border is one mini-block of 12 trials; more need several sequences. The two trials at the border are left to chance: is that acceptable, or should the first trial of a mini-block be pinned?\n\n**The sampler.** `CMSGen` did not finish this design in five minutes. `IterateGen` takes a few seconds, but it does not draw at random among all possible sequences: it returns the solutions in the order the solver finds them. Look at the order of the trials before you use it.\n\n**Try.** Take `context_before` out of the outer block. How many mini-blocks are left, and does `CMSGen` work again?\n\n**The idea.** Each question added a factor, and each factor multiplies the design. Nesting keeps both levels counterbalanced at once. What it leaves open is still a choice, and which choice is acceptable depends on what you compare."),
 ]),
 ]
 
@@ -275,7 +290,7 @@ def source(text):
     return [line + "\n" for line in lines[:-1]] + [lines[-1]]
 
 
-DEMO_COLUMNS = ["block", "context", "task", "colour", "word", "congruency", "trial_before", "task_transition"]
+DEMO_COLUMNS = ["block", "context", "task", "colour", "word", "congruency", "trial_before", "task_transition", "context_before"]
 DEMO_LENGTH = 48
 for name, title, play, ask, cells in STEPS:
     shown, namespace = run(cells)

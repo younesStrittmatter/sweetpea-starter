@@ -6,11 +6,11 @@
 
 A block from the design built on this page. Press play, or step through it.
 
-<div class="stroop-demo" data-trials='[{"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "blue", "congruency": "incongruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": ""}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "blue", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "blue", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "red", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 2, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "green", "word": "blue", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "repeat"}, {"block": 3, "context": "mostly congruent", "task": "name the colour", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": "repeat"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "green", "word": "red", "congruency": "incongruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "green", "word": "blue", "congruency": "incongruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "green", "word": "blue", "congruency": "incongruent", "task_transition": "switch"}, {"block": 4, "context": "mostly incongruent", "task": "read the word", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "switch"}]'></div>
+<div class="stroop-demo" data-trials='[{"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "", "context_before": ""}, {"block": 1, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "", "context_before": ""}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "green", "word": "red", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "green", "word": "red", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "green", "word": "blue", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 2, "context": "mostly incongruent", "task": "read the word", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "red", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "red", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "green", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "blue", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 3, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": "switch", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "green", "congruency": "incongruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "blue", "congruency": "incongruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "red", "congruency": "incongruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "red", "congruency": "incongruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "red", "congruency": "congruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "blue", "word": "blue", "congruency": "congruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "red", "congruency": "incongruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "green", "word": "green", "congruency": "congruent", "task_transition": "repeat", "context_before": "mostly incongruent"}, {"block": 4, "context": "mostly incongruent", "task": "name the colour", "colour": "red", "word": "blue", "congruency": "incongruent", "task_transition": "repeat", "context_before": "mostly incongruent"}]'></div>
 
 ## With your assistant
 
-> Last question: does the adaptation transfer to another task? I want mini-blocks that are mostly congruent or mostly incongruent, and each mini-block is either colour naming or word reading. I want the switch cost between mini-blocks: word reading after colour naming against word reading after word reading, compared between the two contexts. I take word reading because it has almost no congruency effect. What is the hypothesis, and can nested blocks keep all of that counterbalanced?
+> Last question: does the adaptation transfer to another task? I want mini-blocks that are mostly congruent or mostly incongruent, and each mini-block is either colour naming or word reading. I want the switch cost between mini-blocks: word reading after colour naming against word reading after word reading, compared between the two contexts. I take word reading because it has almost no congruency effect. What is the hypothesis, and can nested blocks keep everything counterbalanced, also at the border between two mini-blocks: which context and which task came before?
 
 ## Step by step
 
@@ -38,15 +38,15 @@ colours = ["red", "green", "blue"]
 # regular factors: set freely on every trial
 colour = Factor("colour", colours)      # the ink
 word = Factor("word", colours)          # what the word says
-from sweetpea import Nest
+from sweetpea import Nest, IterateGen
 
 context = Factor("context", ["mostly congruent", "mostly incongruent"])  # new: held for a whole mini-block
 task = Factor("task", ["name the colour", "read the word"])              # new: held for a whole mini-block
 ```
 
-### New: does the task change from one mini-block to the next?
+### New: what happens at the border between two mini-blocks?
 
-A transition factor, as in step 2. Here it will look back one mini-block, not one trial.
+Two transition factors, as in step 2. Here they will look back one mini-block, not one trial: does the task change, and which context came before?
 
 ```python
 def task_repeats(task):
@@ -61,11 +61,25 @@ task_transition = Factor("task_transition", [
     DerivedLevel("repeat", Transition(task_repeats, [task])),
     DerivedLevel("switch", Transition(task_switches, [task])),
 ])
+
+
+def after_mostly_congruent(context):
+    return context[-1] == "mostly congruent"
+
+
+def after_mostly_incongruent(context):
+    return context[-1] == "mostly incongruent"
+
+
+context_before = Factor("context_before", [
+    DerivedLevel("mostly congruent", Transition(after_mostly_congruent, [context])),
+    DerivedLevel("mostly incongruent", Transition(after_mostly_incongruent, [context])),
+])
 ```
 
 ### New: what the context makes frequent
 
-In a mostly congruent mini-block the congruent trials are the frequent ones, in a mostly incongruent mini-block the incongruent ones. One derived factor says that for both: it follows from the colour, the word and the context. The third argument of a level is its weight: 3 to 1 is three quarters.
+A weight makes a level more frequent: the third argument of a level, and 3 to 1 is three quarters. But a level has one weight, and here the proportion depends on the context. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one.
 
 ```python
 def frequent_here(colour, word, context):
@@ -88,7 +102,7 @@ frequency = Factor("frequency", [
 Two blocks, each with its own crossing:
 
 - **within a mini-block**: the frequency crossed with the ink colour, 12 trials;
-- **between mini-blocks**: the context, the task and the task transition, 8 mini-blocks, plus a first one that has no mini-block before it.
+- **between mini-blocks**: the context, the context before, the task and the task transition. That is every kind of border, 16 mini-blocks, plus a first one that has no mini-block before it.
 
 `Nest` puts the first inside the second: every combination of the outer block is held for one whole mini-block.
 
@@ -96,17 +110,17 @@ Two blocks, each with its own crossing:
 mini_block = CrossBlock(design=[colour, word, frequency, context],
                         crossing=[frequency, colour],
                         constraints=[])
-between_mini_blocks = CrossBlock(design=[context, task, task_transition],
-                                 crossing=[context, task, task_transition],
+between_mini_blocks = CrossBlock(design=[context, context_before, task, task_transition],
+                                 crossing=[context, context_before, task, task_transition],
                                  constraints=[])
 block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
-session = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
+session = pd.DataFrame(synthesize_trials(block, 1, IterateGen)[0])       # 204 trials: too long for CMSGen
 
 # columns for counting
 session["congruency"] = ["congruent" if colour == word else "incongruent"
                          for colour, word in zip(session["colour"], session["word"])]
 session.insert(0, "block", session.index // 12 + 1)
-overview = session.groupby("block")[["context", "task", "task_transition"]].first()
+overview = session.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
 overview["congruent trials"] = session.groupby("block")["congruency"].apply(lambda c: (c == "congruent").sum())
 display(overview)
 ```
@@ -116,6 +130,7 @@ display(overview)
   <thead>
     <tr style="text-align: right;">
       <th></th>
+      <th>context_before</th>
       <th>context</th>
       <th>task</th>
       <th>task_transition</th>
@@ -127,98 +142,182 @@ display(overview)
       <th></th>
       <th></th>
       <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>1</th>
+      <td></td>
       <td>mostly incongruent</td>
       <td>name the colour</td>
       <td></td>
-      <td>6</td>
+      <td>5</td>
     </tr>
     <tr>
       <th>2</th>
       <td>mostly incongruent</td>
-      <td>name the colour</td>
-      <td>repeat</td>
+      <td>mostly incongruent</td>
+      <td>read the word</td>
+      <td>switch</td>
       <td>3</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>mostly congruent</td>
+      <td>mostly incongruent</td>
+      <td>mostly incongruent</td>
       <td>name the colour</td>
-      <td>repeat</td>
-      <td>9</td>
+      <td>switch</td>
+      <td>3</td>
     </tr>
     <tr>
       <th>4</th>
       <td>mostly incongruent</td>
-      <td>read the word</td>
-      <td>switch</td>
+      <td>mostly incongruent</td>
+      <td>name the colour</td>
+      <td>repeat</td>
       <td>3</td>
     </tr>
     <tr>
       <th>5</th>
+      <td>mostly incongruent</td>
       <td>mostly congruent</td>
       <td>read the word</td>
-      <td>repeat</td>
+      <td>switch</td>
       <td>9</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>mostly incongruent</td>
-      <td>name the colour</td>
-      <td>switch</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>7</th>
       <td>mostly congruent</td>
-      <td>read the word</td>
-      <td>switch</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <th>8</th>
       <td>mostly incongruent</td>
       <td>read the word</td>
       <td>repeat</td>
       <td>3</td>
     </tr>
     <tr>
-      <th>9</th>
+      <th>7</th>
+      <td>mostly incongruent</td>
+      <td>mostly incongruent</td>
+      <td>read the word</td>
+      <td>repeat</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>mostly incongruent</td>
       <td>mostly congruent</td>
       <td>name the colour</td>
       <td>switch</td>
       <td>9</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>mostly congruent</td>
+      <td>mostly congruent</td>
+      <td>name the colour</td>
+      <td>repeat</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>mostly congruent</td>
+      <td>mostly incongruent</td>
+      <td>name the colour</td>
+      <td>repeat</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>mostly incongruent</td>
+      <td>mostly congruent</td>
+      <td>name the colour</td>
+      <td>repeat</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>mostly congruent</td>
+      <td>mostly congruent</td>
+      <td>read the word</td>
+      <td>switch</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>mostly congruent</td>
+      <td>mostly congruent</td>
+      <td>read the word</td>
+      <td>repeat</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>mostly congruent</td>
+      <td>mostly congruent</td>
+      <td>name the colour</td>
+      <td>switch</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>mostly congruent</td>
+      <td>mostly incongruent</td>
+      <td>read the word</td>
+      <td>switch</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>mostly incongruent</td>
+      <td>mostly congruent</td>
+      <td>read the word</td>
+      <td>repeat</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>mostly congruent</td>
+      <td>mostly incongruent</td>
+      <td>name the colour</td>
+      <td>switch</td>
+      <td>3</td>
     </tr>
   </tbody>
 </table>
 </div>
 
-One row per mini-block. The first has no task transition; it is the start. After it, every combination of context, task and transition comes once, and every mini-block has the proportion of its context: 9 or 3 of 12.
+One row per mini-block. The first has nothing before it; it is the start, and its trials are not crossed. After it, every mini-block has the proportion of its context: 9 or 3 of 12.
 
-### Between mini-blocks: is everything crossed?
+### Between mini-blocks: is every kind of border there?
 
 ```python
 counted = session[session["task_transition"] != ""]          # without the first mini-block
-mini_blocks = counted.groupby("block")[["context", "task", "task_transition"]].first()
-display(pd.crosstab([mini_blocks["context"], mini_blocks["task"]], mini_blocks["task_transition"]))
+mini_blocks = counted.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
+display(pd.crosstab([mini_blocks["context_before"], mini_blocks["context"]], [mini_blocks["task"], mini_blocks["task_transition"]]))
 ```
 
 <div class="nb-out">
 <table class="dataframe nb-table">
   <thead>
-    <tr style="text-align: right;">
+    <tr>
+      <th></th>
+      <th>task</th>
+      <th colspan="2" halign="left">name the colour</th>
+      <th colspan="2" halign="left">read the word</th>
+    </tr>
+    <tr>
       <th></th>
       <th>task_transition</th>
       <th>repeat</th>
       <th>switch</th>
+      <th>repeat</th>
+      <th>switch</th>
     </tr>
     <tr>
+      <th>context_before</th>
       <th>context</th>
-      <th>task</th>
+      <th></th>
+      <th></th>
       <th></th>
       <th></th>
     </tr>
@@ -226,23 +325,31 @@ display(pd.crosstab([mini_blocks["context"], mini_blocks["task"]], mini_blocks["
   <tbody>
     <tr>
       <th rowspan="2" valign="top">mostly congruent</th>
-      <th>name the colour</th>
+      <th>mostly congruent</th>
+      <td>1</td>
+      <td>1</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <th>read the word</th>
+      <th>mostly incongruent</th>
+      <td>1</td>
+      <td>1</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
       <th rowspan="2" valign="top">mostly incongruent</th>
-      <th>name the colour</th>
+      <th>mostly congruent</th>
+      <td>1</td>
+      <td>1</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <th>read the word</th>
+      <th>mostly incongruent</th>
+      <td>1</td>
+      <td>1</td>
       <td>1</td>
       <td>1</td>
     </tr>
@@ -299,13 +406,13 @@ display(pd.crosstab([counted["block"], counted["context"]], [counted["congruency
     </tr>
     <tr>
       <th>3</th>
-      <th>mostly congruent</th>
-      <td>3</td>
-      <td>3</td>
-      <td>3</td>
+      <th>mostly incongruent</th>
       <td>1</td>
       <td>1</td>
       <td>1</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
     </tr>
     <tr>
       <th>4</th>
@@ -339,16 +446,6 @@ display(pd.crosstab([counted["block"], counted["context"]], [counted["congruency
     </tr>
     <tr>
       <th>7</th>
-      <th>mostly congruent</th>
-      <td>3</td>
-      <td>3</td>
-      <td>3</td>
-      <td>1</td>
-      <td>1</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>8</th>
       <th>mostly incongruent</th>
       <td>1</td>
       <td>1</td>
@@ -356,6 +453,16 @@ display(pd.crosstab([counted["block"], counted["context"]], [counted["congruency
       <td>3</td>
       <td>3</td>
       <td>3</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <th>mostly congruent</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>9</th>
@@ -367,67 +474,134 @@ display(pd.crosstab([counted["block"], counted["context"]], [counted["congruency
       <td>1</td>
       <td>1</td>
     </tr>
+    <tr>
+      <th>10</th>
+      <th>mostly incongruent</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <th>mostly congruent</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <th>mostly congruent</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <th>mostly congruent</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <th>mostly congruent</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <th>mostly incongruent</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <th>mostly congruent</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <th>mostly incongruent</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
   </tbody>
 </table>
 </div>
 
 ### What is not in the design?
 
-The adaptation that is supposed to carry over was built up in the mini-block before. Its context is not in the crossing. Count it for the mini-blocks the switch cost is taken from.
+The two trials at the border themselves: the last trial of one mini-block and the first trial of the next. Count them for the mini-blocks where the task switches.
 
 ```python
-mini_blocks["context_before"] = session.groupby("block")["context"].first().shift()
-reading = mini_blocks[mini_blocks["task"] == "read the word"]
-display(reading[["context", "task_transition", "context_before"]])
+first = session.groupby("block")["congruency"].first().rename("first trial after the border")
+last_before = session.groupby("block")["congruency"].last().shift().rename("last trial before the border")
+switches = mini_blocks[mini_blocks["task_transition"] == "switch"].index
+display(pd.crosstab(last_before[switches], first[switches]))
 ```
 
 <div class="nb-out">
 <table class="dataframe nb-table">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
-      <th>context</th>
-      <th>task_transition</th>
-      <th>context_before</th>
+      <th>first trial after the border</th>
+      <th>congruent</th>
+      <th>incongruent</th>
     </tr>
     <tr>
-      <th>block</th>
-      <th></th>
+      <th>last trial before the border</th>
       <th></th>
       <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>4</th>
-      <td>mostly incongruent</td>
-      <td>switch</td>
-      <td>mostly congruent</td>
+      <th>congruent</th>
+      <td>3</td>
+      <td>3</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>mostly congruent</td>
-      <td>repeat</td>
-      <td>mostly incongruent</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>mostly congruent</td>
-      <td>switch</td>
-      <td>mostly incongruent</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>mostly incongruent</td>
-      <td>repeat</td>
-      <td>mostly congruent</td>
+      <th>incongruent</th>
+      <td>2</td>
+      <td>0</td>
     </tr>
   </tbody>
 </table>
 </div>
 
-**Check.** Both crossings are exact. What is thin? Each cell of the comparison is one mini-block of 12 trials; more need a longer session or several sequences. Is the context of the mini-block before the same for switch and repeat? It is left to chance: run the block cell again and look. Should it be a factor too, and how many mini-blocks would that take?
+**Check.** Both crossings are exact, and every kind of border occurs once. What is thin? Each kind of border is one mini-block of 12 trials; more need several sequences. The two trials at the border are left to chance: is that acceptable, or should the first trial of a mini-block be pinned?
 
-**Try.** Add `MinimumTrials(17)` to the outer block: it counts mini-blocks, so that is two rounds plus the start.
+**The sampler.** `CMSGen` did not finish this design in five minutes. `IterateGen` takes a few seconds, but it does not draw at random among all possible sequences: it returns the solutions in the order the solver finds them. Look at the order of the trials before you use it.
+
+**Try.** Take `context_before` out of the outer block. How many mini-blocks are left, and does `CMSGen` work again?
 
 **The idea.** Each question added a factor, and each factor multiplies the design. Nesting keeps both levels counterbalanced at once. What it leaves open is still a choice, and which choice is acceptable depends on what you compare.

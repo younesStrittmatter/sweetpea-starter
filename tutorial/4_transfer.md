@@ -30,7 +30,8 @@ between the two contexts.
 > between mini-blocks: word reading after colour naming against word reading
 > after word reading, compared between the two contexts. I take word reading
 > because it has almost no congruency effect. What is the hypothesis, and can
-> nested blocks keep all of that counterbalanced?
+> nested blocks keep everything counterbalanced, also at the border between
+> two mini-blocks: which context and which task came before?
 
 ## What to check
 
@@ -41,9 +42,15 @@ between the two contexts.
   the counts?
 - **How much data per cell?** Each combination is one mini-block. How many
   trials does the switch cost in one context rest on?
-- **What is in neither crossing?** The adaptation that should carry over was
-  built up in the mini-block before. Is its context the same for switch and
-  repeat? Did the assistant say so without being asked?
+- **The border.** Does every combination of context before, context, task
+  before and task occur equally often?
+- **The proportion.** How did the assistant make it differ between
+  mini-blocks? SweetPea has no weight that depends on another factor, so it
+  needs a helper factor. Did it say so?
+- **What is in neither crossing?** The last trial before the border and the
+  first trial after it. Did the assistant say so without being asked?
+- **The sampler.** A session this long may need another sampler. What does
+  that cost?
 
 ## The idea
 

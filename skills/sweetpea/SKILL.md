@@ -429,6 +429,16 @@ for start in range(12, 108, 12):                                                
 
 Checked with 0.2.14; tell the user these when you use it:
 
+- **The border between two mini-blocks can be crossed too.** Add a transition
+  factor for what came before (for example `context_before`) to the outer
+  crossing. With context, context before, task and task transition that is
+  16 mini-blocks plus a first one, 204 trials: `CMSGen` did not finish it in
+  280 s, `IterateGen` did in 6 s. `IterateGen` returns solutions in the order
+  the solver finds them, not a random draw, and repeated sequences can be
+  alike: say so and look at the order.
+- **`frequency` is a helper, not a factor of the experiment.** SweetPea has
+  no weight that depends on another factor, so a proportion that differs
+  between mini-blocks needs it. Tell the user that plainly.
 - **Both crossings are exact**: within every mini-block and between
   mini-blocks. What stays open is what is in neither crossing, for example
   the context of the mini-block before. Count it.
