@@ -6,7 +6,7 @@
 
 A block from the design built on this page. Press play, or step through it.
 
-<div class="stroop-demo" data-trials='[{"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "red", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "red", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "red", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "green", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "green", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "blue", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "blue", "congruency": "incongruent"}]'></div>
+<div class="stroop-demo" data-trials='[{"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "green", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "blue", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "blue", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "red", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "green", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 1, "context": "mostly congruent", "colour": "red", "word": "green", "congruency": "incongruent"}, {"block": 1, "context": "mostly congruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "green", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "blue", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "red", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "blue", "congruency": "congruent"}, {"block": 2, "context": "mostly incongruent", "colour": "green", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "blue", "word": "red", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "green", "congruency": "incongruent"}, {"block": 2, "context": "mostly incongruent", "colour": "red", "word": "blue", "congruency": "incongruent"}]'></div>
 
 ## With your assistant
 
@@ -156,7 +156,7 @@ display(pd.crosstab([session["context"], session["word"]], session["congruency"]
       <th rowspan="3" valign="top">mostly congruent</th>
       <th>blue</th>
       <td>12</td>
-      <td>2</td>
+      <td>5</td>
     </tr>
     <tr>
       <th>green</th>
@@ -166,77 +166,23 @@ display(pd.crosstab([session["context"], session["word"]], session["congruency"]
     <tr>
       <th>red</th>
       <td>12</td>
-      <td>5</td>
+      <td>2</td>
     </tr>
     <tr>
       <th rowspan="3" valign="top">mostly incongruent</th>
       <th>blue</th>
       <td>4</td>
-      <td>14</td>
+      <td>13</td>
     </tr>
     <tr>
       <th>green</th>
       <td>4</td>
-      <td>11</td>
+      <td>10</td>
     </tr>
     <tr>
       <th>red</th>
       <td>4</td>
-      <td>11</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-### Every pair equally often
-
-So far the ink colour is crossed with congruency, and which word goes with an incongruent ink is left open. To fix the pairs too, cross colour, word and congruency. The combinations that cannot occur (red ink, the word red, incongruent) drop out, and the weight now counts pairs: each of the 3 congruent pairs 6 times and each of the 6 incongruent pairs once is 18 to 6.
-
-```python
-even_pairs = Factor("congruency", [
-    DerivedLevel("congruent", WithinTrial(same, [colour, word]), 6),
-    DerivedLevel("incongruent", WithinTrial(different, [colour, word]), 1),
-])
-block_even = CrossBlock(design=[colour, word, even_pairs], crossing=[colour, word, even_pairs],
-                        constraints=[], require_complete_crossing=False)    # some combinations cannot occur
-trials_even = pd.DataFrame(synthesize_trials(block_even, 1, CMSGen)[0])
-display(pd.crosstab(trials_even["colour"], trials_even["word"]))
-```
-
-<div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th>word</th>
-      <th>blue</th>
-      <th>green</th>
-      <th>red</th>
-    </tr>
-    <tr>
-      <th>colour</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>blue</th>
-      <td>6</td>
-      <td>1</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>green</th>
-      <td>1</td>
-      <td>6</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>red</th>
-      <td>1</td>
-      <td>1</td>
-      <td>6</td>
+      <td>13</td>
     </tr>
   </tbody>
 </table>
@@ -244,6 +190,6 @@ display(pd.crosstab(trials_even["colour"], trials_even["word"]))
 
 **Check.** Are the proportions what was asked for? How many incongruent trials does a mostly congruent block have: is that enough to measure the effect there? A word is in its own colour far more often in one context than in the other: how could learning and control be told apart?
 
-**Try.** In the last block, change the weights to 2 and 3. Which context is that, and how long is the block? With weights 2 and 1 it is the half-congruent block of step 1 with every pair even.
+**Try.** Change the weights to 2 and 1, and 1 and 2. What are the proportions and the block lengths now?
 
 **Next.** Step 4 asks whether this adjustment has a price when the task changes. There the weight meets a limit: it cannot depend on another factor.
