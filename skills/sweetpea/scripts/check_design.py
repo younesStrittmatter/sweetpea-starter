@@ -124,6 +124,11 @@ def differences(columns, compare, noise=3.0, smallest=0.05, back=1):
         totals = {c: sum(tables[c].values()) for c in conditions}
         if min(totals.values(), default=0) == 0:
             continue
+        # a property with one level per condition, a different one in each, is the condition itself
+        # under another name (a blocked factor seen from the next trial): nothing to report
+        if all(len(table) == 1 for table in tables.values()) and \
+                len({next(iter(table)) for table in tables.values()}) == len(conditions):
+            continue
         # for a yes-or-no property, report the "yes" side: repeats, same
         for level in sorted({level for table in tables.values() for level in table},
                             key=lambda level: (level not in ("repeats", "same"), level)):
