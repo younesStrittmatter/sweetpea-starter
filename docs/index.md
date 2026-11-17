@@ -1,15 +1,33 @@
 # SweetPea Starter
 
-Design experiments with [SweetPea](https://sweetpea-org.github.io) together
-with an AI assistant.
+An AI assistant for designing experiments with
+[SweetPea](https://sweetpea-org.github.io).
 
-SweetPea turns a description of an experiment (its factors, what must be
-balanced, what must not happen) into trial sequences that satisfy it.
+You say what you want to find out. The assistant states the hypothesis,
+suggests a paradigm, proposes a design, and counts what the design leaves
+unequal between the conditions you compare. Where a choice has a cost, it
+puts the options to you.
+
+## What it is built on
+
+**The SweetPea project.** 100 published papers, re-analysed with the trial
+order taken into account: 11 flips and many shifts. The assistant learned from
+these which side effects a design can have, and its worked examples come from
+them.
+
+**The psyche project.** A database of published experiments with open
+trial-level data: 1,544 experiments from 790 studies. The assistant uses it to
+suggest which paradigm fits a research question and what such studies
+compare.
+
+**SweetPea itself.** It turns a description of an experiment (its factors,
+what must be balanced, what must not happen) into trial sequences that
+satisfy it.
 
 ## Teaching examples
 
-One experiment, walked through with pictures: what is compared, what the
-design leaves unequal, and a design that does not.
+One experiment each, walked through with pictures: what is compared, what the
+design leaves unequal, and what can be done about it.
 
 1. [Masked number priming](teaching/masked_number_priming/index.md): a side effect of crossing two stimuli from the same set.
 2. [The trial before](teaching/simon_previous_trial/index.md): a side effect of shuffling in small sets.
