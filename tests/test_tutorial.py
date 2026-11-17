@@ -15,14 +15,26 @@ def test_step1_both_designs_have_every_incongruent_pair_equally_often():
     assert len(even) == 18 and (even.groupby(["colour", "word"]).size() == 2).all()
 
 
-def test_step2_task_congruency_and_transition_are_crossed():
-    trials = runpy.run_path(str(REFERENCE / "step2_task_switching.py"))["generate"]()
-    assert len(trials) == 49
-    assert (trials.iloc[1:].groupby(["task", "transition", "congruency"]).size() == 6).all()
+def test_step2_congruency_and_the_trial_before_are_crossed():
+    trials = runpy.run_path(str(REFERENCE / "step2_sequence.py"))["generate"]()
+    assert len(trials) == 25
+    assert (trials.iloc[1:].groupby(["colour", "congruency", "trial_before"]).size() == 2).all()
 
 
-def test_step3_both_ways_have_the_proportions_asked_for():
-    module = runpy.run_path(str(REFERENCE / "step3_stability_flexibility.py"))
+def test_step3_blocks_have_the_proportions_asked_for():
+    session = runpy.run_path(str(REFERENCE / "step3_adaptation.py"))["generate"]()
+    share = session.groupby("context")["congruency"].apply(lambda c: (c == "congruent").mean())
+    assert share["mostly congruent"] == 0.75 and share["mostly incongruent"] == 0.25
+
+
+def test_step4_both_properties_of_the_trial_before_are_crossed():
+    trials = runpy.run_path(str(REFERENCE / "step4_transfer.py"))["generate"]()
+    assert len(trials) == 33
+    assert (trials.iloc[1:].groupby(["task", "transition", "congruency", "trial_before"]).size() == 2).all()
+
+
+def test_step5_both_ways_have_the_proportions_asked_for():
+    module = runpy.run_path(str(REFERENCE / "step5_stability_flexibility.py"))
     for vary, column, frequent in (("congruency", "congruency", {"mostly congruent": "congruent", "mostly incongruent": "incongruent"}),
                                    ("switches", "transition", {"switches rare": "repeat", "switches frequent": "switch"})):
         session = module["generate"](vary)

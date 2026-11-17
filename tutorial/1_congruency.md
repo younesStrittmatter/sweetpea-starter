@@ -1,10 +1,17 @@
 # Step 1. Congruency
 
+## The question
+
+Does an irrelevant word interfere with naming a colour?
+
+**What it is about.** Selective attention and control. Reading is so practised
+that the word is processed even when it is irrelevant. **Prediction:** naming
+the ink is slower when the word names another colour (incongruent) than when
+it names the same one (congruent). The difference is the congruency effect.
+
 ## The analysis
 
-Is naming the ink colour of a word slower when the word names another colour?
-You compare **congruent** trials (the word RED in red) with **incongruent**
-trials (the word RED in green).
+Response time on congruent trials against incongruent trials.
 
 ## The experiment
 
@@ -14,9 +21,8 @@ the ink colour.
 
 ## Ask your assistant
 
-> I want to run a Stroop task with three colours. I will compare response times
-> on congruent and incongruent trials. Design a block of 24 trials for me and
-> show me the counts.
+> I want to run a Stroop experiment to test the congruency effect. What is it
+> about, and what do I need to decide?
 
 ## What to check
 

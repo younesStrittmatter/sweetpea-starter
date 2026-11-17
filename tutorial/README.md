@@ -1,15 +1,16 @@
-# Tutorial: from a congruency effect to stability and flexibility
+# Tutorial: four questions about one task
 
-One experiment, grown in three steps. Each step starts from what you want to
-compare, not from a design. You work with your assistant: you say what the
-analysis is, it proposes a design and says what it costs, and you check the
-counts together.
+One experiment, grown in four steps. Each step is a research question. You say
+what you want to find out; your assistant says what the question is about,
+proposes a design and what it costs, writes it, and counts it with you.
 
-| Step | The analysis | New in the design |
+| Step | The question | New in the design |
 |---|---|---|
-| [1. Congruency](1_congruency.md) | Congruent against incongruent | Factors, a derived factor, what is crossed |
-| [2. Task switching](2_task_switching.md) | Switch against repeat, and whether it depends on congruency | A transition factor; what else repeats |
-| [3. Stability and flexibility](3_stability_flexibility.md) | Both effects, in mini-blocks that differ in how much conflict or how many switches they hold | Weights; blocks; a choice with a cost |
+| [1. Congruency](1_congruency.md) | Does an irrelevant word interfere? | Factors, a derived factor, what is crossed |
+| [2. The trial before](2_sequence.md) | Does a conflict change how the next trial is handled? | A transition factor |
+| [3. Adaptation](3_adaptation.md) | Do people adjust to how frequent conflict is? | Weights; blocks |
+| [4. Transfer](4_transfer.md) | Does that adjustment carry over to another task? | A second task; two transition factors crossed |
+| [5. Both at once](5_stability_flexibility.md) (optional) | Stability against flexibility | Blocks that differ, with switches inside |
 
 ## How to work
 
@@ -18,7 +19,8 @@ You do not write code. Your assistant does.
 1. Start your assistant in this folder (`claude`, `codex` or `gemini`).
 2. Open the page of a step and give the assistant the prompt, in your own words
    if you like.
-3. It asks you about the analysis and explains each decision. You decide.
+3. It says what the question is about, asks you about the analysis and
+   explains each decision. You decide.
 4. It writes the design in `experiments/`, runs it, and walks you through the
    file and the counts.
 5. Compare with "What to check" on the page.

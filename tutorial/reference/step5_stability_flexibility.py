@@ -11,7 +11,7 @@ the factor that is varied is weighted, 3 to 1 or 1 to 3. The ink colour is left 
 the solver: crossing it as well would make a block three times as long. That is a
 choice, and the counts show what it costs.
 
-Run:  python tutorial/reference/step3_stability_flexibility.py
+Run:  python tutorial/reference/step5_stability_flexibility.py
 """
 import pandas as pd
 from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,

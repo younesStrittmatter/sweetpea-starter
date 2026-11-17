@@ -1,4 +1,4 @@
-# Step 3. Stability and flexibility
+# Step 5 (optional). Stability and flexibility
 
 ## The analysis
 

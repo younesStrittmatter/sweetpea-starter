@@ -19,9 +19,16 @@ exist.
 A design is right or wrong only for an analysis. The method is the same for
 every experiment, whatever the task:
 
-1. **Ask what will be compared.** Which conditions, on which measure. If the
-   user has not said, ask before anything else. Then restate the design: the
-   factors and their levels, what is crossed, the constraints.
+1. **Start from the question, then ask what will be compared.** When the user
+   names a goal ("test the congruency effect", "see whether people adapt"),
+   say in two or three sentences what it is about: the construct, the
+   hypothesis and what it predicts, and the best-known alternative
+   explanation, because that is what the design has to rule out. Say it as
+   your understanding and let the user correct it. If they have not chosen a
+   task, suggest one or two from `tasks.md` (next to this file) with what each
+   is good for. Then ask which conditions are compared, on which measure, and
+   restate the design: the factors and their levels, what is crossed, the
+   constraints.
 2. **Write the design and generate sequences.** Use the API below, the
    experiment's own factors, and constraints for what must not occur. Generate
    several sequences, not one, and save them as CSV.
@@ -29,7 +36,10 @@ every experiment, whatever the task:
    number of trials: a plain 2 x 2 x 2 crossing took 0.6 s at 40 trials, 2.6 s
    at 80, and more than 100 s at 160 (CMSGen). Build a long session from
    several short blocks, each generated on its own, and always run generation
-   with a time limit so that you notice when it stalls. If a design is only
+   with a time limit: `python scripts/limit.py 60 your_design.py` stops it
+   after 60 seconds. Never wait on a generation without a limit. When it is
+   stopped, the design is too large as written: make it smaller and tell the
+   user what you changed and what that costs. If a design is only
    "every combination equally often, in random order", with no derived or
    transition factor in the crossing and no constraint, you do not need the
    solver for the check: write the list in plain Python and shuffle it.
@@ -334,6 +344,14 @@ python scripts/check_design.py sequence_0.csv --balance color size --runs color
 It prints how often each level and each combination of the `--balance`
 columns occurs, whether those combinations are equally frequent, and the
 longest run of each level of the `--runs` columns.
+
+## Tasks
+
+`tasks.md` lists published experiments by task: the question each was used
+for, what was compared, and the factors of its design, including those that
+depend on the trial before. Use it to suggest a task for a research question
+and to see what a design of that kind usually has to handle. It is a sample
+of the literature, not a survey; say so when you suggest from it.
 
 ## Examples
 
