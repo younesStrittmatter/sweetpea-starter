@@ -982,50 +982,56 @@ original.</p>
 <p>The generated block: 33 trials, every set intact; trial type, side and response each repeat on half of the trials, the same square on a quarter.</p>
 </div>
 <div class="sm-variant" data-v="12">
-<p>Two crossings in one block: the twelve combinations, repeated set by set, and whether the side repeats crossed with whether the colour repeats.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sweetpea</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Factor</span><span class="p">,</span> <span class="n">DerivedLevel</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">MinimumTrials</span><span class="p">,</span>
-                      <span class="n">MultiCrossBlock</span><span class="p">,</span> <span class="n">RepeatMode</span><span class="p">,</span> <span class="n">AlignmentMode</span><span class="p">,</span> <span class="n">synthesize_trials</span><span class="p">,</span> <span class="n">CMSGen</span><span class="p">)</span>
+<p>One set is the twelve combinations, each once. <code>Repeat</code> keeps the sets. What repeats from the trial before is counted over the whole block: each of the four cases equally often, anywhere in the block. Inside a set the combinations are even and the transitions are free.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sweetpea</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Factor</span><span class="p">,</span> <span class="n">DerivedLevel</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">MinimumTrials</span><span class="p">,</span> <span class="n">ExactlyK</span><span class="p">,</span>
+                      <span class="n">CrossBlock</span><span class="p">,</span> <span class="n">Repeat</span><span class="p">,</span> <span class="n">synthesize_trials</span><span class="p">,</span> <span class="n">CMSGen</span><span class="p">)</span>
 
 <span class="n">word</span> <span class="o">=</span> <span class="n">Factor</span><span class="p">(</span><span class="s2">"word"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"cross"</span><span class="p">])</span>    <span class="c1"># the word shown before the square</span>
 <span class="n">side</span> <span class="o">=</span> <span class="n">Factor</span><span class="p">(</span><span class="s2">"side"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"left"</span><span class="p">,</span> <span class="s2">"right"</span><span class="p">])</span>
 <span class="n">colour</span> <span class="o">=</span> <span class="n">Factor</span><span class="p">(</span><span class="s2">"colour"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">])</span>
 
-<span class="c1"># Does the side repeat from the trial before? Does the colour?  [0] is this trial, [-1] the one before.</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">repeats</span><span class="p">(</span><span class="n">factor</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">factor</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">factor</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="c1"># What repeats from the trial before?  [0] is this trial, [-1] the one before.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">side_and_colour</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">side</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">side</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">colour</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">colour</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">changes</span><span class="p">(</span><span class="n">factor</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">factor</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">factor</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">side_only</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">side</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">side</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">colour</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">colour</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="n">side_repeats</span> <span class="o">=</span> <span class="n">Factor</span><span class="p">(</span><span class="s2">"side_repeats"</span><span class="p">,</span> <span class="p">[</span>
-    <span class="n">DerivedLevel</span><span class="p">(</span><span class="s2">"repeats"</span><span class="p">,</span> <span class="n">Transition</span><span class="p">(</span><span class="n">repeats</span><span class="p">,</span> <span class="p">[</span><span class="n">side</span><span class="p">])),</span>
-    <span class="n">DerivedLevel</span><span class="p">(</span><span class="s2">"changes"</span><span class="p">,</span> <span class="n">Transition</span><span class="p">(</span><span class="n">changes</span><span class="p">,</span> <span class="p">[</span><span class="n">side</span><span class="p">])),</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">colour_only</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">side</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">side</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">colour</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">colour</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">neither</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">side</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">side</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">colour</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">colour</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">what_repeats</span> <span class="o">=</span> <span class="n">Factor</span><span class="p">(</span><span class="s2">"what_repeats"</span><span class="p">,</span> <span class="p">[</span>
+    <span class="n">DerivedLevel</span><span class="p">(</span><span class="s2">"side and colour"</span><span class="p">,</span> <span class="n">Transition</span><span class="p">(</span><span class="n">side_and_colour</span><span class="p">,</span> <span class="p">[</span><span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">])),</span>
+    <span class="n">DerivedLevel</span><span class="p">(</span><span class="s2">"side only"</span><span class="p">,</span> <span class="n">Transition</span><span class="p">(</span><span class="n">side_only</span><span class="p">,</span> <span class="p">[</span><span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">])),</span>
+    <span class="n">DerivedLevel</span><span class="p">(</span><span class="s2">"colour only"</span><span class="p">,</span> <span class="n">Transition</span><span class="p">(</span><span class="n">colour_only</span><span class="p">,</span> <span class="p">[</span><span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">])),</span>
+    <span class="n">DerivedLevel</span><span class="p">(</span><span class="s2">"neither"</span><span class="p">,</span> <span class="n">Transition</span><span class="p">(</span><span class="n">neither</span><span class="p">,</span> <span class="p">[</span><span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">])),</span>
 <span class="p">])</span>
-<span class="n">colour_repeats</span> <span class="o">=</span> <span class="n">Factor</span><span class="p">(</span><span class="s2">"colour_repeats"</span><span class="p">,</span> <span class="p">[</span>
-    <span class="n">DerivedLevel</span><span class="p">(</span><span class="s2">"repeats"</span><span class="p">,</span> <span class="n">Transition</span><span class="p">(</span><span class="n">repeats</span><span class="p">,</span> <span class="p">[</span><span class="n">colour</span><span class="p">])),</span>
-    <span class="n">DerivedLevel</span><span class="p">(</span><span class="s2">"changes"</span><span class="p">,</span> <span class="n">Transition</span><span class="p">(</span><span class="n">changes</span><span class="p">,</span> <span class="p">[</span><span class="n">colour</span><span class="p">])),</span>
-<span class="p">])</span>
 
-<span class="n">block</span> <span class="o">=</span> <span class="n">MultiCrossBlock</span><span class="p">(</span>
-    <span class="n">design</span><span class="o">=</span><span class="p">[</span><span class="n">word</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">,</span> <span class="n">side_repeats</span><span class="p">,</span> <span class="n">colour_repeats</span><span class="p">],</span>
-    <span class="n">crossings</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">[</span><span class="n">word</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">],</span>               <span class="c1"># the twelve combinations ...</span>
-        <span class="p">[</span><span class="n">side_repeats</span><span class="p">,</span> <span class="n">colour_repeats</span><span class="p">],</span>     <span class="c1"># ... and the four cases of what repeats</span>
-    <span class="p">],</span>
-    <span class="n">constraints</span><span class="o">=</span><span class="p">[</span><span class="n">MinimumTrials</span><span class="p">(</span><span class="mi">109</span><span class="p">)],</span>       <span class="c1"># 9 sets, plus a first trial that has no trial before</span>
-    <span class="n">mode</span><span class="o">=</span><span class="n">RepeatMode</span><span class="o">.</span><span class="n">REPEAT</span><span class="p">,</span>                 <span class="c1"># every combination once in every set of twelve</span>
-    <span class="n">alignment</span><span class="o">=</span><span class="n">AlignmentMode</span><span class="o">.</span><span class="n">PARALLEL_START</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="c1"># One set: each of the twelve combinations once.</span>
+<span class="n">one_set</span> <span class="o">=</span> <span class="n">CrossBlock</span><span class="p">(</span><span class="n">design</span><span class="o">=</span><span class="p">[</span><span class="n">word</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">,</span> <span class="n">what_repeats</span><span class="p">],</span> <span class="n">crossing</span><span class="o">=</span><span class="p">[</span><span class="n">word</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">colour</span><span class="p">],</span> <span class="n">constraints</span><span class="o">=</span><span class="p">[])</span>
+
+<span class="c1"># 4 sets and a first trial that has no trial before; each of the four cases 12 times over the block.</span>
+<span class="n">block</span> <span class="o">=</span> <span class="n">Repeat</span><span class="p">(</span><span class="n">one_set</span><span class="p">,</span> <span class="p">[</span>
+    <span class="n">MinimumTrials</span><span class="p">(</span><span class="mi">49</span><span class="p">),</span>
+    <span class="n">ExactlyK</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="p">(</span><span class="n">what_repeats</span><span class="p">,</span> <span class="s2">"side and colour"</span><span class="p">)),</span>
+    <span class="n">ExactlyK</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="p">(</span><span class="n">what_repeats</span><span class="p">,</span> <span class="s2">"side only"</span><span class="p">)),</span>
+    <span class="n">ExactlyK</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="p">(</span><span class="n">what_repeats</span><span class="p">,</span> <span class="s2">"colour only"</span><span class="p">)),</span>
+    <span class="n">ExactlyK</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="p">(</span><span class="n">what_repeats</span><span class="p">,</span> <span class="s2">"neither"</span><span class="p">)),</span>
+<span class="p">])</span>
 <span class="n">trials</span> <span class="o">=</span> <span class="n">synthesize_trials</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CMSGen</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </code></pre></div>
-<p>The generated block: 109 trials, every set intact; trial type, side and response each repeat on half of the trials, the same square on a quarter. The repeat mode applies to both crossings, so this version also balances within every four trials, which is stricter than needed.</p>
+<p>The generated block: 49 trials, every set intact; trial type, side and response each repeat on half of the trials, the same square on a quarter. The full block of 9 sets (109 trials, each case 27 times) takes <code>CMSGen</code> about five minutes; <code>IterateGen</code> gives one in seconds, but not as a random draw.</p>
 </div>
 <h2 id="the-point">The point</h2>
 <ul>
 <li>Making things even within a short stretch of trials changes what follows
   what, and it does not even out over a block.</li>
 <li>What repeats from the trial before can be a factor of the design like any
-  other. The sets can stay.</li>
+  other. The sets can stay: inside a set the combinations are even and the
+  transitions are free; over the whole block the transitions are even.</li>
 <li>Every rule costs freedom. The smaller the sets, the less is left.</li>
 </ul>
 

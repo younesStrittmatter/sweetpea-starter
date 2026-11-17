@@ -890,16 +890,16 @@ derived or not.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>proposed</code>: sets of 12, plus "the side repeats" crossed with "the colour repeats"</td>
+<td><code>proposed</code>: sets of 12, plus what repeats from the trial before (side or not x colour or not) even over the whole block</td>
 <td>yes</td>
 <td>trial type 50%, side 50%, response 50%, same square 25%</td>
-<td>One extra first trial per block (109). Also even within every four trials, which is stricter than needed. Seconds to generate.</td>
+<td>One extra trial per block (109). Inside a set the transitions stay free. Seconds with <code>IterateGen</code> (not a random draw), about five minutes with <code>CMSGen</code>.</td>
 </tr>
 <tr>
-<td><code>proposed_block_level</code>: the same, even over the block only</td>
+<td><code>within_every_four</code>: the same, and also even within every four trials</td>
 <td>yes</td>
 <td>the same</td>
-<td>About five minutes to generate.</td>
+<td>Stricter than needed: a regularity in the order. Seconds with <code>CMSGen</code>.</td>
 </tr>
 <tr>
 <td><code>conditions_crossed</code>: each of the 6 conditions follows each 3 times</td>
@@ -965,12 +965,13 @@ trials", say these four things before writing the design:</p>
 <h2 id="design-to-propose">Design to propose</h2>
 <p><code>proposed()</code>. Raise what repeats from the trial before with the user, show
 this design, and name the alternatives with their costs.</p>
-<p>It uses two crossings in one <code>MultiCrossBlock</code>: the three stimulus factors,
-repeated set by set (<code>mode=RepeatMode.REPEAT</code>), and two <code>Transition</code> factors,
-"the side repeats" and "the colour repeats", crossed with each other. The
-repeat mode applies to every crossing of the block. For a count over the whole
-block only, use <code>Repeat</code> with <code>ExactlyK</code> on one transition factor, as in
-<code>proposed_block_level()</code>.</p>
+<p>One set is the twelve combinations, each once (<code>CrossBlock</code>), and <code>Repeat</code>
+keeps the sets. What repeats from the trial before is one <code>Transition</code> factor
+with four cases, and <code>ExactlyK</code> asks for each case 27 times over the whole
+block. So inside a set the combinations are even and the transitions are
+free; over the block the transitions are even. The balance is over all
+trials, not within each of the six compared conditions; <code>conditions_crossed</code>
+does that.</p>
 <table>
 <thead>
 <tr>
