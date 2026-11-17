@@ -31,7 +31,8 @@ every experiment, whatever the task:
    constraints.
 2. **Write the design and generate sequences.** Use the API below, the
    experiment's own factors, and constraints for what must not occur. Generate
-   several sequences, not one, and save them as CSV.
+   several sequences, not one, and save them as CSV in a `sequences/` folder
+   beside the design script (never in the project root).
    **Keep each generated block short.** Generation time grows steeply with the
    number of trials: a plain 2 x 2 x 2 crossing took 0.6 s at 40 trials, 2.6 s
    at 80, and more than 100 s at 160 (CMSGen). Build a long session from
@@ -77,9 +78,10 @@ impossible as written: find the conflicting requirement and let the user
 decide what to give up. Do not silently drop a constraint.
 
 5. **Carry the alternative explanations through, unasked.** Each alternative
-   you named in step 1 is a decision: before you build, say for each one
-   whether the design rules it out, what that costs (more levels, more
-   trials, another factor), or that it stays open. Do not pick the smallest
+   you named in step 1 is a decision, and it is the user's: say for each one
+   whether the design as asked rules it out, what ruling it out would cost
+   (more levels, more trials, another factor), or that it stays open. Do not
+   build the fix unasked. Do not pick the smallest
    stimulus set and mention only afterwards that it leaves the main
    alternative open. When you report a built design, end with what a reviewer
    would attack first, split into what the design can still fix and what no
@@ -132,9 +134,20 @@ decide what to give up. Do not silently drop a constraint.
 **Keep the chat short; the file holds the rest.** The user reads the chat
 aloud and reads `DESIGN.md` later. A simple question gets a simple answer:
 
+- **Build what was asked, nothing more.** Do not add a constraint, a factor,
+  a level or a helper the user did not ask for, also not to rule out an
+  alternative explanation. "Add the trial before" means one transition
+  factor in the crossing, not also forbidding repeats. Name the strongest
+  open point in one line, with its count, and offer the fix. The user
+  decides whether to build it.
+- Length: a first answer about a goal in about 150 words; a report of a
+  built design in about 200 words besides the code and the table.
+
 - A first answer about a goal: what it is about in two or three sentences,
   the one alternative explanation that matters most, and the two or three
   decisions that cannot wait. Not a list of everything that could matter.
+  Do not ask about things the user did not raise (a neutral baseline, a
+  walk-through, the session length).
 - A report of a built design: the design code, the table of requirements,
   and at most three lines on what else you found. Mention a difference only
   if it differs by design and could affect the measure; the rest goes into
