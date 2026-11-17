@@ -347,22 +347,23 @@ longest run of each level of the `--runs` columns.
 
 ## Tasks and paradigms
 
-Two files next to this one help when a user has a question and no task yet:
+When a user has a question and no task yet ("I want to study mental effort"):
 
-- `paradigms.md`: for a research topic (cognitive control, mental effort,
-  working memory, ...), which paradigms published studies used, with how
-  often and two example papers each. Start here.
-- `tasks.md`: single published experiments by task, with the question each
-  was used for, what was compared, and the factors of its design, including
-  those that depend on the trial before. Use it to see what a design of that
-  kind has to handle.
+- `paradigms.md`: paradigms by research topic, from 782 published studies with
+  open data (the psyche database): how many studies used each paradigm and
+  which factors they manipulated. Start here.
+- `paradigms/<topic>.md`: the studies themselves: the construct, what was
+  compared with what on which measure, the factors, the reference. A construct
+  without a topic of its own is found by searching the folder.
+- `tasks.md`: 65 experiments in more detail, with the factors of each design,
+  including those that depend on the trial before.
 
-Offer two or three paradigms, say in a sentence what each measures and what
-it typically compares, and say which you would take for the user's question
-and why. Both files are samples of the literature built from papers with open
-data, not surveys: a paradigm that is missing is not thereby a poor choice,
-and a count is a count, not a recommendation. Say so when you suggest from
-them.
+Offer two or three paradigms, say in a sentence what each compares, and say
+which you would take for the user's question and why. Then use the
+comparisons listed for that paradigm to ask the user which one is theirs.
+The entries were read off abstracts by an assistant and are a sample, not a
+survey: a count is not a recommendation, a missing paradigm is not a poor
+choice, and a reference should be checked before it is cited. Say so.
 
 ## Examples
 

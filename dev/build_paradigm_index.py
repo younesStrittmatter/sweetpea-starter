@@ -1,94 +1,90 @@
-"""Builds skills/sweetpea/paradigms.md: for a research topic, which paradigms published studies used.
+"""Builds skills/sweetpea/paradigms.md and skills/sweetpea/paradigms/<topic>.md from dev/paradigm_data/studies.json.
 
-Run:  python dev/build_paradigm_index.py <folder with */metadata.yaml> [<another folder> ...]
+Run:  python dev/build_paradigm_index.py
 
-Reads the title and abstract of each paper and looks for the names of paradigms and of topics, by
-keyword. It writes titles, years and DOIs only; no abstract text is copied. A paper that does not
-name its paradigm in the title or abstract is not found, so the index is a floor, not a survey.
+studies.json holds one record per study of the psyche database (huggingface.co/datasets/psyche-org/psyche):
+the bibliographic record from the database, and the topic, construct, paradigm, comparison and manipulated
+factors that an assistant read off the title and abstract. No abstract text and no result is stored.
 """
+import json
 import re
-import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
-import yaml
+root = Path(__file__).resolve().parents[1]
+studies = json.loads((root / "dev" / "paradigm_data" / "studies.json").read_text())
+skill = root / "skills" / "sweetpea"
+folder = skill / "paradigms"
+folder.mkdir(exist_ok=True)
+for old in folder.glob("*.md"):
+    old.unlink()
 
-PARADIGMS = {
-    "Stroop task": r"\bstroop\b", "flanker task": r"\bflanker", "Simon task": r"\bsimon (task|effect)",
-    "task switching": r"task[- ]switch|switch cost", "n-back": r"\bn-?back\b|\b[123]-back\b",
-    "go/no-go": r"go[/ -]no-?go", "stop-signal task": r"stop[- ]signal", "AX-CPT": r"\bax-?cpt\b",
-    "demand selection task": r"demand selection", "effort discounting": r"effort[- ](based )?(discounting|choice|cost)|effort discount",
-    "Sternberg task": r"\bsternberg\b", "change detection": r"change detection", "delayed estimation": r"delayed estimation|continuous report",
-    "visual search": r"visual search", "additional singleton search": r"additional singleton|singleton distractor",
-    "attentional blink": r"attentional blink", "spatial cueing": r"(spatial|posner|exogenous|endogenous) cue?ing|cueing (task|paradigm)",
-    "dual task / PRP": r"dual[- ]task|psychological refractory", "priming": r"\bpriming\b", "masked priming": r"masked prim",
-    "serial reaction time task": r"serial reaction time|\bsrt task", "statistical learning": r"statistical learning",
-    "old/new recognition": r"recognition memory|old[/-]new", "free recall": r"free recall", "paired associates": r"paired[- ]associate",
-    "prospective memory task": r"prospective memory", "lexical decision": r"lexical decision", "picture-word interference": r"picture[- ]word interference",
-    "random dot motion": r"random[- ]dot|motion (discrimination|coherence)", "perceptual decision task": r"perceptual decision",
-    "multi-armed bandit": r"\bbandit\b", "two-step task": r"two-step task|two-stage task", "reversal learning": r"reversal learning",
-    "Iowa gambling task": r"iowa gambling", "delay discounting": r"delay discounting|intertemporal choice", "risky choice / gambles": r"risky (choice|decision)|gambl|lotter",
-    "ultimatum / dictator game": r"ultimatum|dictator game", "trust / public goods game": r"trust game|public goods|prisoner'?s dilemma",
-    "category learning": r"category learning|categori[sz]ation task", "foraging task": r"\bforaging\b", "confidence rating task": r"confidence (rating|judg)",
-    "temporal reproduction / timing": r"time (perception|estimation)|interval timing|temporal (reproduction|bisection)", "mental rotation": r"mental rotation",
-    "emotion recognition": r"emotion recognition|facial expression", "fear conditioning": r"fear conditioning|pavlovian", "moral dilemmas": r"moral (dilemma|judg)",
-    "reading / eye tracking": r"eye[- ]track|eye movements? during reading", "working memory span": r"(operation|reading|complex) span|working memory span",
-}
-TOPICS = {
-    "cognitive control and conflict": r"cognitive control|conflict (adaptation|monitoring|processing)|interference control|executive (control|function)|inhibitory control|congruency",
-    "mental effort": r"mental effort|cognitive effort|effort (cost|avers|allocation|expenditure)|effortful",
-    "cognitive flexibility and task switching": r"cognitive flexibility|task[- ]switch|set[- ]shifting|multitask",
-    "response inhibition": r"response inhibition|inhibit(ion|ory)|impulsiv",
-    "working memory": r"working memory|short[- ]term memory",
-    "long-term memory": r"episodic memory|long[- ]term memory|recognition memory|recall|forgetting|retrieval",
-    "attention": r"\battention|attentional",
-    "learning from reward": r"reinforcement learning|reward learning|value[- ]based|exploration|exploitation",
-    "decision making under risk and time": r"risk|uncertainty|discounting|intertemporal|loss aversion",
-    "perceptual decisions and confidence": r"perceptual decision|confidence|metacognit|psychophys",
-    "implicit and statistical learning": r"implicit learning|statistical learning|sequence learning",
-    "language": r"language|sentence|lexical|semantic|reading|word recognition",
-    "social cognition and decisions": r"social|cooperat|fairness|theory of mind|trust|moral",
-    "emotion and motivation": r"emotion|affect|mood|anxiety|motivation|reward prospect",
-    "time and action": r"time perception|timing|motor|action control|sensorimotor",
-}
 
-papers = []
-for folder in sys.argv[1:]:
-    for path in sorted(Path(folder).glob("*/metadata.yaml")):
-        try:
-            d = yaml.safe_load(path.read_text())
-        except Exception:
-            continue
-        text = f"{d.get('title') or ''} {d.get('abstract') or ''}".lower()
-        if len(text) < 50:
-            continue
-        papers.append({"title": (d.get("title") or "").strip().rstrip("."), "year": d.get("year"), "doi": (d.get("paper_doi") or "").replace("https://doi.org/", ""),
-                       "paradigms": [p for p, rx in PARADIGMS.items() if re.search(rx, text)],
-                       "topics": [t for t, rx in TOPICS.items() if re.search(rx, text)]})
+def key(paradigm):
+    """One name for the same paradigm: lower case, without 'task' or 'paradigm' at the end."""
+    k = re.sub(r"\s+(task|paradigm|test)$", "", paradigm.strip().lower())
+    return re.sub(r"[^a-z0-9]+", " ", k).strip()
 
-index = defaultdict(lambda: defaultdict(list))
-for paper in papers:
-    for topic in paper["topics"]:
-        for paradigm in paper["paradigms"]:
-            index[topic][paradigm].append(paper)
-named = sum(1 for p in papers if p["paradigms"])
-lines = ["# Paradigms by research topic", "",
-         f"Which paradigms published studies with open data used for a topic. Built from the titles and abstracts of {len(papers)}",
-         f"papers by keyword; {named} of them name a paradigm from the list. Generated by `dev/build_paradigm_index.py`; do not edit by hand.", "",
-         "How to use it: when a user names a topic and has no task yet, look the topic up, offer the two or three most",
-         "used paradigms, and say what each one measures and what it typically compares, from your own knowledge.",
-         "The counts say how often a paradigm was used here, not how good it is. Papers that do not name their paradigm",
-         "in the abstract are missing, so absence from this list means nothing. Details of single experiments are in `tasks.md`.", ""]
-for topic in TOPICS:
-    if topic not in index:
-        continue
-    lines += [f"## {topic.capitalize()}", ""]
-    for paradigm, found in sorted(index[topic].items(), key=lambda kv: -len(kv[1])):
-        examples = "; ".join(f"{p['title'][:90]} ({p['year']}, doi:{p['doi']})" for p in found[:2])
-        lines.append(f"- **{paradigm}** ({len(found)}): {examples}")
-    lines.append("")
-out = Path(__file__).resolve().parents[1] / "skills" / "sweetpea" / "paradigms.md"
-out.write_text("\n".join(lines))
-print(len(papers), "papers,", named, "name a paradigm,", len(index), "topics ->", out.name)
-for topic in ("cognitive control and conflict", "mental effort"):
-    print(topic, "->", [(p, len(f)) for p, f in sorted(index[topic].items(), key=lambda kv: -len(kv[1]))][:8])
+
+def cite(s):
+    who = (s.get("first_author") or "").split(",")[0].strip()
+    if not who or who == "unknown":
+        return f"[{s['id']}]"
+    doi = (s.get("doi") or "").replace("https://doi.org/", "")
+    return f"{who} ({s.get('year') or 'n.d.'})" + (f", doi:{doi}" if doi and doi != "unknown" else "")
+
+
+by_topic = defaultdict(lambda: defaultdict(list))
+for s in studies:
+    if s.get("paradigm"):
+        by_topic[s["topic"]][key(s["paradigm"])].append(s)
+
+slug = lambda topic: re.sub(r"[^a-z]+", "_", topic.lower()).strip("_")
+n_experiments = sum(s.get("n_experiments") or 0 for s in studies)
+index = ["# Paradigms by research topic", "",
+         f"Which paradigms published studies used for which question, and what they compared. From {len(studies)} studies",
+         f"({n_experiments} experiments) with open trial-level data in the psyche database. Topic, construct, paradigm and",
+         "comparison were read off each title and abstract by an assistant and are not checked by hand.",
+         "Generated by `dev/build_paradigm_index.py`; do not edit by hand.", "",
+         "How to use it:", "",
+         "1. Find the topic below. Each line is a paradigm, the number of studies that used it, and the factors those",
+         "   studies manipulated most often.",
+         "2. Open `paradigms/<topic>.md` for the studies themselves: the construct, what was compared with what, and",
+         "   the reference. Search across the folder for a construct that has no topic of its own (`grep -ri effort paradigms/`).",
+         "3. Offer the user two or three paradigms with what each compares, and say which you would take and why.",
+         "", "A count says how often a paradigm was used in this sample, not how good it is, and a paradigm that is",
+         "missing is not thereby a poor choice. Say that the list is a sample when you suggest from it. Paradigms",
+         "marked * depend on the order or frequency of trials in most of their studies, so the trial before matters.", ""]
+for topic in sorted(by_topic, key=lambda t: -sum(len(v) for v in by_topic[t].values())):
+    paradigms = sorted(by_topic[topic].items(), key=lambda kv: (-len(kv[1]), kv[0]))
+    total = sum(len(v) for _, v in paradigms)
+    index += [f"## {topic.capitalize()} ({total} studies) — `paradigms/{slug(topic)}.md`", ""]
+    page = [f"# {topic.capitalize()}", "", f"{total} studies. See `../paradigms.md` for how to use this.", ""]
+    singles = []
+    for name, found in paradigms:
+        display = Counter(s["paradigm"].strip() for s in found).most_common(1)[0][0]
+        factors = Counter(f.lower() for s in found for f in s.get("manipulated") or [])
+        sequence = sum(bool(s.get("trial_sequence")) for s in found) * 2 > len(found)
+        star = "*" if sequence else ""
+        if len(found) >= 2:
+            top = ", ".join(f for f, _ in factors.most_common(4))
+            index.append(f"- **{display}**{star} ({len(found)})" + (f": {top}" if top else ""))
+        else:
+            singles.append(display + star)
+        page += [f"## {display}{star}", ""]
+        for s in sorted(found, key=lambda s: (not s.get("compared"), -(s.get("year") or 0))):
+            line = f"- **{s['construct']}.**"
+            if s.get("compared"):
+                line += f" Compared: {s['compared']}."
+            if s.get("manipulated"):
+                line += f" Factors: {', '.join(s['manipulated'])}."
+            page.append(line + f" {cite(s)}")
+        page.append("")
+    if singles:
+        index.append(f"- Used once: {'; '.join(singles)}")
+    index.append("")
+    (folder / f"{slug(topic)}.md").write_text("\n".join(page))
+(skill / "paradigms.md").write_text("\n".join(index))
+words = lambda p: len(p.read_text().split())
+print(len(studies), "studies ->", "paradigms.md", words(skill / "paradigms.md"), "words;",
+      {p.name: words(p) for p in sorted(folder.glob("*.md"))})
