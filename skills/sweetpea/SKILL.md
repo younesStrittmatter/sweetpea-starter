@@ -16,41 +16,68 @@ exist.
 
 ## How to work
 
-0. Ask what will be compared in the analysis. What has to be balanced, and which
-   design is best, depends on the analysis: the same trials can be fine for one
-   comparison and unfair for another.
-1. Restate the design before writing code: the factors and their levels, what
-   is crossed (balanced), and the constraints. Ask if the description leaves
-   one of these open.
-2. Write the script with the API below and run it.
-3. Verify by counting, never by reading the code. Save the sequence to CSV and
-   run `scripts/check_design.py` (next to this file) on it. Report the counts
-   to the user, including anything that is not balanced.
-4. If zero sequences come back, the design is impossible as written. Say so,
-   find the conflicting requirement, and let the user decide what to give up.
-   Do not silently drop a constraint.
+A design is right or wrong only for an analysis. The method is the same for
+every experiment, whatever the task:
 
-## Raise these before you write the design
+1. **Ask what will be compared.** Which conditions, on which measure. If the
+   user has not said, ask before anything else. Then restate the design: the
+   factors and their levels, what is crossed, the constraints.
+2. **Write the design and generate sequences.** Use the API below, the
+   experiment's own factors, and constraints for what must not occur. Generate
+   several sequences, not one, and save them as CSV.
+   **Keep each generated block short.** Generation time grows steeply with the
+   number of trials: a plain 2 x 2 x 2 crossing took 0.6 s at 40 trials, 2.6 s
+   at 80, and more than 100 s at 160 (CMSGen). Build a long session from
+   several short blocks, each generated on its own, and always run generation
+   with a time limit so that you notice when it stalls. If a design is only
+   "every combination equally often, in random order", with no derived or
+   transition factor in the crossing and no constraint, you do not need the
+   solver for the check: write the list in plain Python and shuffle it.
+3. **Count everything else.** Run
 
-Some requests sound harmless and change the experiment. When you recognise
-one, say so first, give the number, and ask what the user wants. Each has a
-worked example in `examples/`.
+   ```
+   python scripts/check_design.py sequence_*.csv --compare <the compared columns>
+   ```
 
-| The user asks for | What it does | Tell them | Example |
-|---|---|---|---|
-| Sets or mini-blocks: every combination once every n trials, "shuffle the list and repeat it", balance within short stretches | A trial follows its own level less often than half of the time (37.5% with two levels and sets of 4, 45.8% with sets of 12). It does not even out over a block, and it affects every property that is even within a set. | It matters when the measure depends on the trial before (conflict, switching, priming tasks). It can be made part of the design with the sets kept; balance everything that can repeat, not one property. Small sets leave little freedom. | `examples/simon_previous_trial/` and "Sets (mini-blocks) and the trial before" below |
-| Two stimuli drawn from the same set and completely crossed (prime and target, cue and target, sample and probe) | The pairs with the same item twice exist only in the matching condition, so that condition also contains all the repetitions. | Ask whether identical pairs should occur. Removing them must not make the remaining matching pairs more frequent than the others. | `examples/masked_number_priming/` |
-| A share of matching trials that the stimuli do not give by themselves: half congruent with three or more colours, 80% valid cues | Reaching the share means showing the matching pairs more often than the others, so the first stimulus predicts the second (the word RED is in red half of the time). | Name the choice: the wanted share with a predictive stimulus, or every pair equally often with the natural share (one third with three colours). Two colours give both. Do not decide silently. | `examples/masked_number_priming/`, `tutorial/1_congruency.md` |
-| Two things that cannot share a place, an item or a key (a target cannot be where the distractor is), with one of them mostly at one level | That level cannot also be an ordinary level for the other. There is no design without a cost here, only a choice between costs. | Ask which comparisons are planned: the design that fits depends on them. Lay out the options with what each keeps and gives up, say which fits and why, and write the chosen design down. | `examples/distractor_location_learning/` |
+   It lists every property that differs between the compared conditions: the
+   other columns on this trial, every column on the trial before, what repeats,
+   and whether two columns with the same levels are equal. It looks one
+   trial back; add `--back 2` or more when the order of trials is itself part
+   of the task (sequences, n-back, task order). Do this even when
+   the design looks fine; the point is to find what nobody asked about. Put
+   into the CSV any property of a trial that could matter (the response, a
+   position, an identity), also when it is not a factor of the design.
+4. **For each difference, find out why, then tell the user.**
+   - It was left out of the crossing: that can be fixed. Fix it before you
+     compare options; it is not a cost of the design.
+   - It is forced by another choice: that is a trade-off. Lay out the options
+     with what each keeps and gives up, say which fits the planned comparison
+     and why, and let the user decide. Do not decide silently.
+   - Ask whether it plausibly affects the measure. If not, say so and move on.
 
-When you compare options, separate what an option costs from what you happened
-to leave out. If a factor is uneven only because it is not in the crossing
-(the word in a Stroop design that crosses colour and congruency), that is not
-a cost of the option: fix it, then compare. Recommend from the costs that
-remain.
+Verify by counting, never by reading the code, and report the counts,
+including what is not balanced. If zero sequences come back, the design is
+impossible as written: find the conflicting requirement and let the user
+decide what to give up. Do not silently drop a constraint.
 
-This list grows with the examples. A published design in an example is there
-to explain the problem; do not propose it.
+## Where differences come from
+
+Three mechanisms produce most differences that nobody chose. They are not tied
+to a task; look for the mechanism, not for the example.
+
+| Mechanism | What happens | Typical sign |
+|---|---|---|
+| **A combination that cannot occur.** Two things cannot share a level (a place, an item, a key), or a relation is true by definition in one condition only. | The condition that lacks the combination differs from the others in a property nobody named. | `--compare` reports "never in one condition" |
+| **Balance within a short stretch of trials.** Sets, mini-blocks, a shuffled list that is repeated, "every condition once every n trials". | Whatever was just shown is scarcer among the trials that are left, so a trial follows its own level less often than half of the time. It does not even out over a block. | `--compare` reports the level "on the trial before" |
+| **A share that the stimuli do not give by themselves.** Half matching trials when most combinations do not match; a cue that is valid on most trials. | Reaching the share means showing some combinations more often, so one stimulus predicts another. | Count each combination: some are several times as frequent |
+
+A fourth source is not a mechanism but an omission: a factor that is in the
+design and not in the crossing is left to the solver and comes out uneven.
+
+`examples/` shows each mechanism once, in a published experiment. Read an
+example for how the reasoning goes and what the options cost, not as a
+pattern to match: the next experiment will look different and work the same
+way.
 
 ## The API
 
