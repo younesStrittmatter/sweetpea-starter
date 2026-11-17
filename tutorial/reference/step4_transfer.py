@@ -17,7 +17,10 @@ colours = ["red", "green", "blue"]
 # regular factors: set freely on every trial
 colour = Factor("colour", colours)      # the ink
 word = Factor("word", colours)          # what the word says
-task = Factor("task", ["name the colour", "read the word"])        # new: a second task, with a cue
+from sweetpea import Nest, Repeat
+
+task = Factor("task", ["name the colour", "read the word"])              # new: a second task, with a cue
+context = Factor("context", ["mostly congruent", "mostly incongruent"])  # new: held for a whole mini-block
 
 
 def task_repeats(task):
@@ -34,38 +37,43 @@ transition = Factor("transition", [
 ])
 
 
-WEIGHTS = {"mostly congruent": (3, 1), "mostly incongruent": (1, 3)}     # (congruent, incongruent)
+def frequent_here(colour, word, context):
+    congruent = colour == word
+    return congruent == (context == "mostly congruent")
 
 
-def same(colour, word):
-    return colour == word
+def rare_here(colour, word, context):
+    return not frequent_here(colour, word, context)
 
 
-def different(colour, word):
-    return colour != word
+frequency = Factor("frequency", [
+    DerivedLevel("frequent", WithinTrial(frequent_here, [colour, word, context]), 3),
+    DerivedLevel("rare", WithinTrial(rare_here, [colour, word, context]), 1),
+])
 
 
-def mini_block(context):
-    congruent_weight, incongruent_weight = WEIGHTS[context]
-    congruency = Factor("congruency", [
-        DerivedLevel("congruent", WithinTrial(same, [colour, word]), congruent_weight),
-        DerivedLevel("incongruent", WithinTrial(different, [colour, word]), incongruent_weight),
-    ])
-    return CrossBlock(design=[colour, word, task, congruency, transition],
-                      crossing=[congruency, task, transition],
-                      constraints=[MinimumTrials(17)])
+contexts = Repeat(CrossBlock(design=[context], crossing=[context], constraints=[]),
+                  constraints=[MinimumTrials(4)])            # four mini-blocks: each context twice
+mini_block = CrossBlock(design=[colour, word, task, transition, frequency, context],
+                        crossing=[frequency, task, transition],
+                        constraints=[])
+block = Nest(contexts, mini_block, alignment="parallel start")
+session = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
+
+# congruency as a column: inside a nested block, SweetPea 0.2.14 fails on a derived factor that is in no crossing
+session["congruency"] = ["congruent" if colour == word else "incongruent"
+                         for colour, word in zip(session["colour"], session["word"])]
+session.insert(0, "block", session.index // 16 + 1)
+display(pd.crosstab([session["block"], session["context"]], session["congruency"]))
 
 
-blocks = []
-for number, context in enumerate(["mostly congruent", "mostly incongruent", "mostly incongruent", "mostly congruent"], start=1):
-    trials = pd.DataFrame(synthesize_trials(mini_block(context), 1, CMSGen)[0])
-    trials.insert(0, "context", context)
-    trials.insert(0, "block", number)
-    blocks.append(trials)
-session = pd.concat(blocks, ignore_index=True)
-counted = session[session["transition"] != ""]       # the first trial of a mini-block has no transition
-display(pd.crosstab(counted["context"], [counted["transition"], counted["congruency"]]))
+counted = session[session["transition"] != ""]
+display(pd.crosstab([counted["block"], counted["context"]], [counted["transition"], counted["task"], counted["congruency"]]))
 
 
-display(pd.crosstab(counted["context"], counted["colour"]))
-display(pd.crosstab([counted["context"], counted["colour"]], counted["word"]))
+counted = counted.assign(stretch=(counted.index - 1) // 16 + 1)
+display(pd.crosstab(counted["stretch"], [counted["transition"], counted["task"], counted["frequency"]]))
+
+
+display(pd.crosstab(session["context"], session["colour"]))
+display(pd.crosstab([session["context"], session["colour"]], session["word"]))

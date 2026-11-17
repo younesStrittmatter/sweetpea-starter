@@ -35,8 +35,17 @@ def test_step3_blocks_have_the_proportions_asked_for_and_even_pairs():
     assert (session.groupby(["block", "congruency", "colour", "word"]).size().groupby(["block", "congruency"]).nunique() == 1).all()
 
 
-def test_step4_mini_blocks_have_the_proportions_and_a_repeat_baseline():
-    counted = run("step4_transfer.py")["counted"]
-    share = counted.groupby("context")["congruency"].apply(lambda c: (c == "congruent").mean())
-    assert share["mostly congruent"] == 0.75 and share["mostly incongruent"] == 0.25
-    assert (counted.groupby(["block", "transition"]).size() == 8).all()
+def test_step4_nests_the_mini_blocks_and_crosses_what_the_switch_cost_needs():
+    made = run("step4_transfer.py")
+    session, counted = made["session"], made["counted"]
+    # four mini-blocks of 16, one context each, each context twice
+    assert len(session) == 64
+    assert (session.groupby("block")["context"].nunique() == 1).all()
+    assert (session.groupby("context")["block"].nunique() == 2).all()
+    # the crossing runs one trial ahead of the context: exact in stretches that start at the second trial
+    full = counted[counted["stretch"] <= 3]
+    cells = full.groupby(["stretch", "frequency", "task", "transition"]).size()
+    assert all(n == (3 if frequency == "frequent" else 1) for (_, frequency, _, _), n in cells.items())
+    # so every mini-block is within one trial of three quarters
+    frequent = session.groupby("block")["frequency"].apply(lambda f: (f == "frequent").sum())
+    assert frequent.between(11, 13).all()

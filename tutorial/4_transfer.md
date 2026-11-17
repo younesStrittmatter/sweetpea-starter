@@ -38,9 +38,11 @@ mini-blocks against the switch cost in mostly congruent mini-blocks.
   congruent mini-block have? Is that enough?
 - **What gave way?** Count the ink colour. Is it still even? Did the assistant
   say what it left out of the crossing, and why?
-- **Short blocks and the trial before.** What does a short, balanced
-  mini-block do to what follows what? The second example on the website is
-  about that.
+- **One design or blocks put one after the other?** With `Nest` the context is
+  a factor of the design and SweetPea draws its order. Where does the crossing
+  sit then: does it line up with the mini-blocks, or is it off by a trial?
+- **The first trial of a mini-block.** It is a switch or a repeat relative to
+  a trial from the other context. Keep it or drop it?
 
 ## The idea
 
