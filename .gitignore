@@ -4,3 +4,7 @@ __pycache__/
 .pytest_cache/
 *.csv
 .DS_Store
+.claude/memory/
+site/
+docs/library/
+*.cnf

@@ -1,6 +1,6 @@
 ---
 name: sweetpea
-description: Design trial sequences for factorial experiments with the SweetPea Python library (counterbalancing, derived factors such as congruency, transition factors such as task switch/repeat, run-length and exclusion constraints). Use whenever the user wants to create, randomise, counterbalance, check or export a trial sequence for a behavioural or psychology experiment, or mentions SweetPea.
+description: Design trial sequences for factorial experiments with the SweetPea Python library (counterbalancing, derived factors such as congruency, transition factors such as task switch/repeat, run-length and exclusion constraints). Use whenever the user wants to create, randomise, counterbalance, check or export a trial sequence for a behavioural or psychology experiment, or mentions SweetPea. Also use when the user asks for mini-blocks, sets, or balance within every few trials: that changes what follows what, and the skill says what to tell them.
 ---
 
 # Designing experiments with SweetPea
@@ -16,6 +16,9 @@ exist.
 
 ## How to work
 
+0. Ask what will be compared in the analysis. What has to be balanced, and which
+   design is best, depends on the analysis: the same trials can be fine for one
+   comparison and unfair for another.
 1. Restate the design before writing code: the factors and their levels, what
    is crossed (balanced), and the constraints. Ask if the description leaves
    one of these open.
@@ -26,6 +29,21 @@ exist.
 4. If zero sequences come back, the design is impossible as written. Say so,
    find the conflicting requirement, and let the user decide what to give up.
    Do not silently drop a constraint.
+
+## Raise these before you write the design
+
+Some requests sound harmless and change the experiment. When you recognise
+one, say so first, give the number, and ask what the user wants. Each has a
+worked example in `examples/`.
+
+| The user asks for | What it does | Tell them | Example |
+|---|---|---|---|
+| Sets or mini-blocks: every combination once every n trials, "shuffle the list and repeat it", balance within short stretches | A trial follows its own level less often than half of the time (37.5% with two levels and sets of 4, 45.8% with sets of 12). It does not even out over a block, and it affects every property that is even within a set. | It matters when the measure depends on the trial before (conflict, switching, priming tasks). It can be made part of the design with the sets kept; balance everything that can repeat, not one property. Small sets leave little freedom. | `examples/simon_previous_trial/` and "Sets (mini-blocks) and the trial before" below |
+| Two stimuli drawn from the same set and completely crossed (prime and target, cue and target, sample and probe) | The pairs with the same item twice exist only in the matching condition, so that condition also contains all the repetitions. | Ask whether identical pairs should occur. Removing them must not make the remaining matching pairs more frequent than the others. | `examples/masked_number_priming/` |
+| Two things that cannot share a place, an item or a key (a target cannot be where the distractor is), with one of them mostly at one level | That level cannot also be an ordinary level for the other. There is no design without a cost here, only a choice between costs. | Ask which comparisons are planned: the design that fits depends on them. Lay out the options with what each keeps and gives up, say which fits and why, and write the chosen design down. | `examples/distractor_location_learning/` |
+
+This list grows with the examples. A published design in an example is there
+to explain the problem; do not propose it.
 
 ## The API
 
@@ -185,6 +203,57 @@ experiments = synthesize_trials(block, 1, CMSGen)
 assert experiments == []
 ```
 
+### Sets (mini-blocks) and the trial before
+
+When trials are shuffled in sets, with every combination once per set, each
+combination is exactly equally frequent and evenly spread. It also changes
+what follows what: inside a set, whatever was just shown is scarcer among the
+trials that are left. A trial then follows its own level less often than the
+other levels, and this does not even out over a block. With two levels and
+sets of 4 the same level follows in 37.5% of cases, with sets of 12 in 45.8%.
+
+So when a user asks for balance within short stretches of trials (sets,
+mini-blocks, "each condition once every n trials"), tell them this, ask
+whether their measure depends on the trial before (it usually does in
+conflict, switching and priming tasks), and offer to make what repeats part
+of the design:
+
+```python
+from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials, ExactlyK,
+                      CrossBlock, Repeat, synthesize_trials, CMSGen)
+
+side = Factor("side", ["left", "right"])
+colour = Factor("colour", ["red", "green"])
+
+# What repeats from the trial before? One level for each of the four cases.
+cases = {"side and colour": (True, True), "side only": (True, False),
+         "colour only": (False, True), "neither": (False, False)}
+what_repeats = Factor("what_repeats", [
+    DerivedLevel(name, Transition(lambda s, c, want=want: (s[0] == s[-1], c[0] == c[-1]) == want, [side, colour]))
+    for name, want in cases.items()])
+
+# Repeat keeps the sets: each of the 4 combinations once in every 4 trials.
+one_set = CrossBlock([side, colour, what_repeats], [side, colour], [])
+block = Repeat(one_set, [MinimumTrials(33)] + [ExactlyK(8, (what_repeats, name)) for name in cases])
+trials = synthesize_trials(block, 1, CMSGen)[0]
+
+squares = list(zip(trials["side"], trials["colour"]))
+assert all(len(set(squares[i:i + 4])) == 4 for i in range(0, 32, 4))          # the sets are intact
+assert sum(a[0] == b[0] for a, b in zip(squares, squares[1:])) == 16           # the side repeats on half
+assert sum(a == b for a, b in zip(squares, squares[1:])) == 8                  # the same square on a quarter
+```
+
+- Ask for one more trial than the sets need: the first trial has no trial
+  before.
+- Balance everything that can repeat, not one property. Evening out only one
+  (say congruency) pushes the others further from one half.
+- Small sets leave little freedom. With sets of 4 as above, every set has to
+  start with the combination that ended the last one. Tell the user, and
+  suggest larger sets when that matters.
+- With several crossings in a `MultiCrossBlock`, `mode=RepeatMode.REPEAT`
+  applies to every crossing, not only to the smallest.
+- A worked case with the numbers is in `examples/simon_previous_trial/`.
+
 ### Continuous values (jittered intervals and similar)
 
 ```python
@@ -227,3 +296,22 @@ python scripts/check_design.py sequence_0.csv --balance color size --runs color
 It prints how often each level and each combination of the `--balance`
 columns occurs, whether those combinations are equally frequent, and the
 longest run of each level of the `--runs` columns.
+
+## Examples
+
+`examples/` holds published experiments in one fixed format: the research
+question, the comparison, the design as published, what it leaves unequal, the
+options with their costs, and a design to propose. Read the takeaway of each
+when a user describes an experiment, and open the one that fits:
+
+- `examples/masked_number_priming/`: two stimuli from the same set, completely
+  crossed; the pairs with the same item twice can only be congruent.
+- `examples/simon_previous_trial/`: trials shuffled in small sets; what
+  follows what is no longer even.
+- `examples/distractor_location_learning/`: two things that cannot be in the
+  same place; no design without a cost, only a choice between costs.
+
+In an example, the published design is shown to explain a problem. Propose the
+design marked `propose` in its `meta.yaml`, name the alternatives with their
+costs, and let the user decide. Where every design is marked `option`, there
+is nothing to propose: present them all with their trade-offs.

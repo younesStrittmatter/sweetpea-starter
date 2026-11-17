@@ -2,3 +2,5 @@ sweetpea
 pandas
 ipykernel
 pytest
+pyyaml
+matplotlib

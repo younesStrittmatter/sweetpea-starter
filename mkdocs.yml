@@ -1,0 +1,43 @@
+site_name: SweetPea Starter
+site_description: Design experiments with SweetPea together with an AI assistant
+docs_dir: docs
+theme:
+  name: material
+  features: [navigation.sections, content.code.copy]
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      toggle: {icon: material/weather-night, name: Dark mode}
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      toggle: {icon: material/weather-sunny, name: Light mode}
+markdown_extensions:
+  - tables
+  - attr_list
+  - md_in_html
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+exclude_docs: |
+  make_figures.py
+  make_data.py
+hooks:
+  - dev/docs_hooks.py
+watch:
+  - skills/sweetpea/examples
+extra_css:
+  - assets/demo.css
+extra_javascript:
+  - assets/demo.js
+  - assets/simon.js
+  - assets/distractor.js
+  - assets/site.js
+nav:
+  - Home: index.md
+  - Teaching examples:
+      - Masked number priming: teaching/masked_number_priming/index.md
+      - The trial before: teaching/simon_previous_trial/index.md
+      - Two things in one place: teaching/distractor_location/index.md
+  - Example library: library/index.md
