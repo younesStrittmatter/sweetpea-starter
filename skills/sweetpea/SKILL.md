@@ -25,8 +25,8 @@ every experiment, whatever the task:
    hypothesis and what it predicts, and the best-known alternative
    explanation, because that is what the design has to rule out. Say it as
    your understanding and let the user correct it. If they have not chosen a
-   task, suggest one or two from `tasks.md` (next to this file) with what each
-   is good for. Then ask which conditions are compared, on which measure, and
+   task, suggest two or three from `paradigms.md` (next to this file) with what
+   each is good for. Then ask which conditions are compared, on which measure, and
    restate the design: the factors and their levels, what is crossed, the
    constraints.
 2. **Write the design and generate sequences.** Use the API below, the
@@ -345,13 +345,24 @@ It prints how often each level and each combination of the `--balance`
 columns occurs, whether those combinations are equally frequent, and the
 longest run of each level of the `--runs` columns.
 
-## Tasks
+## Tasks and paradigms
 
-`tasks.md` lists published experiments by task: the question each was used
-for, what was compared, and the factors of its design, including those that
-depend on the trial before. Use it to suggest a task for a research question
-and to see what a design of that kind usually has to handle. It is a sample
-of the literature, not a survey; say so when you suggest from it.
+Two files next to this one help when a user has a question and no task yet:
+
+- `paradigms.md`: for a research topic (cognitive control, mental effort,
+  working memory, ...), which paradigms published studies used, with how
+  often and two example papers each. Start here.
+- `tasks.md`: single published experiments by task, with the question each
+  was used for, what was compared, and the factors of its design, including
+  those that depend on the trial before. Use it to see what a design of that
+  kind has to handle.
+
+Offer two or three paradigms, say in a sentence what each measures and what
+it typically compares, and say which you would take for the user's question
+and why. Both files are samples of the literature built from papers with open
+data, not surveys: a paradigm that is missing is not thereby a poor choice,
+and a count is a count, not a recommendation. Say so when you suggest from
+them.
 
 ## Examples
 
