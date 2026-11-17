@@ -30,9 +30,8 @@ designs:
     trials: 109
     sets_of_twelve: true
     repeats_percent: {simon_congruency: 50, side: 50, response: 50, same_square: 25}
-  proposed_block_level:
+  within_every_four:
     role: alternative
-    slow: true                    # about five minutes; not run by the check
   conditions_crossed:
     role: alternative
     slow: true                    # about two minutes; not run by the check

@@ -1,7 +1,7 @@
 """Simon task with a prime word: shuffled sets of twelve, and a design that also balances the trial before.
 
 Run:  python design.py            prints the counts of the fast designs (about 15 seconds)
-      python design.py --slow     also runs the two slow ones (several minutes)
+      python design.py --slow     also runs the slow one (about two minutes)
 
 `proposed()` is the design to propose. `as_published()` is shown to explain
 what it leaves unequal; do not propose it without raising that.
@@ -12,7 +12,7 @@ from collections import Counter
 
 import pandas as pd
 from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials, ExactlyK, CrossBlock,
-                      MultiCrossBlock, Repeat, RepeatMode, AlignmentMode, synthesize_trials, CMSGen)
+                      MultiCrossBlock, Repeat, RepeatMode, AlignmentMode, synthesize_trials, CMSGen, IterateGen)
 
 WORDS = ["red", "green", "cross"]
 SIDES = ["left", "right"]
@@ -55,14 +55,47 @@ def repeats(factor, name):
                          DerivedLevel("changes", Transition(lambda x: x[0] != x[-1], [factor]))])
 
 
-def proposed():
-    """Sets of twelve kept, and everything that can repeat from the trial before balanced.
+def side_and_colour_repeat(side, colour):
+    return side[0] == side[-1] and colour[0] == colour[-1]
 
-    Two crossings: the twelve combinations, repeated set by set; and "the side
-    repeats" x "the colour repeats". Simon congruency, side and response then
-    each repeat on half of the trials, and the same square on a quarter.
-    The repeat mode applies to both crossings, so the four cases are also even
-    within every four trials: stricter than needed, and fast (seconds).
+
+def side_only_repeats(side, colour):
+    return side[0] == side[-1] and colour[0] != colour[-1]
+
+
+def colour_only_repeats(side, colour):
+    return side[0] != side[-1] and colour[0] == colour[-1]
+
+
+def neither_repeats(side, colour):
+    return side[0] != side[-1] and colour[0] != colour[-1]
+
+
+CASES = {"side and colour": side_and_colour_repeat, "side only": side_only_repeats,
+         "colour only": colour_only_repeats, "neither": neither_repeats}
+
+
+def proposed():
+    """Sets of twelve kept, and what repeats from the trial before balanced over the whole block.
+
+    Inside a set the twelve combinations are even and the transitions are free. Over the
+    block each of the four cases (side repeats or not x colour repeats or not) occurs 27
+    times, anywhere. Simon congruency, side and response then each repeat on half of the
+    trials, and the same square on a quarter.
+    Generate with IterateGen (seconds; not a random draw). CMSGen takes about five minutes.
+    """
+    word, side, colour, prime, simon = factors()
+    what = Factor("what_repeats", [DerivedLevel(name, Transition(case, [side, colour])) for name, case in CASES.items()])
+    one_set = CrossBlock([word, side, colour, prime, simon, what], [word, side, colour], [])
+    n = SET * SETS_PER_BLOCK
+    return Repeat(one_set, [MinimumTrials(n + 1)] + [ExactlyK(n // 4, (what, name)) for name in CASES])
+
+
+def within_every_four():
+    """Alternative: as proposed(), but the four cases are also even within every four trials.
+
+    Two crossings in one block, both in repeat mode. Stricter than the analysis needs and a
+    regularity a participant could pick up; fast with CMSGen (seconds).
     """
     word, side, colour, prime, simon = factors()
     side_repeats, colour_repeats = repeats(side, "side_repeats"), repeats(colour, "colour_repeats")
@@ -70,21 +103,6 @@ def proposed():
                            [[word, side, colour], [side_repeats, colour_repeats]],
                            [MinimumTrials(SET * SETS_PER_BLOCK + 1)],
                            mode=RepeatMode.REPEAT, alignment=AlignmentMode.PARALLEL_START)
-
-
-def proposed_block_level():
-    """As proposed(), but even over the block only: the four cases 27 times each, anywhere.
-
-    Looser, so the order is freer. Slow: about five minutes with CMSGen.
-    """
-    word, side, colour, prime, simon = factors()
-    cases = {"side and colour": (True, True), "side only": (True, False), "colour only": (False, True), "neither": (False, False)}
-    what = Factor("what_repeats", [
-        DerivedLevel(name, Transition(lambda s, c, want=want: (s[0] == s[-1], c[0] == c[-1]) == want, [side, colour]))
-        for name, want in cases.items()])
-    one_set = CrossBlock([word, side, colour, prime, simon, what], [word, side, colour], [])
-    n = SET * SETS_PER_BLOCK
-    return Repeat(one_set, [MinimumTrials(n + 1)] + [ExactlyK(n // 4, (what, name)) for name in cases])
 
 
 def trial_type_only():
@@ -131,8 +149,8 @@ def expected_rate_in_shuffled_sets(set_size=SET):
     return ((set_size - 1) * (half - 1) / (set_size - 1) + 0.5) / set_size
 
 
-def one_block(block):
-    return pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
+def one_block(block, sampler=CMSGen):
+    return pd.DataFrame(synthesize_trials(block, 1, sampler)[0])
 
 
 def summary(trials):
@@ -155,9 +173,9 @@ def summary(trials):
 
 if __name__ == "__main__":
     print("expected rate, shuffled sets of twelve:", round(expected_rate_in_shuffled_sets(), 4))
-    print("proposed", summary(one_block(proposed())))
+    print("proposed", summary(one_block(proposed(), IterateGen)))
+    print("within_every_four", summary(one_block(within_every_four())))
     print("trial_type_only", summary(one_block(trial_type_only())))
     print("as_published (one block; what repeats differs from block to block)", summary(one_block(as_published())))
     if "--slow" in sys.argv:
-        print("proposed_block_level", summary(one_block(proposed_block_level())))
         print("conditions_crossed", summary(one_block(conditions_crossed())))

@@ -149,46 +149,51 @@ The generated block: 33 trials, every set intact; trial type, side and response 
 
 <div class="sm-variant" data-v="12" markdown="1">
 
-Two crossings in one block: the twelve combinations, repeated set by set, and whether the side repeats crossed with whether the colour repeats.
+One set is the twelve combinations, each once. `Repeat` keeps the sets. What repeats from the trial before is counted over the whole block: each of the four cases equally often, anywhere in the block. Inside a set the combinations are even and the transitions are free.
 
 ```python
-from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials,
-                      MultiCrossBlock, RepeatMode, AlignmentMode, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials, ExactlyK,
+                      CrossBlock, Repeat, synthesize_trials, CMSGen)
 
 word = Factor("word", ["red", "green", "cross"])    # the word shown before the square
 side = Factor("side", ["left", "right"])
 colour = Factor("colour", ["red", "green"])
 
-# Does the side repeat from the trial before? Does the colour?  [0] is this trial, [-1] the one before.
-def repeats(factor):
-    return factor[0] == factor[-1]
+# What repeats from the trial before?  [0] is this trial, [-1] the one before.
+def side_and_colour(side, colour):
+    return side[0] == side[-1] and colour[0] == colour[-1]
 
-def changes(factor):
-    return factor[0] != factor[-1]
+def side_only(side, colour):
+    return side[0] == side[-1] and colour[0] != colour[-1]
 
-side_repeats = Factor("side_repeats", [
-    DerivedLevel("repeats", Transition(repeats, [side])),
-    DerivedLevel("changes", Transition(changes, [side])),
+def colour_only(side, colour):
+    return side[0] != side[-1] and colour[0] == colour[-1]
+
+def neither(side, colour):
+    return side[0] != side[-1] and colour[0] != colour[-1]
+
+what_repeats = Factor("what_repeats", [
+    DerivedLevel("side and colour", Transition(side_and_colour, [side, colour])),
+    DerivedLevel("side only", Transition(side_only, [side, colour])),
+    DerivedLevel("colour only", Transition(colour_only, [side, colour])),
+    DerivedLevel("neither", Transition(neither, [side, colour])),
 ])
-colour_repeats = Factor("colour_repeats", [
-    DerivedLevel("repeats", Transition(repeats, [colour])),
-    DerivedLevel("changes", Transition(changes, [colour])),
-])
 
-block = MultiCrossBlock(
-    design=[word, side, colour, side_repeats, colour_repeats],
-    crossings=[
-        [word, side, colour],               # the twelve combinations ...
-        [side_repeats, colour_repeats],     # ... and the four cases of what repeats
-    ],
-    constraints=[MinimumTrials(109)],       # 9 sets, plus a first trial that has no trial before
-    mode=RepeatMode.REPEAT,                 # every combination once in every set of twelve
-    alignment=AlignmentMode.PARALLEL_START,
-)
+# One set: each of the twelve combinations once.
+one_set = CrossBlock(design=[word, side, colour, what_repeats], crossing=[word, side, colour], constraints=[])
+
+# 4 sets and a first trial that has no trial before; each of the four cases 12 times over the block.
+block = Repeat(one_set, [
+    MinimumTrials(49),
+    ExactlyK(12, (what_repeats, "side and colour")),
+    ExactlyK(12, (what_repeats, "side only")),
+    ExactlyK(12, (what_repeats, "colour only")),
+    ExactlyK(12, (what_repeats, "neither")),
+])
 trials = synthesize_trials(block, 1, CMSGen)[0]
 ```
 
-The generated block: 109 trials, every set intact; trial type, side and response each repeat on half of the trials, the same square on a quarter. The repeat mode applies to both crossings, so this version also balances within every four trials, which is stricter than needed.
+The generated block: 49 trials, every set intact; trial type, side and response each repeat on half of the trials, the same square on a quarter. The full block of 9 sets (109 trials, each case 27 times) takes `CMSGen` about five minutes; `IterateGen` gives one in seconds, but not as a random draw.
 
 </div>
 
@@ -197,5 +202,6 @@ The generated block: 109 trials, every set intact; trial type, side and response
 - Making things even within a short stretch of trials changes what follows
   what, and it does not even out over a block.
 - What repeats from the trial before can be a factor of the design like any
-  other. The sets can stay.
+  other. The sets can stay: inside a set the combinations are even and the
+  transitions are free; over the whole block the transitions are even.
 - Every rule costs freedom. The smaller the sets, the less is left.

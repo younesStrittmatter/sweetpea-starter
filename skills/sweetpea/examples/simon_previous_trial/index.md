@@ -68,8 +68,8 @@ In the design (functions in `design.py`):
 
 | Option | Sets kept | What repeats | Cost |
 |---|---|---|---|
-| `proposed`: sets of 12, plus "the side repeats" crossed with "the colour repeats" | yes | trial type 50%, side 50%, response 50%, same square 25% | One extra first trial per block (109). Also even within every four trials, which is stricter than needed. Seconds to generate. |
-| `proposed_block_level`: the same, even over the block only | yes | the same | About five minutes to generate. |
+| `proposed`: sets of 12, plus what repeats from the trial before (side or not x colour or not) even over the whole block | yes | trial type 50%, side 50%, response 50%, same square 25% | One extra trial per block (109). Inside a set the transitions stay free. Seconds with `IterateGen` (not a random draw), about five minutes with `CMSGen`. |
+| `within_every_four`: the same, and also even within every four trials | yes | the same | Stricter than needed: a regularity in the order. Seconds with `CMSGen`. |
 | `conditions_crossed`: each of the 6 conditions follows each 3 times | yes | trial type 50% | About two minutes; side and response are not addressed. |
 | `trial_type_only`: Simon congruency crossed with that of the trial before | yes | trial type 50%, side and response further from 50% than before | Evens out one property by adding trials on which side and colour both change. Do not propose. |
 | No sets: cross the square with the square before | no | all even | Gives up the sets and what they were for. |
@@ -111,12 +111,13 @@ trials", say these four things before writing the design:
 `proposed()`. Raise what repeats from the trial before with the user, show
 this design, and name the alternatives with their costs.
 
-It uses two crossings in one `MultiCrossBlock`: the three stimulus factors,
-repeated set by set (`mode=RepeatMode.REPEAT`), and two `Transition` factors,
-"the side repeats" and "the colour repeats", crossed with each other. The
-repeat mode applies to every crossing of the block. For a count over the whole
-block only, use `Repeat` with `ExactlyK` on one transition factor, as in
-`proposed_block_level()`.
+One set is the twelve combinations, each once (`CrossBlock`), and `Repeat`
+keeps the sets. What repeats from the trial before is one `Transition` factor
+with four cases, and `ExactlyK` asks for each case 27 times over the whole
+block. So inside a set the combinations are even and the transitions are
+free; over the block the transitions are even. The balance is over all
+trials, not within each of the six compared conditions; `conditions_crossed`
+does that.
 
 | | `as_published` | `proposed` |
 |---|---|---|

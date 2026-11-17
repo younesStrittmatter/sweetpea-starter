@@ -9,7 +9,7 @@ import random
 from pathlib import Path
 
 from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials, ExactlyK, CrossBlock,
-                      MultiCrossBlock, Repeat, RepeatMode, AlignmentMode, synthesize_trials, CMSGen)
+                      Repeat, synthesize_trials, CMSGen)
 
 KEY = {"red": "left", "green": "right"}          # the key of each colour (counterbalanced in the experiment)
 SQUARES = [(side, colour) for side in ("left", "right") for colour in ("red", "green")]
@@ -73,26 +73,22 @@ def designed(size):
     side = Factor("side", ["left", "right"])
     colour = Factor("colour", ["red", "green"])
     n = size * SETS_SHOWN[size] + 1
+    cases = {"side and colour": (True, True), "side only": (True, False), "colour only": (False, True), "neither": (False, False)}
+    what = Factor("what_repeats", [
+        DerivedLevel(name, Transition(lambda s, c, want=want: (s[0] == s[-1], c[0] == c[-1]) == want, [side, colour]))
+        for name, want in cases.items()])
+    counts = [ExactlyK((n - 1) // 4, (what, name)) for name in cases]
     if size == 12:
         word = Factor("word", ["red", "green", "cross"])
-        side_repeats, colour_repeats = repeats(side, "side_repeats"), repeats(colour, "colour_repeats")
-        block = MultiCrossBlock([word, side, colour, side_repeats, colour_repeats],
-                                [[word, side, colour], [side_repeats, colour_repeats]],
-                                [MinimumTrials(n)], mode=RepeatMode.REPEAT, alignment=AlignmentMode.PARALLEL_START)
+        inner = CrossBlock([word, side, colour, what], [word, side, colour], [])
+    elif size == 4:
+        inner = CrossBlock([side, colour, what], [side, colour], [])
     else:
-        cases = {"side and colour": (True, True), "side only": (True, False), "colour only": (False, True), "neither": (False, False)}
-        what = Factor("what_repeats", [
-            DerivedLevel(name, Transition(lambda s, c, want=want: (s[0] == s[-1], c[0] == c[-1]) == want, [side, colour]))
-            for name, want in cases.items()])
-        counts = [ExactlyK((n - 1) // 4, (what, name)) for name in cases]
-        if size == 4:
-            inner = CrossBlock([side, colour, what], [side, colour], [])
-        else:
-            congruency = Factor("congruency", [
-                DerivedLevel("congruent", WithinTrial(lambda s, c: KEY[c] == s, [side, colour])),
-                DerivedLevel("incongruent", WithinTrial(lambda s, c: KEY[c] != s, [side, colour]))])
-            inner = CrossBlock([side, colour, congruency, what], [congruency], [])
-        block = Repeat(inner, [MinimumTrials(n)] + counts)
+        congruency = Factor("congruency", [
+            DerivedLevel("congruent", WithinTrial(lambda s, c: KEY[c] == s, [side, colour])),
+            DerivedLevel("incongruent", WithinTrial(lambda s, c: KEY[c] != s, [side, colour]))])
+        inner = CrossBlock([side, colour, congruency, what], [congruency], [])
+    block = Repeat(inner, [MinimumTrials(n)] + counts)
     trials = synthesize_trials(block, 1, CMSGen)[0]
     return list(zip(trials["side"], trials["colour"]))
 
