@@ -40,7 +40,14 @@ worked example in `examples/`.
 |---|---|---|---|
 | Sets or mini-blocks: every combination once every n trials, "shuffle the list and repeat it", balance within short stretches | A trial follows its own level less often than half of the time (37.5% with two levels and sets of 4, 45.8% with sets of 12). It does not even out over a block, and it affects every property that is even within a set. | It matters when the measure depends on the trial before (conflict, switching, priming tasks). It can be made part of the design with the sets kept; balance everything that can repeat, not one property. Small sets leave little freedom. | `examples/simon_previous_trial/` and "Sets (mini-blocks) and the trial before" below |
 | Two stimuli drawn from the same set and completely crossed (prime and target, cue and target, sample and probe) | The pairs with the same item twice exist only in the matching condition, so that condition also contains all the repetitions. | Ask whether identical pairs should occur. Removing them must not make the remaining matching pairs more frequent than the others. | `examples/masked_number_priming/` |
+| A share of matching trials that the stimuli do not give by themselves: half congruent with three or more colours, 80% valid cues | Reaching the share means showing the matching pairs more often than the others, so the first stimulus predicts the second (the word RED is in red half of the time). | Name the choice: the wanted share with a predictive stimulus, or every pair equally often with the natural share (one third with three colours). Two colours give both. Do not decide silently. | `examples/masked_number_priming/`, `tutorial/1_congruency.md` |
 | Two things that cannot share a place, an item or a key (a target cannot be where the distractor is), with one of them mostly at one level | That level cannot also be an ordinary level for the other. There is no design without a cost here, only a choice between costs. | Ask which comparisons are planned: the design that fits depends on them. Lay out the options with what each keeps and gives up, say which fits and why, and write the chosen design down. | `examples/distractor_location_learning/` |
+
+When you compare options, separate what an option costs from what you happened
+to leave out. If a factor is uneven only because it is not in the crossing
+(the word in a Stroop design that crosses colour and congruency), that is not
+a cost of the option: fix it, then compare. Recommend from the costs that
+remain.
 
 This list grows with the examples. A published design in an example is there
 to explain the problem; do not propose it.

@@ -20,15 +20,29 @@ the ink colour.
 
 ## What to check
 
-- **How many trials are congruent?** With three colours, showing every word in
-  every ink colour equally often makes one third of the trials congruent. Did
-  the assistant ask which you want, or did it choose?
-- **What is balanced?** Count ink colour by congruency. Then count the word:
-  it follows from the other two. Is it even?
-- **Why 24?** Which block lengths keep the design balanced?
+- **How many trials are congruent?** With three colours there are 3 congruent
+  and 6 incongruent pairs of ink and word. Did the assistant ask what you want,
+  or did it choose?
+- **Are the incongruent pairs even?** Count every pair of ink and word. If some
+  incongruent pairs come up more often than others, that is not a price of the
+  design. It only means the word was left out of the crossing, and it can be
+  fixed.
+- **What is the real choice?** Two wishes pull apart, and no design with three
+  colours keeps both:
+
+  | | Half of the trials congruent | Every pair equally often |
+  |---|---|---|
+  | Congruent trials | 1 in 2 | 1 in 3 |
+  | Each congruent pair against each incongruent pair | twice as often | equally often |
+  | What it costs | The word predicts the ink: RED is in red half of the time. Congruent trials can be faster for that reason alone. | Fewer congruent trials, and conflict is the usual case. |
+
+- **Did the assistant name that cost?** The first example on the website has
+  the same structure: making up the numbers by showing some pairs more often
+  makes the first stimulus predict the second.
 
 ## The idea
 
 Congruency is not something you set. It follows from the ink colour and the
-word: a derived factor. Only what is crossed is balanced, so if you compare
-congruent with incongruent trials, congruency has to be in the crossing.
+word: a derived factor. Only what is crossed is balanced. And when two wishes
+cannot both hold, the design is a choice, and the assistant should lay it out
+and not hide it.

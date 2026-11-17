@@ -5,10 +5,14 @@ from pathlib import Path
 REFERENCE = Path(__file__).resolve().parents[1] / "tutorial" / "reference"
 
 
-def test_step1_half_of_the_trials_are_congruent():
-    trials = runpy.run_path(str(REFERENCE / "step1_congruency.py"))["generate"]()
-    assert len(trials) == 24
-    assert (trials.groupby(["colour", "congruency"]).size() == 4).all()
+def test_step1_both_designs_have_every_incongruent_pair_equally_often():
+    generate = runpy.run_path(str(REFERENCE / "step1_congruency.py"))["generate"]
+    half = generate("half congruent")
+    assert len(half) == 24 and (half["congruency"] == "congruent").sum() == 12
+    pairs = half.groupby(["colour", "word"]).size()
+    assert all(n == (4 if colour == word else 2) for (colour, word), n in pairs.items())
+    even = generate("every pair equally often")
+    assert len(even) == 18 and (even.groupby(["colour", "word"]).size() == 2).all()
 
 
 def test_step2_task_congruency_and_transition_are_crossed():
