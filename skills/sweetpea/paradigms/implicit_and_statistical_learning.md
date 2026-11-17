@@ -1,6 +1,6 @@
 # Implicit and statistical learning
 
-24 studies. See `../paradigms.md` for how to use this.
+25 studies. See `../paradigms.md` for how to use this.
 
 ## alternating serial reaction time task*
 
@@ -30,6 +30,11 @@
 ## breaking continuous flash suppression*
 
 - **Statistical learning and access to awareness.** Factors: statistical regularity. Luzi Xu (2024), doi:10.1177/09567976241263344
+
+## Coffee Shop World (schema learning from stories)*
+
+- **Learning several schemas (event structures) from experience, and how the order of training shapes it.** Compared: accuracy of predicting the next event of a story after blocked vs interleaved training on two schemas; in a follow-up, blocked training early vs late. Factors: curriculum (blocked vs interleaved), schema (context), when the blocked part comes (early vs late). Andre O. Beukers (2024), doi:10.1038/s44271-024-00079-4
+  Design: Each story is a short sequence of events; the context (which coffee shop) decides which event follows which, and the events themselves are shared between the two contexts. In the version used with the EGO model there are two contexts and two start states, and a story is context, start, then three events (context A: 1-3-5-7 and 2-4-6-8; context B: 1-4-5-8 and 2-3-6-7), so no single event tells the next one without the context. The design is the order of stories: the curriculum is the manipulation, so what a sequence must fix is the run length of each context, which start state and path occur how often in each context, and that the test stories mix the contexts. Details of the human experiments (number of stories, block length, response format) are in the paper; check them there before building.
 
 ## function learning*
 

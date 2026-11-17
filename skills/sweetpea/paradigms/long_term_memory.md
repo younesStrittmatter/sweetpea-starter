@@ -1,6 +1,6 @@
 # Long-term memory
 
-42 studies. See `../paradigms.md` for how to use this.
+43 studies. See `../paradigms.md` for how to use this.
 
 ## old/new recognition
 
@@ -47,6 +47,11 @@
 ## boundary extension task
 
 - **boundary extension and scene depth of field.** Compared: boundary extension for photographs with naturalistic vs unnaturalistic depth of field, including distant views. Factors: depth of field, viewing distance. Marco Gandolfo (2023), doi:10.1177/09567976221140341
+
+## Coffee Shop World (schema learning from stories)*
+
+- **Whether episodic memory with a learned context can explain fast learning and control (the EGO model).** Compared: a model's next-event prediction after blocked vs interleaved training, against the human advantage for blocked training. Factors: curriculum (blocked vs interleaved), context. Tyler Giallanza (2024), doi:10.1162/opmi_a_00143
+  Design: A modelling paper: it uses the Coffee Shop World as one of three domains. See the entry under implicit and statistical learning for the task.
 
 ## color memory distortion task*
 

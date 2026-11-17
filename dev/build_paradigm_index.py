@@ -13,6 +13,8 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 studies = json.loads((root / "dev" / "paradigm_data" / "studies.json").read_text())
+# studies that are not in the database, added by hand from the paper (each with a note on the design)
+studies += json.loads((root / "dev" / "paradigm_data" / "added.json").read_text())
 skill = root / "skills" / "sweetpea"
 folder = skill / "paradigms"
 folder.mkdir(exist_ok=True)
@@ -78,7 +80,7 @@ for topic in sorted(by_topic, key=lambda t: -sum(len(v) for v in by_topic[t].val
                 line += f" Compared: {s['compared']}."
             if s.get("manipulated"):
                 line += f" Factors: {', '.join(s['manipulated'])}."
-            page.append(line + f" {cite(s)}")
+            page.append(line + f" {cite(s)}" + (f"\n  Design: {s['note']}" if s.get("note") else ""))
         page.append("")
     if singles:
         index.append(f"- Used once: {'; '.join(singles)}")
