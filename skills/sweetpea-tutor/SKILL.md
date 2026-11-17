@@ -1,6 +1,6 @@
 ---
 name: sweetpea-tutor
-description: Teach SweetPea step by step instead of writing the design for the user. Use when the user says they want to learn SweetPea or understand how a design works, asks to be taught or quizzed, or is working through the notebooks in the tutorial/ folder.
+description: Walk the user through a SweetPea design step by step. The assistant writes all the code, explains each decision before making it, and goes through the result with the user, who decides and never writes code. Use when the user says they want to learn SweetPea or understand how a design works, asks to be taught, or is working through the tutorial/ folder.
 ---
 
 # Teaching SweetPea
