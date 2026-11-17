@@ -23,6 +23,21 @@ context = Factor("context", ["mostly congruent", "mostly incongruent"])  # new: 
 task = Factor("task", ["name the colour", "read the word"])              # new: held for a whole mini-block
 
 
+# a derived factor: it follows from colour and word on the same trial
+def same(colour, word):
+    return colour == word
+
+
+def different(colour, word):
+    return colour != word
+
+
+congruency = Factor("congruency", [
+    DerivedLevel("congruent", WithinTrial(same, [colour, word])),
+    DerivedLevel("incongruent", WithinTrial(different, [colour, word])),
+])
+
+
 def task_repeats(task):
     return task[0] == task[-1]
 
@@ -51,22 +66,21 @@ context_before = Factor("context_before", [
 ])
 
 
-def frequent_here(colour, word, context):
-    congruent = colour == word
-    return congruent == (context == "mostly congruent")
+def frequent_here(congruency, context):
+    return (congruency == "congruent") == (context == "mostly congruent")
 
 
-def rare_here(colour, word, context):
-    return not frequent_here(colour, word, context)
+def rare_here(congruency, context):
+    return not frequent_here(congruency, context)
 
 
 frequency = Factor("frequency", [
-    DerivedLevel("frequent", WithinTrial(frequent_here, [colour, word, context]), 3),
-    DerivedLevel("rare", WithinTrial(rare_here, [colour, word, context]), 1),
+    DerivedLevel("frequent", WithinTrial(frequent_here, [congruency, context]), 3),
+    DerivedLevel("rare", WithinTrial(rare_here, [congruency, context]), 1),
 ])
 
 
-mini_block = CrossBlock(design=[colour, word, frequency, context],
+mini_block = CrossBlock(design=[colour, word, congruency, frequency, context],
                         crossing=[frequency, colour],
                         constraints=[])
 between_mini_blocks = CrossBlock(design=[context, context_before, task, task_transition],
@@ -75,10 +89,7 @@ between_mini_blocks = CrossBlock(design=[context, context_before, task, task_tra
 block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
 session = pd.DataFrame(synthesize_trials(block, 1, IterateGen)[0])       # 204 trials: too long for CMSGen
 
-# columns for counting
-session["congruency"] = ["congruent" if colour == word else "incongruent"
-                         for colour, word in zip(session["colour"], session["word"])]
-session.insert(0, "block", session.index // 12 + 1)
+session.insert(0, "block", session.index // 12 + 1)        # number the mini-blocks, for counting
 overview = session.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
 overview["congruent trials"] = session.groupby("block")["congruency"].apply(lambda c: (c == "congruent").sum())
 display(overview)

@@ -175,6 +175,7 @@ from sweetpea import Nest, IterateGen
 
 context = Factor("context", ["mostly congruent", "mostly incongruent"])  # new: held for a whole mini-block
 task = Factor("task", ["name the colour", "read the word"])              # new: held for a whole mini-block'''),
+("code", CONGRUENCY),
 ("md", "### New: what happens at the border between two mini-blocks?\n\nTwo transition factors, as in step 2. Here they will look back one mini-block, not one trial: does the task change, and which context came before?"),
 ("code", '''def task_repeats(task):
     return task[0] == task[-1]
@@ -202,22 +203,21 @@ context_before = Factor("context_before", [
     DerivedLevel("mostly congruent", Transition(after_mostly_congruent, [context])),
     DerivedLevel("mostly incongruent", Transition(after_mostly_incongruent, [context])),
 ])'''),
-("md", "### New: what the context makes frequent\n\nIn step 3 a weight on congruency set the proportion of a block. But a level has one weight, and here the proportion depends on the context, which changes from mini-block to mini-block. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one."),
-("code", '''def frequent_here(colour, word, context):
-    congruent = colour == word
-    return congruent == (context == "mostly congruent")
+("md", "### New: what the context makes frequent\n\nIn step 3 a weight on congruency set the proportion of a block. But a level has one weight, and here the proportion depends on the context, which changes from mini-block to mini-block. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one. A derived factor can follow from another derived factor: this one follows from congruency and the context."),
+("code", '''def frequent_here(congruency, context):
+    return (congruency == "congruent") == (context == "mostly congruent")
 
 
-def rare_here(colour, word, context):
-    return not frequent_here(colour, word, context)
+def rare_here(congruency, context):
+    return not frequent_here(congruency, context)
 
 
 frequency = Factor("frequency", [
-    DerivedLevel("frequent", WithinTrial(frequent_here, [colour, word, context]), 3),
-    DerivedLevel("rare", WithinTrial(rare_here, [colour, word, context]), 1),
+    DerivedLevel("frequent", WithinTrial(frequent_here, [congruency, context]), 3),
+    DerivedLevel("rare", WithinTrial(rare_here, [congruency, context]), 1),
 ])'''),
 ("md", "### New: a block inside a block\n\nTwo blocks, each with its own crossing:\n\n- **within a mini-block**: the frequency crossed with the ink colour, 12 trials;\n- **between mini-blocks**: the context, the context before, the task and the task transition. That is every kind of border, 16 mini-blocks, plus a first one that has no mini-block before it.\n\n`Nest` puts the first inside the second: every combination of the outer block is held for one whole mini-block."),
-("code", '''mini_block = CrossBlock(design=[colour, word, frequency, context],
+("code", '''mini_block = CrossBlock(design=[colour, word, congruency, frequency, context],
                         crossing=[frequency, colour],
                         constraints=[])
 between_mini_blocks = CrossBlock(design=[context, context_before, task, task_transition],
@@ -226,10 +226,7 @@ between_mini_blocks = CrossBlock(design=[context, context_before, task, task_tra
 block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
 session = pd.DataFrame(synthesize_trials(block, 1, IterateGen)[0])       # 204 trials: too long for CMSGen
 
-# columns for counting
-session["congruency"] = ["congruent" if colour == word else "incongruent"
-                         for colour, word in zip(session["colour"], session["word"])]
-session.insert(0, "block", session.index // 12 + 1)
+session.insert(0, "block", session.index // 12 + 1)        # number the mini-blocks, for counting
 overview = session.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
 overview["congruent trials"] = session.groupby("block")["congruency"].apply(lambda c: (c == "congruent").sum())
 display(overview)'''),

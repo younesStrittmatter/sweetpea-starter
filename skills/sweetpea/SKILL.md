@@ -179,6 +179,30 @@ example for how the reasoning goes and what the options cost, not as a
 pattern to match: the next experiment will look different and work the same
 way.
 
+## SweetPea is a description, not a procedure
+
+A SweetPea script says what the experiment is: the factors, what follows
+from what, what is crossed within which stretch of trials, what must not
+happen. The solver does the balancing. So:
+
+- Say it with a factor, a crossing, a weight or a constraint. Do not balance
+  by hand: no loops that build trial lists, no shuffling, no patching of
+  generated trials, no columns computed afterwards that the design could
+  have held as a derived factor.
+- A property of a trial is a derived factor (it can follow from another
+  derived factor). A property of the trial before is a transition factor.
+  "Equally often" is a crossing. "More often" is a weight. "Never" is
+  `Exclude`. "Even within every set" and "even over the block" are two
+  blocks put together.
+- Python besides the description is for three things only: saving the
+  sequences, counting them, and the checks.
+- If you cannot say something in SweetPea, tell the user that it cannot be
+  said directly and what the nearest description is. Do not quietly write
+  code around it.
+
+SweetPea's own tutorial and its reference page for assistants are in its
+documentation (https://sweetpea-org.github.io); this file follows them.
+
 ## The API
 
 Install with `pip install sweetpea`. Everything is imported from `sweetpea`.
@@ -430,7 +454,8 @@ in a second block says the same. A crossing reads as the design; a list of
 counts reads as a work-around. Both `Merge` and `Nest` are shown below, with
 what was found when running them.
 
-**Samplers.** Use `CMSGen` by default. When it does not finish within the
+**Samplers.** Use `CMSGen` by default, and keep a block at about 100 trials
+or fewer (SweetPea's own advice). When it does not finish within the
 time limit and the design cannot be shortened (a `Nest` of 200 trials),
 `IterateGen` often finishes in seconds. It returns solutions in the order
 the solver finds them, not a random draw: the order can look clumped and
@@ -551,21 +576,36 @@ task_transition = Factor("task_transition", [                             # from
 ])
 
 
-# what the context makes frequent: congruent trials in one, incongruent in the other
-def frequent_here(colour, word, context):
-    return (colour == word) == (context == "mostly congruent")
+def same(colour, word):
+    return colour == word
 
 
-def rare_here(colour, word, context):
-    return not frequent_here(colour, word, context)
+def different(colour, word):
+    return colour != word
+
+
+congruency = Factor("congruency", [
+    DerivedLevel("congruent", WithinTrial(same, [colour, word])),
+    DerivedLevel("incongruent", WithinTrial(different, [colour, word])),
+])
+
+
+# what the context makes frequent: congruent trials in one, incongruent in the other.
+# A derived factor can follow from another derived factor.
+def frequent_here(congruency, context):
+    return (congruency == "congruent") == (context == "mostly congruent")
+
+
+def rare_here(congruency, context):
+    return not frequent_here(congruency, context)
 
 
 frequency = Factor("frequency", [
-    DerivedLevel("frequent", WithinTrial(frequent_here, [colour, word, context]), 3),
-    DerivedLevel("rare", WithinTrial(rare_here, [colour, word, context]), 1),
+    DerivedLevel("frequent", WithinTrial(frequent_here, [congruency, context]), 3),
+    DerivedLevel("rare", WithinTrial(rare_here, [congruency, context]), 1),
 ])
 
-mini_block = CrossBlock([colour, word, frequency, context], [frequency, colour], [])            # 12 trials
+mini_block = CrossBlock([colour, word, congruency, frequency, context], [frequency, colour], [])  # 12 trials
 between_mini_blocks = CrossBlock([context, task, task_transition],
                                  [context, task, task_transition], [])                          # 8 mini-blocks + a first one
 block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
@@ -575,7 +615,7 @@ assert len(trials["context"]) == 9 * 12
 for start in range(12, 108, 12):                                                                # after the first mini-block
     one = range(start, start + 12)
     assert len({(trials["context"][i], trials["task"][i], trials["task_transition"][i]) for i in one}) == 1
-    congruent = sum(trials["colour"][i] == trials["word"][i] for i in one)
+    congruent = sum(trials["congruency"][i] == "congruent" for i in one)
     assert congruent == (9 if trials["context"][start] == "mostly congruent" else 3)
 ```
 
@@ -608,10 +648,11 @@ Checked with 0.2.14; tell the user these when you use it:
   second trial: it is exact in stretches that run one trial ahead of the
   mini-blocks, so each mini-block is off by its first trial. Say so, or keep
   trial-to-trial transitions out of the inner crossing.
-- **A derived factor that is in the design but in no crossing and no
-  constraint makes generation fail** inside `Nest` ("... is not in list").
-  Leave it out of the design and add it as a column afterwards, or use it in
-  a constraint.
+- **A derived factor that nothing else uses makes generation fail** inside
+  `Nest` ("... is not in list"): one that is in the design but in no
+  crossing, in no constraint, and that no other derived factor follows from.
+  Above, `congruency` is fine because `frequency` follows from it. If you
+  only want such a factor as a label, add it as a column afterwards.
 - **A proportion that depends on the outer factor** goes into one derived
   factor with weights, as `frequency` above. The copies pattern with an
   `Exclude` that depends on the outer factor does not work inside `Nest`
