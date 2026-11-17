@@ -171,7 +171,16 @@ session = pd.concat([pd.DataFrame(trials).assign(block=number, context=context)
 display(pd.crosstab([session["block"], session["context"]], session["congruency"]))'''),
 ("md", "### How well does the word tell the ink?\n\nFor each word, how often it is shown in its own colour (congruent). That number is the alternative explanation."),
 ("code", '''display(pd.crosstab([session["context"], session["word"]], session["congruency"]))'''),
-("md", "**Check.** Are the proportions what was asked for? How many incongruent trials does a mostly congruent block have: is that enough to measure the effect there? A word is in its own colour far more often in one context than in the other: how could learning and control be told apart?\n\n**Try.** Change the weights to `(2, 1)` and `(1, 2)`. What are the proportions and the block lengths now?\n\n**Next.** Step 4 asks whether this adjustment has a price when the task changes. There the weight meets a limit: it cannot depend on another factor."),
+("md", "### Every pair equally often\n\nSo far the ink colour is crossed with congruency, and which word goes with an incongruent ink is left open. To fix the pairs too, cross colour, word and congruency. The combinations that cannot occur (red ink, the word red, incongruent) drop out, and the weight now counts pairs: each of the 3 congruent pairs 6 times and each of the 6 incongruent pairs once is 18 to 6."),
+("code", '''even_pairs = Factor("congruency", [
+    DerivedLevel("congruent", WithinTrial(same, [colour, word]), 6),
+    DerivedLevel("incongruent", WithinTrial(different, [colour, word]), 1),
+])
+block_even = CrossBlock(design=[colour, word, even_pairs], crossing=[colour, word, even_pairs],
+                        constraints=[], require_complete_crossing=False)    # some combinations cannot occur
+trials_even = pd.DataFrame(synthesize_trials(block_even, 1, CMSGen)[0])
+display(pd.crosstab(trials_even["colour"], trials_even["word"]))'''),
+("md", "**Check.** Are the proportions what was asked for? How many incongruent trials does a mostly congruent block have: is that enough to measure the effect there? A word is in its own colour far more often in one context than in the other: how could learning and control be told apart?\n\n**Try.** In the last block, change the weights to 2 and 3. Which context is that, and how long is the block? With weights 2 and 1 it is the half-congruent block of step 1 with every pair even.\n\n**Next.** Step 4 asks whether this adjustment has a price when the task changes. There the weight meets a limit: it cannot depend on another factor."),
 ]),
 ("4_transfer", "Step 4. Transfer", "session", "Last question: does the adaptation transfer to another task? I want mini-blocks that are mostly congruent or mostly incongruent, and each mini-block is either colour naming or word reading. I want the switch cost between mini-blocks: word reading after colour naming against word reading after word reading, compared between the two contexts. I take word reading because it has almost no congruency effect. What is the hypothesis, and can nested blocks keep everything counterbalanced, also at the border between two mini-blocks: which context and which task came before?", [
 ("md", '''**So far.** Step 2 made the trial before a factor. Step 3 made blocks that are mostly congruent or mostly incongruent with a weight, generated one by one. This step uses both ideas one level up: the mini-block is the unit, and the whole session is one design.

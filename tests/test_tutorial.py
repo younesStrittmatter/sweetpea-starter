@@ -32,6 +32,8 @@ def test_step3_blocks_have_the_proportions_asked_for_and_even_ink_colours():
     share = session.groupby("context")["congruency"].apply(lambda c: (c == "congruent").mean())
     assert share["mostly congruent"] == 0.75 and share["mostly incongruent"] == 0.25
     assert (session.groupby(["block", "colour"]).size() == 8).all()
+    even = run("step3_adaptation.py")["trials_even"]
+    assert all(n == (6 if colour == word else 1) for (colour, word), n in even.groupby(["colour", "word"]).size().items())
 
 
 def test_step4_nests_the_mini_blocks_and_both_crossings_are_exact():
