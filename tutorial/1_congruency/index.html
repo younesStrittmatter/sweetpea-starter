@@ -651,6 +651,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#the-sequence-as-a-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The sequence as a table
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -887,6 +898,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#the-sequence-as-a-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The sequence as a table
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -916,7 +938,7 @@
 <p><a href="https://colab.research.google.com/github/younesStrittmatter/sweetpea-starter/blob/main/tutorial/notebooks/1_congruency.ipynb" target="_blank"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a> · <a href="https://github.com/younesStrittmatter/sweetpea-starter/blob/main/tutorial/notebooks/1_congruency.ipynb">notebook</a> · <a href="https://github.com/younesStrittmatter/sweetpea-starter/blob/main/tutorial/reference/step1_congruency.py">script</a></p>
 <h2 id="the-experiment">The experiment</h2>
 <p>A block from the design built on this page. Press play, or step through it.</p>
-<div class="stroop-demo" data-trials='[{"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}]'></div>
+<div class="stroop-demo" data-trials='[{"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}]'></div>
 
 <h2 id="with-your-assistant">With your assistant</h2>
 <blockquote>
@@ -930,8 +952,8 @@
 <h3 id="the-factors">The factors</h3>
 <p>A regular factor is set freely on every trial. The ink colour and the word are regular factors.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sweetpea</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Factor</span><span class="p">,</span> <span class="n">DerivedLevel</span><span class="p">,</span> <span class="n">WithinTrial</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">Exclude</span><span class="p">,</span> <span class="n">MinimumTrials</span><span class="p">,</span>
-                      <span class="n">CrossBlock</span><span class="p">,</span> <span class="n">synthesize_trials</span><span class="p">,</span> <span class="n">CMSGen</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sweetpea</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Factor</span><span class="p">,</span> <span class="n">DerivedLevel</span><span class="p">,</span> <span class="n">WithinTrial</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">MinimumTrials</span><span class="p">,</span>
+                      <span class="n">CrossBlock</span><span class="p">,</span> <span class="n">synthesize_trials</span><span class="p">,</span> <span class="n">tabulate_experiments</span><span class="p">,</span> <span class="n">CMSGen</span><span class="p">)</span>
 
 <span class="n">colours</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"blue"</span><span class="p">]</span>
 
@@ -958,183 +980,124 @@
 <p>Colour and word are crossed, so each of the 9 pairs occurs equally often. <code>MinimumTrials(18)</code> asks for two rounds of the crossing.</p>
 <div class="highlight"><pre><span></span><code><span class="n">block_a</span> <span class="o">=</span> <span class="n">CrossBlock</span><span class="p">(</span><span class="n">design</span><span class="o">=</span><span class="p">[</span><span class="n">colour</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">congruency</span><span class="p">],</span> <span class="n">crossing</span><span class="o">=</span><span class="p">[</span><span class="n">colour</span><span class="p">,</span> <span class="n">word</span><span class="p">],</span>
                      <span class="n">constraints</span><span class="o">=</span><span class="p">[</span><span class="n">MinimumTrials</span><span class="p">(</span><span class="mi">18</span><span class="p">)])</span>
-<span class="n">trials_a</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">synthesize_trials</span><span class="p">(</span><span class="n">block_a</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CMSGen</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">trials_a</span><span class="p">[</span><span class="s2">"colour"</span><span class="p">],</span> <span class="n">trials_a</span><span class="p">[</span><span class="s2">"word"</span><span class="p">]))</span>
-<span class="n">display</span><span class="p">(</span><span class="n">trials_a</span><span class="p">[</span><span class="s2">"congruency"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">"trials"</span><span class="p">))</span>
+<span class="n">experiments_a</span> <span class="o">=</span> <span class="n">synthesize_trials</span><span class="p">(</span><span class="n">block_a</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CMSGen</span><span class="p">)</span>
+<span class="n">tabulate_experiments</span><span class="p">(</span><span class="n">block_a</span><span class="p">,</span> <span class="n">experiments_a</span><span class="p">,</span> <span class="p">[</span><span class="n">colour</span><span class="p">,</span> <span class="n">word</span><span class="p">])</span>
+<span class="n">tabulate_experiments</span><span class="p">(</span><span class="n">block_a</span><span class="p">,</span> <span class="n">experiments_a</span><span class="p">,</span> <span class="p">[</span><span class="n">congruency</span><span class="p">])</span>
 </code></pre></div>
 <div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th>word</th>
-      <th>blue</th>
-      <th>green</th>
-      <th>red</th>
-    </tr>
-    <tr>
-      <th>colour</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>blue</th>
-      <td>2</td>
-      <td>2</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>green</th>
-      <td>2</td>
-      <td>2</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>red</th>
-      <td>2</td>
-      <td>2</td>
-      <td>2</td>
-    </tr>
-  </tbody>
-</table>
+<pre>Experiment 0:
+colour red   | word red   | frequency 2 | proportion 11.11111111111111%
+colour red   | word green | frequency 2 | proportion 11.11111111111111%
+colour red   | word blue  | frequency 2 | proportion 11.11111111111111%
+colour green | word red   | frequency 2 | proportion 11.11111111111111%
+colour green | word green | frequency 2 | proportion 11.11111111111111%
+colour green | word blue  | frequency 2 | proportion 11.11111111111111%
+colour blue  | word red   | frequency 2 | proportion 11.11111111111111%
+colour blue  | word green | frequency 2 | proportion 11.11111111111111%
+colour blue  | word blue  | frequency 2 | proportion 11.11111111111111%
+
+Experiment 0:
+congruency congruent   | frequency 6  | proportion 33.33333333333333%
+congruency incongruent | frequency 12 | proportion 66.66666666666666%</pre>
 </div>
 
-<div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>trials</th>
-    </tr>
-    <tr>
-      <th>congruency</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>incongruent</th>
-      <td>12</td>
-    </tr>
-    <tr>
-      <th>congruent</th>
-      <td>6</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
+<p><code>tabulate_experiments</code> is SweetPea's own count: how often each combination of the factors you name occurs, and its share.</p>
 <h3 id="option-b-half-of-the-trials-congruent">Option B: half of the trials congruent</h3>
 <p>Cross the ink colour with congruency. Each ink colour is then congruent on half of its trials: 6 combinations, four rounds.</p>
 <div class="highlight"><pre><span></span><code><span class="n">block_b</span> <span class="o">=</span> <span class="n">CrossBlock</span><span class="p">(</span><span class="n">design</span><span class="o">=</span><span class="p">[</span><span class="n">colour</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">congruency</span><span class="p">],</span> <span class="n">crossing</span><span class="o">=</span><span class="p">[</span><span class="n">colour</span><span class="p">,</span> <span class="n">congruency</span><span class="p">],</span>
                      <span class="n">constraints</span><span class="o">=</span><span class="p">[</span><span class="n">MinimumTrials</span><span class="p">(</span><span class="mi">24</span><span class="p">)])</span>
-<span class="n">trials_b</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">synthesize_trials</span><span class="p">(</span><span class="n">block_b</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CMSGen</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">trials_b</span><span class="p">[</span><span class="s2">"colour"</span><span class="p">],</span> <span class="n">trials_b</span><span class="p">[</span><span class="s2">"congruency"</span><span class="p">]))</span>
-<span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">trials_b</span><span class="p">[</span><span class="s2">"colour"</span><span class="p">],</span> <span class="n">trials_b</span><span class="p">[</span><span class="s2">"word"</span><span class="p">]))</span>
+<span class="n">experiments_b</span> <span class="o">=</span> <span class="n">synthesize_trials</span><span class="p">(</span><span class="n">block_b</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CMSGen</span><span class="p">)</span>
+<span class="n">tabulate_experiments</span><span class="p">(</span><span class="n">block_b</span><span class="p">,</span> <span class="n">experiments_b</span><span class="p">,</span> <span class="p">[</span><span class="n">colour</span><span class="p">,</span> <span class="n">congruency</span><span class="p">])</span>
+<span class="n">tabulate_experiments</span><span class="p">(</span><span class="n">block_b</span><span class="p">,</span> <span class="n">experiments_b</span><span class="p">,</span> <span class="p">[</span><span class="n">colour</span><span class="p">,</span> <span class="n">word</span><span class="p">])</span>
 </code></pre></div>
 <div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th>congruency</th>
-      <th>congruent</th>
-      <th>incongruent</th>
-    </tr>
-    <tr>
-      <th>colour</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>blue</th>
-      <td>4</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>green</th>
-      <td>4</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>red</th>
-      <td>4</td>
-      <td>4</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<pre>Experiment 0:
+colour red   | congruency congruent   | frequency 4 | proportion 16.666666666666664%
+colour red   | congruency incongruent | frequency 4 | proportion 16.666666666666664%
+colour green | congruency congruent   | frequency 4 | proportion 16.666666666666664%
+colour green | congruency incongruent | frequency 4 | proportion 16.666666666666664%
+colour blue  | congruency congruent   | frequency 4 | proportion 16.666666666666664%
+colour blue  | congruency incongruent | frequency 4 | proportion 16.666666666666664%
 
-<div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th>word</th>
-      <th>blue</th>
-      <th>green</th>
-      <th>red</th>
-    </tr>
-    <tr>
-      <th>colour</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>blue</th>
-      <td>4</td>
-      <td>1</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>green</th>
-      <td>3</td>
-      <td>4</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>red</th>
-      <td>4</td>
-      <td>0</td>
-      <td>4</td>
-    </tr>
-  </tbody>
-</table>
+Experiment 0:
+colour red   | word red   | frequency 4 | proportion 16.666666666666664%
+colour red   | word green | frequency 2 | proportion 8.333333333333332%
+colour red   | word blue  | frequency 2 | proportion 8.333333333333332%
+colour green | word red   | frequency 2 | proportion 8.333333333333332%
+colour green | word green | frequency 4 | proportion 16.666666666666664%
+colour green | word blue  | frequency 2 | proportion 8.333333333333332%
+colour blue  | word red   | frequency 2 | proportion 8.333333333333332%
+colour blue  | word green | frequency 2 | proportion 8.333333333333332%
+colour blue  | word blue  | frequency 4 | proportion 16.666666666666664%</pre>
 </div>
 
 <p>The first table is what was crossed: it is even. The second shows what was not: which word goes with an incongruent ink is left open, so those pairs can come out uneven. Run the cell again and compare.</p>
 <h3 id="what-does-each-option-cost">What does each option cost?</h3>
-<p>How often is a word shown in its own colour? One third means the word tells nothing about the ink.</p>
-<div class="highlight"><pre><span></span><code><span class="n">cost</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s2">"congruent trials (%)"</span><span class="p">:</span> <span class="p">[</span><span class="nb">round</span><span class="p">((</span><span class="n">t</span><span class="p">[</span><span class="s2">"congruency"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"congruent"</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="n">trials_a</span><span class="p">,</span> <span class="n">trials_b</span><span class="p">)],</span>
-    <span class="s2">"word is in its own colour (%)"</span><span class="p">:</span> <span class="p">[</span><span class="nb">round</span><span class="p">((</span><span class="n">t</span><span class="p">[</span><span class="s2">"word"</span><span class="p">]</span> <span class="o">==</span> <span class="n">t</span><span class="p">[</span><span class="s2">"colour"</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="n">trials_a</span><span class="p">,</span> <span class="n">trials_b</span><span class="p">)],</span>
-<span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">"A: every pair equally often"</span><span class="p">,</span> <span class="s2">"B: half congruent"</span><span class="p">])</span>
-<span class="n">display</span><span class="p">(</span><span class="n">cost</span><span class="p">)</span>
+<p>A congruent trial is a word in its own colour. In option A that is one third of the trials: the word tells nothing about the ink. In option B it is half: the word tells something.</p>
+<h3 id="the-sequence-as-a-table">The sequence as a table</h3>
+<p>One row per trial, for your experiment software.</p>
+<div class="highlight"><pre><span></span><code><span class="n">trials_a</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">experiments_a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">trials_b</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">experiments_b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">display</span><span class="p">(</span><span class="n">trials_b</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
 </code></pre></div>
 <div class="nb-out">
 <table class="dataframe nb-table">
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>congruent trials (%)</th>
-      <th>word is in its own colour (%)</th>
+      <th>colour</th>
+      <th>word</th>
+      <th>congruency</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>A: every pair equally often</th>
-      <td>33</td>
-      <td>33</td>
+      <th>0</th>
+      <td>green</td>
+      <td>green</td>
+      <td>congruent</td>
     </tr>
     <tr>
-      <th>B: half congruent</th>
-      <td>50</td>
-      <td>50</td>
+      <th>1</th>
+      <td>red</td>
+      <td>red</td>
+      <td>congruent</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>red</td>
+      <td>green</td>
+      <td>incongruent</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>green</td>
+      <td>red</td>
+      <td>incongruent</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>blue</td>
+      <td>red</td>
+      <td>incongruent</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>red</td>
+      <td>red</td>
+      <td>congruent</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>blue</td>
+      <td>blue</td>
+      <td>congruent</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>green</td>
+      <td>blue</td>
+      <td>incongruent</td>
     </tr>
   </tbody>
 </table>
