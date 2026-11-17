@@ -12,7 +12,7 @@ An AI assistant for designing experiments with
 <div class="join-item">
 <a href="assets/qr_repo.svg"><img src="assets/qr_repo.svg" alt="QR code for the repository"></a>
 <strong>The repository: open it in a Codespace to work with an assistant</strong>
-<span class="join-url">github.com/<wbr>younesStrittmatter/<wbr>sweetpea-starter</span>
+<a class="join-url" href="https://github.com/younesStrittmatter/sweetpea-starter" target="_blank">github.com/<wbr>younesStrittmatter/<wbr>sweetpea-starter</a>
 </div>
 </div>
 
@@ -27,6 +27,7 @@ puts the options to you.
 order taken into account: 11 flips and many shifts. The assistant learned from
 these which side effects a design can have, and its worked examples come from
 them.
+[Slides: Avoidable by design](Avoidable%20by%20design%20-%20Slides.pdf){ target=_blank }.
 
 **The psyche project.** A database of published experiments with open
 trial-level data: 1,544 experiments from 790 studies. The assistant uses it to
