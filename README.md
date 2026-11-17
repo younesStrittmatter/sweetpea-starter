@@ -11,10 +11,15 @@ your own designs.
 
 > Unofficial and experimental. Not (yet) part of the SweetPea project.
 
+**This is the development repository** (skills, tutorial sources, website,
+tests). To use it, go to the clean copy:
+[sweetpea-starter-template](https://github.com/younesStrittmatter/sweetpea-starter-template).
+It is rebuilt from here automatically; the buttons below lead there.
+
 ## Start
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/younesStrittmatter/sweetpea-starter)
-[![Open in Dev Container](https://img.shields.io/static/v1?label=Dev%20Container&message=Open%20locally&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/younesStrittmatter/sweetpea-starter)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/younesStrittmatter/sweetpea-starter-template)
+[![Open in Dev Container](https://img.shields.io/static/v1?label=Dev%20Container&message=Open%20locally&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/younesStrittmatter/sweetpea-starter-template)
 
 | Way in | What you need |
 |---|---|
@@ -25,7 +30,7 @@ your own designs.
 ### Your own editor
 
 ```
-git clone https://github.com/younesStrittmatter/sweetpea-starter
+git clone https://github.com/younesStrittmatter/sweetpea-starter-template
 cd sweetpea-starter
 pip install -r requirements.txt
 ```

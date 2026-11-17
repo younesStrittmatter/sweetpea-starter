@@ -1,0 +1,45 @@
+name: Publish the template repository
+
+# Builds the clean participant copy (dev/build_starter.sh) and pushes it to sweetpea-starter-template.
+on:
+  push:
+    branches: [main]
+    paths:
+      - skills/**
+      - tutorial/**
+      - experiments/**
+      - AGENTS.md
+      - CLAUDE.md
+      - .devcontainer/**
+      - .claude/**
+      - .agents/**
+      - dev/build_starter.sh
+      - .github/workflows/publish-template.yml
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the clean copy
+        run: sh dev/build_starter.sh "$RUNNER_TEMP/starter"
+      - name: Push it to the template repository
+        env:
+          DEPLOY_KEY: ${{ secrets.TEMPLATE_DEPLOY_KEY }}
+        run: |
+          if [ -z "$DEPLOY_KEY" ]; then echo "TEMPLATE_DEPLOY_KEY is not set: nothing published"; exit 0; fi
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/template
+          chmod 600 ~/.ssh/template
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/template -o IdentitiesOnly=yes"
+          git clone -q git@github.com:younesStrittmatter/sweetpea-starter-template.git "$RUNNER_TEMP/template"
+          cd "$RUNNER_TEMP/template"
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$RUNNER_TEMP/starter/." .
+          git add -A
+          if git diff --cached --quiet; then echo "nothing changed"; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Built from sweetpea-starter ${GITHUB_SHA::7}"
+          git push -q origin HEAD:main

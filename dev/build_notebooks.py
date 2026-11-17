@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pandas as pd
 
-REPO = "younesStrittmatter/sweetpea-starter"
+REPO = "younesStrittmatter/sweetpea-starter-template"
 root = Path(__file__).resolve().parents[1]
 COLAB = f"https://colab.research.google.com/github/{REPO}/blob/main/tutorial/notebooks/"
 

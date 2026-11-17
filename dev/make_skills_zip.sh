@@ -18,6 +18,6 @@ Install
      for example: "I want to run a Stroop experiment to test the congruency effect."
 
 The full repository, with a tutorial and worked examples:
-https://github.com/younesStrittmatter/sweetpea-starter
+https://github.com/younesStrittmatter/sweetpea-starter-template
 TXT
 (cd "$T" && zip -qr sweetpea-skills.zip sweetpea-skills) && mv "$T/sweetpea-skills.zip" . && rm -rf "$T" && ls -la sweetpea-skills.zip

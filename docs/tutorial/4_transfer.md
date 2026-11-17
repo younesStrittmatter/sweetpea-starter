@@ -1,6 +1,6 @@
 # Step 4. Transfer
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/younesStrittmatter/sweetpea-starter/blob/main/tutorial/notebooks/4_transfer.ipynb){ target=_blank } · [notebook](https://github.com/younesStrittmatter/sweetpea-starter/blob/main/tutorial/notebooks/4_transfer.ipynb) · [script](https://github.com/younesStrittmatter/sweetpea-starter/blob/main/tutorial/reference/step4_transfer.py)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/younesStrittmatter/sweetpea-starter-template/blob/main/tutorial/notebooks/4_transfer.ipynb){ target=_blank } · [notebook](https://github.com/younesStrittmatter/sweetpea-starter-template/blob/main/tutorial/notebooks/4_transfer.ipynb) · [script](https://github.com/younesStrittmatter/sweetpea-starter-template/blob/main/tutorial/reference/step4_transfer.py)
 
 ## The experiment
 

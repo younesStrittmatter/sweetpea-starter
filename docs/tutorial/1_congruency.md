@@ -1,12 +1,12 @@
 # Step 1. Congruency
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/younesStrittmatter/sweetpea-starter/blob/main/tutorial/notebooks/1_congruency.ipynb){ target=_blank } · [notebook](https://github.com/younesStrittmatter/sweetpea-starter/blob/main/tutorial/notebooks/1_congruency.ipynb) · [script](https://github.com/younesStrittmatter/sweetpea-starter/blob/main/tutorial/reference/step1_congruency.py)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/younesStrittmatter/sweetpea-starter-template/blob/main/tutorial/notebooks/1_congruency.ipynb){ target=_blank } · [notebook](https://github.com/younesStrittmatter/sweetpea-starter-template/blob/main/tutorial/notebooks/1_congruency.ipynb) · [script](https://github.com/younesStrittmatter/sweetpea-starter-template/blob/main/tutorial/reference/step1_congruency.py)
 
 ## The experiment
 
 A block from the design built on this page. Press play, or step through it.
 
-<div class="stroop-demo" data-trials='[{"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}]'></div>
+<div class="stroop-demo" data-trials='[{"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}]'></div>
 
 ## With your assistant
 
@@ -199,19 +199,19 @@ display(pd.crosstab(trials_b["colour"], trials_b["word"]))
     <tr>
       <th>blue</th>
       <td>4</td>
-      <td>1</td>
-      <td>3</td>
+      <td>4</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>green</th>
-      <td>3</td>
+      <td>2</td>
       <td>4</td>
-      <td>1</td>
+      <td>2</td>
     </tr>
     <tr>
       <th>red</th>
-      <td>0</td>
-      <td>4</td>
+      <td>3</td>
+      <td>1</td>
       <td>4</td>
     </tr>
   </tbody>

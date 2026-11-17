@@ -1,13 +1,16 @@
 #!/bin/sh
-# Builds the branch "starter": what a participant needs and nothing else (the skills, the tutorial,
-# an empty experiments folder, the environment). Development stays on main; run this after a change
-# to publish it:   sh dev/make_starter_branch.sh          (add "push" to also push the branch)
+# Builds the clean copy that participants get (the repository sweetpea-starter-template): the skills,
+# the tutorial, an empty experiments folder and the environment. Nothing of the development setup.
+#   sh dev/build_starter.sh <empty output folder>
+# The GitHub Action .github/workflows/publish-template.yml runs this on every push to main and
+# pushes the result to the template repository; nobody has to run it by hand.
 set -e
+OUT=$1; [ -n "$OUT" ] || { echo "usage: sh dev/build_starter.sh <output folder>"; exit 1; }
 cd "$(dirname "$0")/.."
-ROOT=$(pwd); T=$(mktemp -d); REMOTE=$(git remote get-url origin)
-git archive HEAD AGENTS.md CLAUDE.md .gitignore .devcontainer .claude .agents skills tutorial experiments | tar -x -C "$T"
-printf 'sweetpea\npandas\nipykernel\n' > "$T/requirements.txt"
-cat > "$T/README.md" <<'MD'
+mkdir -p "$OUT"
+git archive HEAD AGENTS.md CLAUDE.md .gitignore .devcontainer .claude .agents skills tutorial experiments | tar -x -C "$OUT"
+printf 'sweetpea\npandas\nipykernel\n' > "$OUT/requirements.txt"
+cat > "$OUT/README.md" <<'MD'
 # SweetPea Starter
 
 Design experiments with [SweetPea](https://sweetpea-org.github.io) together
@@ -22,13 +25,14 @@ Website with the examples and the tutorial:
 
 ## Start
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/younesStrittmatter/sweetpea-starter?ref=starter)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/younesStrittmatter/sweetpea-starter-template)
 
 | Way in | What you need |
 |---|---|
 | **Codespaces** (button above) | A GitHub account. Everything runs in the browser. |
-| **Your own computer** | Python 3.9 or later: `git clone -b starter https://github.com/younesStrittmatter/sweetpea-starter`, then `pip install -r requirements.txt`. |
-| **Download** | [The folder as a zip](https://github.com/younesStrittmatter/sweetpea-starter/archive/refs/heads/starter.zip), then `pip install -r requirements.txt`. |
+| **Your own copy** | The green button "Use this template" at the top of this page gives you your own repository to keep your designs in. |
+| **Your own computer** | Python 3.9 or later: `git clone https://github.com/younesStrittmatter/sweetpea-starter-template`, then `pip install -r requirements.txt`. |
+| **Download** | [The folder as a zip](https://github.com/younesStrittmatter/sweetpea-starter-template/archive/refs/heads/main.zip), then `pip install -r requirements.txt`. |
 
 ## Bring your AI
 
@@ -59,8 +63,8 @@ Using a chat window (ChatGPT, Claude, Gemini in the browser)? Upload
 | `tutorial/` | One Stroop experiment in four questions: a page per step, notebooks, and the reference designs. |
 | `experiments/` | Your own designs go here. |
 | `AGENTS.md` | Tells the assistant where to look. |
+
+This repository is built automatically from
+[sweetpea-starter](https://github.com/younesStrittmatter/sweetpea-starter),
+where the skills are developed. Changes made here are overwritten.
 MD
-cd "$T" && git init -q -b starter && git add -A && git -c user.name="$(git -C "$ROOT" config user.name)" -c user.email="$(git -C "$ROOT" config user.email)" \
-  commit -q -m "Starter: built from main $(git -C "$ROOT" rev-parse --short HEAD)"
-echo "built in $T"; git ls-files | cut -d/ -f1 | sort | uniq -c
-if [ "$1" = "push" ]; then git push -q --force "$REMOTE" starter:starter && echo "pushed branch starter"; fi

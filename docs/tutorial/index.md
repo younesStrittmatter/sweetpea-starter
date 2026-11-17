@@ -13,7 +13,7 @@ pieces, a playable block of the experiment, and the count tables.
 
 ## With an assistant
 
-Open the [repository](https://github.com/younesStrittmatter/sweetpea-starter) in a Codespace, start your assistant (`claude`, `codex` or `gemini`),
+Open the [repository](https://github.com/younesStrittmatter/sweetpea-starter-template) in a Codespace, start your assistant (`claude`, `codex` or `gemini`),
 and say the line under "With your assistant" on each page, in your own words. Stuck? Say **"Run the guided tutorial."**
 
 ## Without one
