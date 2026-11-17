@@ -8,7 +8,7 @@ pieces, a playable block of the experiment, and the count tables.
 |---|---|---|
 | [1. Congruency](1_congruency.md) | Does an irrelevant word interfere? | Regular factors, a derived factor, what is crossed |
 | [2. The trial before](2_sequence.md) | Does a conflict change how the next trial is handled? | A transition factor |
-| [3. Adaptation](3_adaptation.md) | Do people adjust to how frequent conflict is? | Blocks that differ in proportion |
+| [3. Adaptation](3_adaptation.md) | Do people adjust to how frequent conflict is? | A weight; blocks that differ in proportion |
 | [4. Transfer](4_transfer.md) | Does adapting to conflict carry over to the next task? | A second task, mini-blocks nested in one design |
 
 ## With an assistant
@@ -19,4 +19,4 @@ and say the line under "With your assistant" on each page, in your own words. St
 ## Without one
 
 Every page has an "Open in Colab" button. The notebooks build on each other: step 2 keeps the block of step 1,
-step 3 turns its proportion into the manipulation, step 4 adds a task and nests the mini-blocks in one design.
+step 3 turns its proportion into the manipulation with a weight, step 4 adds a task and nests the mini-blocks in one design.

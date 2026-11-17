@@ -6,7 +6,7 @@
 
 A block from the design built on this page. Press play, or step through it.
 
-<div class="stroop-demo" data-trials='[{"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}]'></div>
+<div class="stroop-demo" data-trials='[{"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}]'></div>
 
 ## With your assistant
 
@@ -134,37 +134,49 @@ display(trials_a["congruency"].value_counts().to_frame("trials"))
 
 ### Option B: half of the trials congruent
 
-Every pair once, and the congruent pairs a second time. Two helper factors do that: `copy` numbers the copies, and the copies that are too many are excluded. The helper is written once here and used again in steps 2 and 3.
+Cross the ink colour with congruency. Each ink colour is then congruent on half of its trials: 6 combinations, four rounds.
 
 ```python
-def pairs_with_copies(congruent_copies, incongruent_copies):
-    """Two helper factors that make every congruent pair occur `congruent_copies` times
-    and every incongruent pair `incongruent_copies` times."""
-    copy = Factor("copy", [str(n) for n in range(1, max(congruent_copies, incongruent_copies) + 1)])
-
-    def too_many(copy, colour, word):
-        return int(copy) > (congruent_copies if colour == word else incongruent_copies)
-
-    def wanted(copy, colour, word):
-        return not too_many(copy, colour, word)
-
-    extra_copy = Factor("extra_copy", [
-        DerivedLevel("too many", WithinTrial(too_many, [copy, colour, word])),
-        DerivedLevel("wanted", WithinTrial(wanted, [copy, colour, word])),
-    ])
-    return copy, extra_copy
-```
-
-```python
-copy, extra_copy = pairs_with_copies(congruent_copies=2, incongruent_copies=1)
-block_b = CrossBlock(design=[colour, word, congruency, copy, extra_copy],
-                     crossing=[colour, word, copy],
-                     constraints=[Exclude((extra_copy, "too many")), MinimumTrials(24)],
-                     require_complete_crossing=False)
+block_b = CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
+                     constraints=[MinimumTrials(24)])
 trials_b = pd.DataFrame(synthesize_trials(block_b, 1, CMSGen)[0])
+display(pd.crosstab(trials_b["colour"], trials_b["congruency"]))
 display(pd.crosstab(trials_b["colour"], trials_b["word"]))
-display(trials_b["congruency"].value_counts().to_frame("trials"))
 ```
+
+<div class="nb-out">
+<table class="dataframe nb-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>congruency</th>
+      <th>congruent</th>
+      <th>incongruent</th>
+    </tr>
+    <tr>
+      <th>colour</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>blue</th>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>green</th>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>red</th>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 <div class="nb-out">
 <table class="dataframe nb-table">
@@ -186,8 +198,8 @@ display(trials_b["congruency"].value_counts().to_frame("trials"))
     <tr>
       <th>blue</th>
       <td>4</td>
-      <td>2</td>
-      <td>2</td>
+      <td>4</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>green</th>
@@ -197,38 +209,15 @@ display(trials_b["congruency"].value_counts().to_frame("trials"))
     </tr>
     <tr>
       <th>red</th>
-      <td>2</td>
-      <td>2</td>
+      <td>1</td>
+      <td>3</td>
       <td>4</td>
     </tr>
   </tbody>
 </table>
 </div>
 
-<div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>trials</th>
-    </tr>
-    <tr>
-      <th>congruency</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>congruent</th>
-      <td>12</td>
-    </tr>
-    <tr>
-      <th>incongruent</th>
-      <td>12</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+The first table is what was crossed: it is even. The second shows what was not: which word goes with an incongruent ink is left open, so those pairs can come out uneven. Run the cell again and compare.
 
 ### What does each option cost?
 

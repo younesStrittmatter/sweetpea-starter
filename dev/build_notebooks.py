@@ -43,23 +43,6 @@ congruency = Factor("congruency", [
     DerivedLevel("incongruent", WithinTrial(different, [colour, word])),
 ])'''
 
-COPIES = '''def pairs_with_copies(congruent_copies, incongruent_copies):
-    """Two helper factors that make every congruent pair occur `congruent_copies` times
-    and every incongruent pair `incongruent_copies` times."""
-    copy = Factor("copy", [str(n) for n in range(1, max(congruent_copies, incongruent_copies) + 1)])
-
-    def too_many(copy, colour, word):
-        return int(copy) > (congruent_copies if colour == word else incongruent_copies)
-
-    def wanted(copy, colour, word):
-        return not too_many(copy, colour, word)
-
-    extra_copy = Factor("extra_copy", [
-        DerivedLevel("too many", WithinTrial(too_many, [copy, colour, word])),
-        DerivedLevel("wanted", WithinTrial(wanted, [copy, colour, word])),
-    ])
-    return copy, extra_copy'''
-
 STEPS = [
 ("1_congruency", "Step 1. Congruency", "trials_b", "I want to run a Stroop experiment to test the congruency effect. What is it about, and what do I need to decide?", [
 ("md", '''**The question.** Does an irrelevant word interfere with naming a colour?
@@ -79,17 +62,13 @@ STEPS = [
 trials_a = pd.DataFrame(synthesize_trials(block_a, 1, CMSGen)[0])
 display(pd.crosstab(trials_a["colour"], trials_a["word"]))
 display(trials_a["congruency"].value_counts().to_frame("trials"))'''),
-("md", "### Option B: half of the trials congruent\n\nEvery pair once, and the congruent pairs a second time. Two helper factors do that: `copy` numbers the copies, and the copies that are too many are excluded. The helper is written once here and used again in steps 2 and 3."),
-("code", COPIES),
-("code", '''copy, extra_copy = pairs_with_copies(congruent_copies=2, incongruent_copies=1)
-block_b = CrossBlock(design=[colour, word, congruency, copy, extra_copy],
-                     crossing=[colour, word, copy],
-                     constraints=[Exclude((extra_copy, "too many")), MinimumTrials(24)],
-                     require_complete_crossing=False)
+("md", "### Option B: half of the trials congruent\n\nCross the ink colour with congruency. Each ink colour is then congruent on half of its trials: 6 combinations, four rounds."),
+("code", '''block_b = CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
+                     constraints=[MinimumTrials(24)])
 trials_b = pd.DataFrame(synthesize_trials(block_b, 1, CMSGen)[0])
-display(pd.crosstab(trials_b["colour"], trials_b["word"]))
-display(trials_b["congruency"].value_counts().to_frame("trials"))'''),
-("md", "### What does each option cost?\n\nHow often is a word shown in its own colour? One third means the word tells nothing about the ink."),
+display(pd.crosstab(trials_b["colour"], trials_b["congruency"]))
+display(pd.crosstab(trials_b["colour"], trials_b["word"]))'''),
+("md", "The first table is what was crossed: it is even. The second shows what was not: which word goes with an incongruent ink is left open, so those pairs can come out uneven. Run the cell again and compare.\n\n### What does each option cost?\n\nHow often is a word shown in its own colour? One third means the word tells nothing about the ink."),
 ("code", '''cost = pd.DataFrame({
     "congruent trials (%)": [round((t["congruency"] == "congruent").mean() * 100) for t in (trials_a, trials_b)],
     "word is in its own colour (%)": [round((t["word"] == t["colour"]).mean() * 100) for t in (trials_a, trials_b)],
@@ -98,7 +77,7 @@ display(cost)'''),
 ("md", "**Check.** In which option could a participant guess the ink from the word? In which are there fewer congruent trials? Neither is free: which cost is acceptable depends on what you compare.\n\n**Try.** Add a fourth colour to `colours` and run again. What happens to the share of congruent trials in option A?\n\n**Next.** Step 2 keeps option B and asks what happened on the trial before."),
 ]),
 ("2_sequence", "Step 2. The trial before", "trials", "Now I want to test whether the congruency effect depends on the trial before: is it smaller right after an incongruent trial? What is the hypothesis behind that, and what does the design need?", [
-("md", '''**So far.** Step 1 gave a block with half of the trials congruent and every pair of a kind equally often. This step keeps that block and adds one factor.
+("md", '''**So far.** Step 1 gave a block with half of the trials congruent: the ink colour crossed with congruency. This step keeps that block and adds one factor.
 
 **The question.** Does a conflict change how the next trial is handled?
 
@@ -108,7 +87,7 @@ display(cost)'''),
 
 **The analysis.** The congruency effect after a congruent trial against the congruency effect after an incongruent trial.'''),
 ("md", "### As in step 1"),
-("code", BASE), ("code", CONGRUENCY), ("code", COPIES),
+("code", BASE), ("code", CONGRUENCY),
 ("md", "### New: the trial before as a factor\n\nA transition factor follows from the trial before: `[0]` is this trial, `[-1]` the one before."),
 ("code", '''def after_congruent(colour, word):
     return colour[-1] == word[-1]
@@ -122,12 +101,10 @@ trial_before = Factor("trial_before", [
     DerivedLevel("congruent", Transition(after_congruent, [colour, word])),
     DerivedLevel("incongruent", Transition(after_incongruent, [colour, word])),
 ])'''),
-("md", "### The block\n\nThe block of step 1, crossed with the trial before: 12 trials times 2 is 24, plus a first trial, which has no trial before."),
-("code", '''copy, extra_copy = pairs_with_copies(congruent_copies=2, incongruent_copies=1)
-block = CrossBlock(design=[colour, word, congruency, copy, extra_copy, trial_before],
-                   crossing=[colour, word, copy, trial_before],
-                   constraints=[Exclude((extra_copy, "too many")), MinimumTrials(25)],
-                   require_complete_crossing=False)
+("md", "### The block\n\nThe crossing of step 1 with the trial before added: 12 combinations, two rounds, plus a first trial, which has no trial before."),
+("code", '''block = CrossBlock(design=[colour, word, congruency, trial_before],
+                   crossing=[colour, congruency, trial_before],
+                   constraints=[MinimumTrials(25)])
 trials = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
 rest = trials.iloc[1:]                  # without the first trial
 display(pd.crosstab(rest["trial_before"], rest["congruency"]))'''),
@@ -138,7 +115,7 @@ display(pd.crosstab([rest["trial_before"], rest["congruency"]], rest["response_r
 ("md", "**Check.** Is the response repeat equal across the four combinations? If not, the alternative explanation is still open. Whatever is not in the crossing is left to chance: run the block cell again and see which counts change.\n\n**Try.** Ask what it would take to forbid all repeats (`Exclude` on a transition factor for the colour), and what that does to the four combinations.\n\n**Next.** Step 3 goes from the trial before to the whole block: mostly congruent and mostly incongruent blocks."),
 ]),
 ("3_adaptation", "Step 3. Adaptation", "session", "Now I want to test whether people adapt to the context. I want blocks in which most trials are congruent and blocks in which most are incongruent, and compare the congruency effect between them. What is the hypothesis, and what should I watch out for?", [
-("md", '''**So far.** Step 1 chose how many copies of each pair a block holds: 2 of each congruent pair, 1 of each incongruent pair. This step turns that choice into the manipulation.
+("md", '''**So far.** Step 1 crossed the ink colour with congruency: half of the trials congruent. This step changes that share, and the share becomes the manipulation.
 
 **The question.** Do people adjust to how frequent conflict is?
 
@@ -148,17 +125,26 @@ display(pd.crosstab([rest["trial_before"], rest["congruency"]], rest["response_r
 
 **The analysis.** The congruency effect in mostly congruent blocks against the congruency effect in mostly incongruent blocks.'''),
 ("md", "### As in step 1"),
-("code", BASE), ("code", CONGRUENCY), ("code", COPIES),
-("md", "### New: two kinds of block\n\nThe number of copies sets the proportion. 6 copies of each congruent pair and 1 of each incongruent pair is 18 of 24 trials congruent; 2 and 3 copies is 6 of 24."),
-("code", '''COPIES = {"mostly congruent": (6, 1), "mostly incongruent": (2, 3)}     # copies of each (congruent, incongruent) pair
+("code", BASE),
+("code", '''def same(colour, word):
+    return colour == word
+
+
+def different(colour, word):
+    return colour != word
+'''.rstrip()),
+("md", "### New: a weight\n\nA level can have a weight: the third argument of `DerivedLevel`. 3 to 1 makes the first level three times as frequent as the second. Crossed with the ink colour that is 12 combinations, two rounds: 18 of 24 trials."),
+("code", '''WEIGHTS = {"mostly congruent": (3, 1), "mostly incongruent": (1, 3)}     # (congruent, incongruent)
 
 
 def block(context):
-    copy, extra_copy = pairs_with_copies(*COPIES[context])
-    return CrossBlock(design=[colour, word, congruency, copy, extra_copy],
-                      crossing=[colour, word, copy],
-                      constraints=[Exclude((extra_copy, "too many"))],
-                      require_complete_crossing=False)'''),
+    congruent_weight, incongruent_weight = WEIGHTS[context]
+    congruency = Factor("congruency", [
+        DerivedLevel("congruent", WithinTrial(same, [colour, word]), congruent_weight),
+        DerivedLevel("incongruent", WithinTrial(different, [colour, word]), incongruent_weight),
+    ])
+    return CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
+                      constraints=[MinimumTrials(24)])'''),
 ("md", "### A session of four blocks\n\nEach block is generated on its own and gets its context as a column."),
 ("code", '''blocks = []
 for number, context in enumerate(["mostly congruent", "mostly incongruent", "mostly incongruent", "mostly congruent"], start=1):
@@ -171,10 +157,10 @@ display(pd.crosstab(session["context"], session["congruency"]))'''),
 ("md", "### How well does the word tell the ink?\n\nFor each word, the share of trials on which it is shown in its own colour. That number is the alternative explanation."),
 ("code", '''session["word_is_ink"] = session["word"] == session["colour"]
 display(session.groupby(["context", "word"])["word_is_ink"].mean().round(2).unstack())'''),
-("md", "**Check.** Are the proportions what was asked for? How many incongruent trials does a mostly congruent block have: is that enough to measure the effect there? A word is in its own colour on 75% of the trials in one context and 25% in the other: how could learning and control be told apart?\n\n**Try.** Change the copies to `(4, 1)` and `(1, 2)`. What are the proportions and the block lengths now?\n\n**Next.** Step 4 asks whether this adjustment has a price when the task changes."),
+("md", "**Check.** Are the proportions what was asked for? How many incongruent trials does a mostly congruent block have: is that enough to measure the effect there? A word is in its own colour far more often in one context than in the other: how could learning and control be told apart?\n\n**Try.** Change the weights to `(2, 1)` and `(1, 2)`. What are the proportions and the block lengths now?\n\n**Next.** Step 4 asks whether this adjustment has a price when the task changes. There the weight meets a limit: it cannot depend on another factor."),
 ]),
 ("4_transfer", "Step 4. Transfer", "session", "Last question: does the adaptation transfer to another task? I want mini-blocks that are mostly congruent or mostly incongruent, and each mini-block is either colour naming or word reading. I want the switch cost between mini-blocks: word reading after colour naming against word reading after word reading, compared between the two contexts. I take word reading because it has almost no congruency effect. What is the hypothesis, and can nested blocks keep everything counterbalanced, also at the border between two mini-blocks: which context and which task came before?", [
-("md", '''**So far.** Step 2 made the trial before a factor. Step 3 made blocks that are mostly congruent or mostly incongruent, generated one by one. This step uses both ideas one level up: the mini-block is the unit, and the whole session is one design.
+("md", '''**So far.** Step 2 made the trial before a factor. Step 3 made blocks that are mostly congruent or mostly incongruent with a weight, generated one by one. This step uses both ideas one level up: the mini-block is the unit, and the whole session is one design.
 
 **The question.** Does adapting to frequent conflict make it harder to change the task?
 
@@ -216,7 +202,7 @@ context_before = Factor("context_before", [
     DerivedLevel("mostly congruent", Transition(after_mostly_congruent, [context])),
     DerivedLevel("mostly incongruent", Transition(after_mostly_incongruent, [context])),
 ])'''),
-("md", "### New: what the context makes frequent\n\nA weight makes a level more frequent: the third argument of a level, and 3 to 1 is three quarters. But a level has one weight, and here the proportion depends on the context. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one."),
+("md", "### New: what the context makes frequent\n\nIn step 3 a weight on congruency set the proportion of a block. But a level has one weight, and here the proportion depends on the context, which changes from mini-block to mini-block. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one."),
 ("code", '''def frequent_here(colour, word, context):
     congruent = colour == word
     return congruent == (context == "mostly congruent")
@@ -352,12 +338,12 @@ index = ["# Tutorial: four questions about one task", "",
          "| Step | The question | New in the design |", "|---|---|---|",
          "| [1. Congruency](1_congruency.md) | Does an irrelevant word interfere? | Regular factors, a derived factor, what is crossed |",
          "| [2. The trial before](2_sequence.md) | Does a conflict change how the next trial is handled? | A transition factor |",
-         "| [3. Adaptation](3_adaptation.md) | Do people adjust to how frequent conflict is? | Blocks that differ in proportion |",
+         "| [3. Adaptation](3_adaptation.md) | Do people adjust to how frequent conflict is? | A weight; blocks that differ in proportion |",
          "| [4. Transfer](4_transfer.md) | Does adapting to conflict carry over to the next task? | A second task, mini-blocks nested in one design |", "",
          "## With an assistant", "",
          f"Open the [repository](https://github.com/{REPO}) in a Codespace, start your assistant (`claude`, `codex` or `gemini`),",
          "and say the line under \"With your assistant\" on each page, in your own words. Stuck? Say **\"Run the guided tutorial.\"**", "",
          "## Without one", "",
          "Every page has an \"Open in Colab\" button. The notebooks build on each other: step 2 keeps the block of step 1,",
-         "step 3 turns its proportion into the manipulation, step 4 adds a task and nests the mini-blocks in one design.", ""]
+         "step 3 turns its proportion into the manipulation with a weight, step 4 adds a task and nests the mini-blocks in one design.", ""]
 (root / "docs" / "tutorial" / "index.md").write_text("\n".join(index))

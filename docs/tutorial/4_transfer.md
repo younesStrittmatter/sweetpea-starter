@@ -14,7 +14,7 @@ A block from the design built on this page. Press play, or step through it.
 
 ## Step by step
 
-**So far.** Step 2 made the trial before a factor. Step 3 made blocks that are mostly congruent or mostly incongruent, generated one by one. This step uses both ideas one level up: the mini-block is the unit, and the whole session is one design.
+**So far.** Step 2 made the trial before a factor. Step 3 made blocks that are mostly congruent or mostly incongruent with a weight, generated one by one. This step uses both ideas one level up: the mini-block is the unit, and the whole session is one design.
 
 **The question.** Does adapting to frequent conflict make it harder to change the task?
 
@@ -79,7 +79,7 @@ context_before = Factor("context_before", [
 
 ### New: what the context makes frequent
 
-A weight makes a level more frequent: the third argument of a level, and 3 to 1 is three quarters. But a level has one weight, and here the proportion depends on the context. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one.
+In step 3 a weight on congruency set the proportion of a block. But a level has one weight, and here the proportion depends on the context, which changes from mini-block to mini-block. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one.
 
 ```python
 def frequent_here(colour, word, context):

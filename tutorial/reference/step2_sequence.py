@@ -34,24 +34,6 @@ congruency = Factor("congruency", [
 ])
 
 
-def pairs_with_copies(congruent_copies, incongruent_copies):
-    """Two helper factors that make every congruent pair occur `congruent_copies` times
-    and every incongruent pair `incongruent_copies` times."""
-    copy = Factor("copy", [str(n) for n in range(1, max(congruent_copies, incongruent_copies) + 1)])
-
-    def too_many(copy, colour, word):
-        return int(copy) > (congruent_copies if colour == word else incongruent_copies)
-
-    def wanted(copy, colour, word):
-        return not too_many(copy, colour, word)
-
-    extra_copy = Factor("extra_copy", [
-        DerivedLevel("too many", WithinTrial(too_many, [copy, colour, word])),
-        DerivedLevel("wanted", WithinTrial(wanted, [copy, colour, word])),
-    ])
-    return copy, extra_copy
-
-
 def after_congruent(colour, word):
     return colour[-1] == word[-1]
 
@@ -66,11 +48,9 @@ trial_before = Factor("trial_before", [
 ])
 
 
-copy, extra_copy = pairs_with_copies(congruent_copies=2, incongruent_copies=1)
-block = CrossBlock(design=[colour, word, congruency, copy, extra_copy, trial_before],
-                   crossing=[colour, word, copy, trial_before],
-                   constraints=[Exclude((extra_copy, "too many")), MinimumTrials(25)],
-                   require_complete_crossing=False)
+block = CrossBlock(design=[colour, word, congruency, trial_before],
+                   crossing=[colour, congruency, trial_before],
+                   constraints=[MinimumTrials(25)])
 trials = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
 rest = trials.iloc[1:]                  # without the first trial
 display(pd.crosstab(rest["trial_before"], rest["congruency"]))

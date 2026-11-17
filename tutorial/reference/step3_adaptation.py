@@ -19,7 +19,6 @@ colour = Factor("colour", colours)      # the ink
 word = Factor("word", colours)          # what the word says
 
 
-# a derived factor: it follows from colour and word on the same trial
 def same(colour, word):
     return colour == word
 
@@ -28,39 +27,17 @@ def different(colour, word):
     return colour != word
 
 
-congruency = Factor("congruency", [
-    DerivedLevel("congruent", WithinTrial(same, [colour, word])),
-    DerivedLevel("incongruent", WithinTrial(different, [colour, word])),
-])
-
-
-def pairs_with_copies(congruent_copies, incongruent_copies):
-    """Two helper factors that make every congruent pair occur `congruent_copies` times
-    and every incongruent pair `incongruent_copies` times."""
-    copy = Factor("copy", [str(n) for n in range(1, max(congruent_copies, incongruent_copies) + 1)])
-
-    def too_many(copy, colour, word):
-        return int(copy) > (congruent_copies if colour == word else incongruent_copies)
-
-    def wanted(copy, colour, word):
-        return not too_many(copy, colour, word)
-
-    extra_copy = Factor("extra_copy", [
-        DerivedLevel("too many", WithinTrial(too_many, [copy, colour, word])),
-        DerivedLevel("wanted", WithinTrial(wanted, [copy, colour, word])),
-    ])
-    return copy, extra_copy
-
-
-COPIES = {"mostly congruent": (6, 1), "mostly incongruent": (2, 3)}     # copies of each (congruent, incongruent) pair
+WEIGHTS = {"mostly congruent": (3, 1), "mostly incongruent": (1, 3)}     # (congruent, incongruent)
 
 
 def block(context):
-    copy, extra_copy = pairs_with_copies(*COPIES[context])
-    return CrossBlock(design=[colour, word, congruency, copy, extra_copy],
-                      crossing=[colour, word, copy],
-                      constraints=[Exclude((extra_copy, "too many"))],
-                      require_complete_crossing=False)
+    congruent_weight, incongruent_weight = WEIGHTS[context]
+    congruency = Factor("congruency", [
+        DerivedLevel("congruent", WithinTrial(same, [colour, word]), congruent_weight),
+        DerivedLevel("incongruent", WithinTrial(different, [colour, word]), incongruent_weight),
+    ])
+    return CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
+                      constraints=[MinimumTrials(24)])
 
 
 blocks = []

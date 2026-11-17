@@ -41,32 +41,11 @@ display(pd.crosstab(trials_a["colour"], trials_a["word"]))
 display(trials_a["congruency"].value_counts().to_frame("trials"))
 
 
-def pairs_with_copies(congruent_copies, incongruent_copies):
-    """Two helper factors that make every congruent pair occur `congruent_copies` times
-    and every incongruent pair `incongruent_copies` times."""
-    copy = Factor("copy", [str(n) for n in range(1, max(congruent_copies, incongruent_copies) + 1)])
-
-    def too_many(copy, colour, word):
-        return int(copy) > (congruent_copies if colour == word else incongruent_copies)
-
-    def wanted(copy, colour, word):
-        return not too_many(copy, colour, word)
-
-    extra_copy = Factor("extra_copy", [
-        DerivedLevel("too many", WithinTrial(too_many, [copy, colour, word])),
-        DerivedLevel("wanted", WithinTrial(wanted, [copy, colour, word])),
-    ])
-    return copy, extra_copy
-
-
-copy, extra_copy = pairs_with_copies(congruent_copies=2, incongruent_copies=1)
-block_b = CrossBlock(design=[colour, word, congruency, copy, extra_copy],
-                     crossing=[colour, word, copy],
-                     constraints=[Exclude((extra_copy, "too many")), MinimumTrials(24)],
-                     require_complete_crossing=False)
+block_b = CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
+                     constraints=[MinimumTrials(24)])
 trials_b = pd.DataFrame(synthesize_trials(block_b, 1, CMSGen)[0])
+display(pd.crosstab(trials_b["colour"], trials_b["congruency"]))
 display(pd.crosstab(trials_b["colour"], trials_b["word"]))
-display(trials_b["congruency"].value_counts().to_frame("trials"))
 
 
 cost = pd.DataFrame({

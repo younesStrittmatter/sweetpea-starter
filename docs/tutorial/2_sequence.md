@@ -6,7 +6,7 @@
 
 A block from the design built on this page. Press play, or step through it.
 
-<div class="stroop-demo" data-trials='[{"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": ""}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "incongruent"}]'></div>
+<div class="stroop-demo" data-trials='[{"colour": "green", "word": "green", "congruency": "congruent", "trial_before": ""}, {"colour": "red", "word": "green", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "red", "word": "green", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent", "trial_before": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent", "trial_before": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent", "trial_before": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent", "trial_before": "congruent"}]'></div>
 
 ## With your assistant
 
@@ -14,7 +14,7 @@ A block from the design built on this page. Press play, or step through it.
 
 ## Step by step
 
-**So far.** Step 1 gave a block with half of the trials congruent and every pair of a kind equally often. This step keeps that block and adds one factor.
+**So far.** Step 1 gave a block with half of the trials congruent: the ink colour crossed with congruency. This step keeps that block and adds one factor.
 
 **The question.** Does a conflict change how the next trial is handled?
 
@@ -54,25 +54,6 @@ congruency = Factor("congruency", [
 ])
 ```
 
-```python
-def pairs_with_copies(congruent_copies, incongruent_copies):
-    """Two helper factors that make every congruent pair occur `congruent_copies` times
-    and every incongruent pair `incongruent_copies` times."""
-    copy = Factor("copy", [str(n) for n in range(1, max(congruent_copies, incongruent_copies) + 1)])
-
-    def too_many(copy, colour, word):
-        return int(copy) > (congruent_copies if colour == word else incongruent_copies)
-
-    def wanted(copy, colour, word):
-        return not too_many(copy, colour, word)
-
-    extra_copy = Factor("extra_copy", [
-        DerivedLevel("too many", WithinTrial(too_many, [copy, colour, word])),
-        DerivedLevel("wanted", WithinTrial(wanted, [copy, colour, word])),
-    ])
-    return copy, extra_copy
-```
-
 ### New: the trial before as a factor
 
 A transition factor follows from the trial before: `[0]` is this trial, `[-1]` the one before.
@@ -94,14 +75,12 @@ trial_before = Factor("trial_before", [
 
 ### The block
 
-The block of step 1, crossed with the trial before: 12 trials times 2 is 24, plus a first trial, which has no trial before.
+The crossing of step 1 with the trial before added: 12 combinations, two rounds, plus a first trial, which has no trial before.
 
 ```python
-copy, extra_copy = pairs_with_copies(congruent_copies=2, incongruent_copies=1)
-block = CrossBlock(design=[colour, word, congruency, copy, extra_copy, trial_before],
-                   crossing=[colour, word, copy, trial_before],
-                   constraints=[Exclude((extra_copy, "too many")), MinimumTrials(25)],
-                   require_complete_crossing=False)
+block = CrossBlock(design=[colour, word, congruency, trial_before],
+                   crossing=[colour, congruency, trial_before],
+                   constraints=[MinimumTrials(25)])
 trials = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
 rest = trials.iloc[1:]                  # without the first trial
 display(pd.crosstab(rest["trial_before"], rest["congruency"]))
@@ -168,13 +147,13 @@ display(pd.crosstab([rest["trial_before"], rest["congruency"]], rest["response_r
     <tr>
       <th rowspan="2" valign="top">congruent</th>
       <th>congruent</th>
-      <td>4</td>
-      <td>2</td>
+      <td>5</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>incongruent</th>
-      <td>2</td>
-      <td>4</td>
+      <td>5</td>
+      <td>1</td>
     </tr>
     <tr>
       <th rowspan="2" valign="top">incongruent</th>
@@ -184,8 +163,8 @@ display(pd.crosstab([rest["trial_before"], rest["congruency"]], rest["response_r
     </tr>
     <tr>
       <th>incongruent</th>
-      <td>4</td>
-      <td>2</td>
+      <td>5</td>
+      <td>1</td>
     </tr>
   </tbody>
 </table>
