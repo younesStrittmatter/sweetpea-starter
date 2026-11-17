@@ -890,10 +890,10 @@ derived or not.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>proposed</code>: sets of 12, plus what repeats from the trial before (side or not x colour or not) even over the whole block</td>
+<td><code>proposed</code>: sets of 12, merged with a block that crosses "the side repeats" with "the colour repeats" over the whole block</td>
 <td>yes</td>
 <td>trial type 50%, side 50%, response 50%, same square 25%</td>
-<td>One extra trial per block (109). Inside a set the transitions stay free. Seconds with <code>IterateGen</code> (not a random draw), about five minutes with <code>CMSGen</code>.</td>
+<td>One extra trial per block (109). Inside a set the transitions stay free. About four minutes to generate at 109 trials, seconds at 49.</td>
 </tr>
 <tr>
 <td><code>within_every_four</code>: the same, and also even within every four trials</td>
@@ -965,11 +965,12 @@ trials", say these four things before writing the design:</p>
 <h2 id="design-to-propose">Design to propose</h2>
 <p><code>proposed()</code>. Raise what repeats from the trial before with the user, show
 this design, and name the alternatives with their costs.</p>
-<p>One set is the twelve combinations, each once (<code>CrossBlock</code>), and <code>Repeat</code>
-keeps the sets. What repeats from the trial before is one <code>Transition</code> factor
-with four cases, and <code>ExactlyK</code> asks for each case 27 times over the whole
-block. So inside a set the combinations are even and the transitions are
-free; over the block the transitions are even. The balance is over all
+<p>Two blocks, merged with <code>Merge</code>. The first holds the twelve combinations in
+repeat mode: once in every set. The second crosses "the side repeats" with
+"the colour repeats" in weight mode: each of the four cases equally often,
+anywhere in the block. Nothing is counted by hand; the two blocks say what
+is even where. Inside a set the combinations are even and the transitions
+are free; over the block the transitions are even. The balance is over all
 trials, not within each of the six compared conditions; <code>conditions_crossed</code>
 does that.</p>
 <table>
