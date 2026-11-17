@@ -989,7 +989,7 @@
 <p>Last question: does the adaptation transfer to another task? I want mini-blocks that are mostly congruent or mostly incongruent, and each mini-block is either colour naming or word reading. I want the switch cost between mini-blocks: word reading after colour naming against word reading after word reading, compared between the two contexts. I take word reading because it has almost no congruency effect. What is the hypothesis, and can nested blocks keep everything counterbalanced, also at the border between two mini-blocks: which context and which task came before?</p>
 </blockquote>
 <h2 id="step-by-step">Step by step</h2>
-<p><strong>So far.</strong> Step 2 made the trial before a factor. Step 3 made blocks that are mostly congruent or mostly incongruent, generated one by one. This step uses both ideas one level up: the mini-block is the unit, and the whole session is one design.</p>
+<p><strong>So far.</strong> Step 2 made the trial before a factor. Step 3 made blocks that are mostly congruent or mostly incongruent with a weight, generated one by one. This step uses both ideas one level up: the mini-block is the unit, and the whole session is one design.</p>
 <p><strong>The question.</strong> Does adapting to frequent conflict make it harder to change the task?</p>
 <p><strong>Prediction if it is one control setting.</strong> Where conflict is frequent the current task is shielded more, so a change of task costs more: the switch cost is larger in the mostly incongruent context.</p>
 <p><strong>Why word reading.</strong> The switch cost is taken on word-reading mini-blocks. Word reading has almost no congruency effect, so the proportion itself hardly touches the trials the cost is measured on.</p>
@@ -1040,7 +1040,7 @@
 <span class="p">])</span>
 </code></pre></div>
 <h3 id="new-what-the-context-makes-frequent">New: what the context makes frequent</h3>
-<p>A weight makes a level more frequent: the third argument of a level, and 3 to 1 is three quarters. But a level has one weight, and here the proportion depends on the context. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one.</p>
+<p>In step 3 a weight on congruency set the proportion of a block. But a level has one weight, and here the proportion depends on the context, which changes from mini-block to mini-block. SweetPea has no weight that depends on another factor. So the weight sits on a helper factor that says whether a trial is the kind its context makes frequent: congruent in a mostly congruent mini-block, incongruent in a mostly incongruent one.</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">frequent_here</span><span class="p">(</span><span class="n">colour</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
     <span class="n">congruent</span> <span class="o">=</span> <span class="n">colour</span> <span class="o">==</span> <span class="n">word</span>
     <span class="k">return</span> <span class="n">congruent</span> <span class="o">==</span> <span class="p">(</span><span class="n">context</span> <span class="o">==</span> <span class="s2">"mostly congruent"</span><span class="p">)</span>
