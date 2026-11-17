@@ -37,11 +37,11 @@ The code for the sets chosen above.
 
 <div class="sm-variant" data-v="2" markdown="1">
 
-A set is one congruent and one incongruent square. What repeats from the trial before is one more factor, with its four cases equally often.
+A set is one congruent and one incongruent square. Two blocks, merged. The first keeps the sets. The second crosses what repeats from the trial before over the whole block. So inside a set congruency is even and the transitions are free; over the block the transitions are even.
 
 ```python
-from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials, ExactlyK,
-                      CrossBlock, Repeat, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
+                      MultiCrossBlock, Merge, RepeatMode, AlignmentMode, synthesize_trials, CMSGen)
 
 side = Factor("side", ["left", "right"])
 colour = Factor("colour", ["red", "green"])
@@ -60,37 +60,37 @@ congruency = Factor("congruency", [
     DerivedLevel("incongruent", WithinTrial(on_other_side, [side, colour])),
 ])
 
-# What repeats from the trial before?  [0] is this trial, [-1] the one before.
-def side_and_colour(side, colour):
-    return side[0] == side[-1] and colour[0] == colour[-1]
+# Does the side repeat from the trial before? Does the colour?  [0] is this trial, [-1] the one before.
+def repeats(factor):
+    return factor[0] == factor[-1]
 
-def side_only(side, colour):
-    return side[0] == side[-1] and colour[0] != colour[-1]
+def changes(factor):
+    return factor[0] != factor[-1]
 
-def colour_only(side, colour):
-    return side[0] != side[-1] and colour[0] == colour[-1]
-
-def neither(side, colour):
-    return side[0] != side[-1] and colour[0] != colour[-1]
-
-what_repeats = Factor("what_repeats", [
-    DerivedLevel("side and colour", Transition(side_and_colour, [side, colour])),
-    DerivedLevel("side only", Transition(side_only, [side, colour])),
-    DerivedLevel("colour only", Transition(colour_only, [side, colour])),
-    DerivedLevel("neither", Transition(neither, [side, colour])),
+side_repeats = Factor("side_repeats", [
+    DerivedLevel("repeats", Transition(repeats, [side])),
+    DerivedLevel("changes", Transition(changes, [side])),
+])
+colour_repeats = Factor("colour_repeats", [
+    DerivedLevel("repeats", Transition(repeats, [colour])),
+    DerivedLevel("changes", Transition(changes, [colour])),
 ])
 
-# One set: one congruent and one incongruent square.
-one_set = CrossBlock(design=[side, colour, congruency, what_repeats], crossing=[congruency], constraints=[])
+# The sets: one congruent and one incongruent square in every two trials.
+sets = MultiCrossBlock(design=[side, colour, congruency], crossings=[[congruency]],
+                       constraints=[MinimumTrials(32)],
+                       mode=RepeatMode.REPEAT,                  # once in every set
+                       alignment=AlignmentMode.PARALLEL_START)
 
-# 16 sets and a first trial that has no trial before; each of the four cases 8 times.
-block = Repeat(one_set, [
-    MinimumTrials(33),
-    ExactlyK(8, (what_repeats, "side and colour")),
-    ExactlyK(8, (what_repeats, "side only")),
-    ExactlyK(8, (what_repeats, "colour only")),
-    ExactlyK(8, (what_repeats, "neither")),
-])
+# The transitions: side repeats or not, crossed with colour repeats or not, over the whole block.
+transitions = MultiCrossBlock(design=[side, colour, side_repeats, colour_repeats],
+                              crossings=[[side_repeats, colour_repeats]],
+                              constraints=[MinimumTrials(33)],          # one more: the first trial has no trial before
+                              mode=RepeatMode.WEIGHT,           # equally often, anywhere in the block
+                              alignment=AlignmentMode.PARALLEL_START)
+
+# Both at once.
+block = Merge([sets, transitions], alignment=AlignmentMode.PARALLEL_START)
 trials = synthesize_trials(block, 1, CMSGen)[0]
 ```
 
@@ -100,46 +100,46 @@ The generated block: 33 trials, every set intact; trial type, side and response 
 
 <div class="sm-variant" data-v="4" markdown="1">
 
-A set is each of the four squares once. What repeats from the trial before is one more factor, with its four cases equally often.
+A set is each of the four squares once. Two blocks, merged. The first keeps the sets. The second crosses what repeats from the trial before over the whole block. So inside a set the squares are even and the transitions are free; over the block the transitions are even.
 
 ```python
-from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials, ExactlyK,
-                      CrossBlock, Repeat, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials,
+                      MultiCrossBlock, Merge, RepeatMode, AlignmentMode, synthesize_trials, CMSGen)
 
 side = Factor("side", ["left", "right"])
 colour = Factor("colour", ["red", "green"])
 
-# What repeats from the trial before?  [0] is this trial, [-1] the one before.
-def side_and_colour(side, colour):
-    return side[0] == side[-1] and colour[0] == colour[-1]
+# Does the side repeat from the trial before? Does the colour?  [0] is this trial, [-1] the one before.
+def repeats(factor):
+    return factor[0] == factor[-1]
 
-def side_only(side, colour):
-    return side[0] == side[-1] and colour[0] != colour[-1]
+def changes(factor):
+    return factor[0] != factor[-1]
 
-def colour_only(side, colour):
-    return side[0] != side[-1] and colour[0] == colour[-1]
-
-def neither(side, colour):
-    return side[0] != side[-1] and colour[0] != colour[-1]
-
-what_repeats = Factor("what_repeats", [
-    DerivedLevel("side and colour", Transition(side_and_colour, [side, colour])),
-    DerivedLevel("side only", Transition(side_only, [side, colour])),
-    DerivedLevel("colour only", Transition(colour_only, [side, colour])),
-    DerivedLevel("neither", Transition(neither, [side, colour])),
+side_repeats = Factor("side_repeats", [
+    DerivedLevel("repeats", Transition(repeats, [side])),
+    DerivedLevel("changes", Transition(changes, [side])),
+])
+colour_repeats = Factor("colour_repeats", [
+    DerivedLevel("repeats", Transition(repeats, [colour])),
+    DerivedLevel("changes", Transition(changes, [colour])),
 ])
 
-# One set: each of the four squares once.
-one_set = CrossBlock(design=[side, colour, what_repeats], crossing=[side, colour], constraints=[])
+# The sets: each of the four squares once in every four trials.
+sets = MultiCrossBlock(design=[side, colour], crossings=[[side, colour]],
+                       constraints=[MinimumTrials(32)],
+                       mode=RepeatMode.REPEAT,                  # once in every set
+                       alignment=AlignmentMode.PARALLEL_START)
 
-# 8 sets and a first trial that has no trial before; each of the four cases 8 times.
-block = Repeat(one_set, [
-    MinimumTrials(33),
-    ExactlyK(8, (what_repeats, "side and colour")),
-    ExactlyK(8, (what_repeats, "side only")),
-    ExactlyK(8, (what_repeats, "colour only")),
-    ExactlyK(8, (what_repeats, "neither")),
-])
+# The transitions: side repeats or not, crossed with colour repeats or not, over the whole block.
+transitions = MultiCrossBlock(design=[side, colour, side_repeats, colour_repeats],
+                              crossings=[[side_repeats, colour_repeats]],
+                              constraints=[MinimumTrials(33)],          # one more: the first trial has no trial before
+                              mode=RepeatMode.WEIGHT,           # equally often, anywhere in the block
+                              alignment=AlignmentMode.PARALLEL_START)
+
+# Both at once.
+block = Merge([sets, transitions], alignment=AlignmentMode.PARALLEL_START)
 trials = synthesize_trials(block, 1, CMSGen)[0]
 ```
 
@@ -149,51 +149,51 @@ The generated block: 33 trials, every set intact; trial type, side and response 
 
 <div class="sm-variant" data-v="12" markdown="1">
 
-One set is the twelve combinations, each once. `Repeat` keeps the sets. What repeats from the trial before is counted over the whole block: each of the four cases equally often, anywhere in the block. Inside a set the combinations are even and the transitions are free.
+A set is the twelve combinations, each once. Two blocks, merged. The first keeps the sets. The second crosses what repeats from the trial before over the whole block. So inside a set the combinations are even and the transitions are free; over the block the transitions are even.
 
 ```python
-from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials, ExactlyK,
-                      CrossBlock, Repeat, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials,
+                      MultiCrossBlock, Merge, RepeatMode, AlignmentMode, synthesize_trials, CMSGen)
 
 word = Factor("word", ["red", "green", "cross"])    # the word shown before the square
 side = Factor("side", ["left", "right"])
 colour = Factor("colour", ["red", "green"])
 
-# What repeats from the trial before?  [0] is this trial, [-1] the one before.
-def side_and_colour(side, colour):
-    return side[0] == side[-1] and colour[0] == colour[-1]
+# Does the side repeat from the trial before? Does the colour?  [0] is this trial, [-1] the one before.
+def repeats(factor):
+    return factor[0] == factor[-1]
 
-def side_only(side, colour):
-    return side[0] == side[-1] and colour[0] != colour[-1]
+def changes(factor):
+    return factor[0] != factor[-1]
 
-def colour_only(side, colour):
-    return side[0] != side[-1] and colour[0] == colour[-1]
-
-def neither(side, colour):
-    return side[0] != side[-1] and colour[0] != colour[-1]
-
-what_repeats = Factor("what_repeats", [
-    DerivedLevel("side and colour", Transition(side_and_colour, [side, colour])),
-    DerivedLevel("side only", Transition(side_only, [side, colour])),
-    DerivedLevel("colour only", Transition(colour_only, [side, colour])),
-    DerivedLevel("neither", Transition(neither, [side, colour])),
+side_repeats = Factor("side_repeats", [
+    DerivedLevel("repeats", Transition(repeats, [side])),
+    DerivedLevel("changes", Transition(changes, [side])),
+])
+colour_repeats = Factor("colour_repeats", [
+    DerivedLevel("repeats", Transition(repeats, [colour])),
+    DerivedLevel("changes", Transition(changes, [colour])),
 ])
 
-# One set: each of the twelve combinations once.
-one_set = CrossBlock(design=[word, side, colour, what_repeats], crossing=[word, side, colour], constraints=[])
+# The sets: each of the twelve combinations once in every twelve trials.
+sets = MultiCrossBlock(design=[word, side, colour], crossings=[[word, side, colour]],
+                       constraints=[MinimumTrials(48)],
+                       mode=RepeatMode.REPEAT,                  # once in every set
+                       alignment=AlignmentMode.PARALLEL_START)
 
-# 4 sets and a first trial that has no trial before; each of the four cases 12 times over the block.
-block = Repeat(one_set, [
-    MinimumTrials(49),
-    ExactlyK(12, (what_repeats, "side and colour")),
-    ExactlyK(12, (what_repeats, "side only")),
-    ExactlyK(12, (what_repeats, "colour only")),
-    ExactlyK(12, (what_repeats, "neither")),
-])
+# The transitions: side repeats or not, crossed with colour repeats or not, over the whole block.
+transitions = MultiCrossBlock(design=[side, colour, side_repeats, colour_repeats],
+                              crossings=[[side_repeats, colour_repeats]],
+                              constraints=[MinimumTrials(49)],          # one more: the first trial has no trial before
+                              mode=RepeatMode.WEIGHT,           # equally often, anywhere in the block
+                              alignment=AlignmentMode.PARALLEL_START)
+
+# Both at once.
+block = Merge([sets, transitions], alignment=AlignmentMode.PARALLEL_START)
 trials = synthesize_trials(block, 1, CMSGen)[0]
 ```
 
-The generated block: 49 trials, every set intact; trial type, side and response each repeat on half of the trials, the same square on a quarter. The full block of 9 sets (109 trials, each case 27 times) takes `CMSGen` about five minutes; `IterateGen` gives one in seconds, but not as a random draw.
+The generated block: 49 trials, every set intact; trial type, side and response each repeat on half of the trials, the same square on a quarter. The full block of 9 sets (109 trials) took about four minutes to generate.
 
 </div>
 

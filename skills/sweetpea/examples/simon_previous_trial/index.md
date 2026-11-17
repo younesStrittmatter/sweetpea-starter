@@ -68,7 +68,7 @@ In the design (functions in `design.py`):
 
 | Option | Sets kept | What repeats | Cost |
 |---|---|---|---|
-| `proposed`: sets of 12, plus what repeats from the trial before (side or not x colour or not) even over the whole block | yes | trial type 50%, side 50%, response 50%, same square 25% | One extra trial per block (109). Inside a set the transitions stay free. Seconds with `IterateGen` (not a random draw), about five minutes with `CMSGen`. |
+| `proposed`: sets of 12, merged with a block that crosses "the side repeats" with "the colour repeats" over the whole block | yes | trial type 50%, side 50%, response 50%, same square 25% | One extra trial per block (109). Inside a set the transitions stay free. About four minutes to generate at 109 trials, seconds at 49. |
 | `within_every_four`: the same, and also even within every four trials | yes | the same | Stricter than needed: a regularity in the order. Seconds with `CMSGen`. |
 | `conditions_crossed`: each of the 6 conditions follows each 3 times | yes | trial type 50% | About two minutes; side and response are not addressed. |
 | `trial_type_only`: Simon congruency crossed with that of the trial before | yes | trial type 50%, side and response further from 50% than before | Evens out one property by adding trials on which side and colour both change. Do not propose. |
@@ -111,11 +111,12 @@ trials", say these four things before writing the design:
 `proposed()`. Raise what repeats from the trial before with the user, show
 this design, and name the alternatives with their costs.
 
-One set is the twelve combinations, each once (`CrossBlock`), and `Repeat`
-keeps the sets. What repeats from the trial before is one `Transition` factor
-with four cases, and `ExactlyK` asks for each case 27 times over the whole
-block. So inside a set the combinations are even and the transitions are
-free; over the block the transitions are even. The balance is over all
+Two blocks, merged with `Merge`. The first holds the twelve combinations in
+repeat mode: once in every set. The second crosses "the side repeats" with
+"the colour repeats" in weight mode: each of the four cases equally often,
+anywhere in the block. Nothing is counted by hand; the two blocks say what
+is even where. Inside a set the combinations are even and the transitions
+are free; over the block the transitions are even. The balance is over all
 trials, not within each of the six compared conditions; `conditions_crossed`
 does that.
 

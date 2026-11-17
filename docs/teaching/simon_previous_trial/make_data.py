@@ -8,8 +8,8 @@ import json
 import random
 from pathlib import Path
 
-from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials, ExactlyK, CrossBlock,
-                      Repeat, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
+                      MultiCrossBlock, Merge, RepeatMode, AlignmentMode, synthesize_trials, CMSGen)
 
 KEY = {"red": "left", "green": "right"}          # the key of each colour (counterbalanced in the experiment)
 SQUARES = [(side, colour) for side in ("left", "right") for colour in ("red", "green")]
@@ -63,33 +63,38 @@ def typical(size, long_run, seeds=range(3000)):
     return shuffled_sets(size, SETS_SHOWN[size], random.Random(min(seeds, key=distance)))
 
 
-def repeats(factor, name):
-    return Factor(name, [DerivedLevel("repeats", Transition(lambda x: x[0] == x[-1], [factor])),
-                         DerivedLevel("changes", Transition(lambda x: x[0] != x[-1], [factor]))])
+def repeats(factor):
+    return factor[0] == factor[-1]
+
+
+def changes(factor):
+    return factor[0] != factor[-1]
 
 
 def designed(size):
-    """Sets kept, and everything that can repeat from the trial before balanced."""
+    """Sets kept; what repeats from the trial before crossed over the whole block."""
     side = Factor("side", ["left", "right"])
     colour = Factor("colour", ["red", "green"])
-    n = size * SETS_SHOWN[size] + 1
-    cases = {"side and colour": (True, True), "side only": (True, False), "colour only": (False, True), "neither": (False, False)}
-    what = Factor("what_repeats", [
-        DerivedLevel(name, Transition(lambda s, c, want=want: (s[0] == s[-1], c[0] == c[-1]) == want, [side, colour]))
-        for name, want in cases.items()])
-    counts = [ExactlyK((n - 1) // 4, (what, name)) for name in cases]
+    side_repeats = Factor("side_repeats", [DerivedLevel("repeats", Transition(repeats, [side])),
+                                           DerivedLevel("changes", Transition(changes, [side]))])
+    colour_repeats = Factor("colour_repeats", [DerivedLevel("repeats", Transition(repeats, [colour])),
+                                               DerivedLevel("changes", Transition(changes, [colour]))])
+    n = size * SETS_SHOWN[size]
     if size == 12:
         word = Factor("word", ["red", "green", "cross"])
-        inner = CrossBlock([word, side, colour, what], [word, side, colour], [])
+        set_design, set_crossing = [word, side, colour], [word, side, colour]
     elif size == 4:
-        inner = CrossBlock([side, colour, what], [side, colour], [])
+        set_design, set_crossing = [side, colour], [side, colour]
     else:
         congruency = Factor("congruency", [
             DerivedLevel("congruent", WithinTrial(lambda s, c: KEY[c] == s, [side, colour])),
             DerivedLevel("incongruent", WithinTrial(lambda s, c: KEY[c] != s, [side, colour]))])
-        inner = CrossBlock([side, colour, congruency, what], [congruency], [])
-    block = Repeat(inner, [MinimumTrials(n)] + counts)
-    trials = synthesize_trials(block, 1, CMSGen)[0]
+        set_design, set_crossing = [side, colour, congruency], [congruency]
+    start = AlignmentMode.PARALLEL_START
+    sets = MultiCrossBlock(set_design, [set_crossing], [MinimumTrials(n)], mode=RepeatMode.REPEAT, alignment=start)
+    transitions = MultiCrossBlock([side, colour, side_repeats, colour_repeats], [[side_repeats, colour_repeats]],
+                                  [MinimumTrials(n + 1)], mode=RepeatMode.WEIGHT, alignment=start)
+    trials = synthesize_trials(Merge([sets, transitions], alignment=start), 1, CMSGen)[0]
     return list(zip(trials["side"], trials["colour"]))
 
 

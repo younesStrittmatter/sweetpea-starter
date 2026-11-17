@@ -12,7 +12,7 @@ from collections import Counter
 
 import pandas as pd
 from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials, ExactlyK, CrossBlock,
-                      MultiCrossBlock, Repeat, RepeatMode, AlignmentMode, synthesize_trials, CMSGen, IterateGen)
+                      MultiCrossBlock, Merge, Repeat, RepeatMode, AlignmentMode, synthesize_trials, CMSGen, IterateGen)
 
 WORDS = ["red", "green", "cross"]
 SIDES = ["left", "right"]
@@ -49,46 +49,39 @@ def previous(factor, name):
                          for level in factor.levels])
 
 
+def same_as_before(x):
+    return x[0] == x[-1]
+
+
+def other_than_before(x):
+    return x[0] != x[-1]
+
+
 def repeats(factor, name):
     """Does `factor` have the same level as on the trial before?"""
-    return Factor(name, [DerivedLevel("repeats", Transition(lambda x: x[0] == x[-1], [factor])),
-                         DerivedLevel("changes", Transition(lambda x: x[0] != x[-1], [factor]))])
-
-
-def side_and_colour_repeat(side, colour):
-    return side[0] == side[-1] and colour[0] == colour[-1]
-
-
-def side_only_repeats(side, colour):
-    return side[0] == side[-1] and colour[0] != colour[-1]
-
-
-def colour_only_repeats(side, colour):
-    return side[0] != side[-1] and colour[0] == colour[-1]
-
-
-def neither_repeats(side, colour):
-    return side[0] != side[-1] and colour[0] != colour[-1]
-
-
-CASES = {"side and colour": side_and_colour_repeat, "side only": side_only_repeats,
-         "colour only": colour_only_repeats, "neither": neither_repeats}
+    return Factor(name, [DerivedLevel("repeats", Transition(same_as_before, [factor])),
+                         DerivedLevel("changes", Transition(other_than_before, [factor]))])
 
 
 def proposed():
-    """Sets of twelve kept, and what repeats from the trial before balanced over the whole block.
+    """Sets of twelve kept, and what repeats from the trial before crossed over the whole block.
 
-    Inside a set the twelve combinations are even and the transitions are free. Over the
-    block each of the four cases (side repeats or not x colour repeats or not) occurs 27
-    times, anywhere. Simon congruency, side and response then each repeat on half of the
-    trials, and the same square on a quarter.
-    Generate with IterateGen (seconds; not a random draw). CMSGen takes about five minutes.
+    Two blocks, merged. `sets` holds the twelve combinations once in every twelve trials.
+    `transitions` crosses "the side repeats" with "the colour repeats" over the whole block:
+    each of the four cases equally often, anywhere. So inside a set the combinations are even
+    and the transitions are free; over the block the transitions are even. Simon congruency,
+    side and response then each repeat on half of the trials, and the same square on a quarter.
+    About four minutes with CMSGen for 109 trials; seconds for 49.
     """
     word, side, colour, prime, simon = factors()
-    what = Factor("what_repeats", [DerivedLevel(name, Transition(case, [side, colour])) for name, case in CASES.items()])
-    one_set = CrossBlock([word, side, colour, prime, simon, what], [word, side, colour], [])
+    side_repeats, colour_repeats = repeats(side, "side_repeats"), repeats(colour, "colour_repeats")
     n = SET * SETS_PER_BLOCK
-    return Repeat(one_set, [MinimumTrials(n + 1)] + [ExactlyK(n // 4, (what, name)) for name in CASES])
+    start = AlignmentMode.PARALLEL_START
+    sets = MultiCrossBlock([word, side, colour, prime, simon], [[word, side, colour]],
+                           [MinimumTrials(n)], mode=RepeatMode.REPEAT, alignment=start)
+    transitions = MultiCrossBlock([side, colour, side_repeats, colour_repeats], [[side_repeats, colour_repeats]],
+                                  [MinimumTrials(n + 1)], mode=RepeatMode.WEIGHT, alignment=start)
+    return Merge([sets, transitions], alignment=start)
 
 
 def within_every_four():

@@ -328,22 +328,39 @@ conflict, switching and priming tasks), and offer to make what repeats part
 of the design:
 
 ```python
-from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials, ExactlyK,
-                      CrossBlock, Repeat, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, Transition, MinimumTrials,
+                      MultiCrossBlock, Merge, RepeatMode, AlignmentMode, synthesize_trials, CMSGen)
 
 side = Factor("side", ["left", "right"])
 colour = Factor("colour", ["red", "green"])
 
-# What repeats from the trial before? One level for each of the four cases.
-cases = {"side and colour": (True, True), "side only": (True, False),
-         "colour only": (False, True), "neither": (False, False)}
-what_repeats = Factor("what_repeats", [
-    DerivedLevel(name, Transition(lambda s, c, want=want: (s[0] == s[-1], c[0] == c[-1]) == want, [side, colour]))
-    for name, want in cases.items()])
 
-# Repeat keeps the sets: each of the 4 combinations once in every 4 trials.
-one_set = CrossBlock([side, colour, what_repeats], [side, colour], [])
-block = Repeat(one_set, [MinimumTrials(33)] + [ExactlyK(8, (what_repeats, name)) for name in cases])
+# Does the side repeat from the trial before? Does the colour?
+def repeats(factor):
+    return factor[0] == factor[-1]
+
+
+def changes(factor):
+    return factor[0] != factor[-1]
+
+
+side_repeats = Factor("side_repeats", [
+    DerivedLevel("repeats", Transition(repeats, [side])),
+    DerivedLevel("changes", Transition(changes, [side])),
+])
+colour_repeats = Factor("colour_repeats", [
+    DerivedLevel("repeats", Transition(repeats, [colour])),
+    DerivedLevel("changes", Transition(changes, [colour])),
+])
+
+start = AlignmentMode.PARALLEL_START
+# The sets: each of the 4 combinations once in every 4 trials (repeat mode).
+sets = MultiCrossBlock([side, colour], [[side, colour]], [MinimumTrials(32)],
+                       mode=RepeatMode.REPEAT, alignment=start)
+# The transitions: the four cases equally often over the whole block, anywhere (weight mode).
+transitions = MultiCrossBlock([side, colour, side_repeats, colour_repeats], [[side_repeats, colour_repeats]],
+                              [MinimumTrials(33)], mode=RepeatMode.WEIGHT, alignment=start)
+block = Merge([sets, transitions], alignment=start)
 trials = synthesize_trials(block, 1, CMSGen)[0]
 
 squares = list(zip(trials["side"], trials["colour"]))
@@ -352,6 +369,15 @@ assert sum(a[0] == b[0] for a, b in zip(squares, squares[1:])) == 16           #
 assert sum(a == b for a, b in zip(squares, squares[1:])) == 8                  # the same square on a quarter
 ```
 
+- Describe it as two blocks and `Merge` them: one block says what is even
+  within a set, the other what is even over the whole block. Do not count
+  the cases by hand with `ExactlyK` when a crossing says the same.
+- Each merged block keeps its own mode. `Merge` needs the same `alignment`
+  on every block and on itself, so build the blocks as `MultiCrossBlock`
+  (a `CrossBlock` has no `alignment`).
+- One `MultiCrossBlock` with both crossings and `mode=RepeatMode.REPEAT`
+  makes the transitions even within every four trials too: stricter than
+  asked, and a regularity in the order.
 - Ask for one more trial than the sets need: the first trial has no trial
   before.
 - Balance everything that can repeat, not one property. Evening out only one
@@ -359,8 +385,6 @@ assert sum(a == b for a, b in zip(squares, squares[1:])) == 8                  #
 - Small sets leave little freedom. With sets of 4 as above, every set has to
   start with the combination that ended the last one. Tell the user, and
   suggest larger sets when that matters.
-- With several crossings in a `MultiCrossBlock`, `mode=RepeatMode.REPEAT`
-  applies to every crossing, not only to the smallest.
 - A worked case with the numbers is in `examples/simon_previous_trial/`.
 
 ### A block inside a block (`Nest`)
