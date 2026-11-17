@@ -1,4 +1,6 @@
 site_name: SweetPea Starter
+site_url: https://younesstrittmatter.github.io/sweetpea-starter/
+repo_url: https://github.com/younesStrittmatter/sweetpea-starter
 site_description: Design experiments with SweetPea together with an AI assistant
 docs_dir: docs
 theme:

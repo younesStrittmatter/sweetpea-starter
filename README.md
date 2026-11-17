@@ -32,6 +32,13 @@ pip install -r requirements.txt
 
 Then open the folder in VS Code, Cursor, PyCharm or JupyterLab.
 
+### Only the skills
+
+If nothing else works, or you want the skills in your own project: download
+[`sweetpea-skills.zip`](https://github.com/younesStrittmatter/sweetpea-starter/raw/main/sweetpea-skills.zip),
+unzip it, and follow the `README.txt` inside (copy two folders, install
+`sweetpea`).
+
 ## Bring your AI
 
 In a Codespace, open a terminal and start the assistant you have an account

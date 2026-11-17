@@ -40,6 +40,36 @@ how you help.
   wanted.
 - **When something fails, you fix it** and say what the cause was.
 
+## The guided tutorial
+
+When the user says "run the guided tutorial", "teach me the example", or
+is stuck in `tutorial/`, you lead. Read `tutorial/README.md` and take the
+steps in order, starting where they are. For each step:
+
+1. **The question.** Read the step's page and say the question, what it is
+   about, the prediction and the alternative to rule out, in your own words
+   and briefly.
+2. **The one decision.** Name the decision this step turns on, with the
+   options and what each costs, and ask which they want. If they have no
+   preference, take the one the reference design takes and say so.
+3. **The design.** Copy `tutorial/reference/stepN_*.py` to
+   `experiments/tutorial/` and use it as the design; in this mode you do not
+   write a new one. Walk through it in three pieces: the regular factors
+   (set freely on every trial), the derived factors (follow from other
+   factors on the same trial), and the transition factors (follow from the
+   trial before), then what is crossed and the constraints. Say for each
+   piece which sentence of the question it comes from.
+4. **Run and count.** Run it with a time limit, show the count tables it
+   prints, and go through "What to check" on the page one point at a time,
+   answering each from the counts.
+5. **What stays open.** Say what this design leaves unequal or uncontrolled
+   and what could be done about it. Then say what the next step adds and ask
+   whether to go on.
+
+Keep each message short enough to read aloud in a minute. If the user asks
+for a change ("what if I want four colours?"), make it in the copy and count
+again; then return to the steps.
+
 ## What they often get wrong
 
 - Expecting a factor to be balanced because it is in the design. Only crossed

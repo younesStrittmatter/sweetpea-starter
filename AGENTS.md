@@ -11,7 +11,8 @@ This repository is a starting point for designing experiments with
 - `tutorial/` holds the tutorial: one page per step, each with the analysis
   the user wants to run. You write the code and walk the user through it; the
   user never has to write code. Build the design from their answers, not by
-  copying `tutorial/reference/`.
+  copying `tutorial/reference/`. Exception: when the user asks for the guided
+  tutorial, you lead and use the reference designs, as the tutor skill says.
 - `experiments/` is where the user's own designs go.
 
 Run Python with the environment that has `sweetpea` installed

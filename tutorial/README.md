@@ -1,5 +1,8 @@
 # Tutorial: four questions about one task
 
+Stuck, or want to be led? Say to your assistant: **"Run the guided tutorial."**
+It then teaches the four steps itself, one at a time.
+
 One experiment, grown in four steps. Each step is a research question. You say
 what you want to find out; your assistant says what the question is about,
 proposes a design and what it costs, writes it, and counts it with you.
@@ -9,8 +12,7 @@ proposes a design and what it costs, writes it, and counts it with you.
 | [1. Congruency](1_congruency.md) | Does an irrelevant word interfere? | Factors, a derived factor, what is crossed |
 | [2. The trial before](2_sequence.md) | Does a conflict change how the next trial is handled? | A transition factor |
 | [3. Adaptation](3_adaptation.md) | Do people adjust to how frequent conflict is? | Weights; blocks |
-| [4. Transfer](4_transfer.md) | Does that adjustment carry over to another task? | A second task; two transition factors crossed |
-| [5. Both at once](5_stability_flexibility.md) (optional) | Stability against flexibility | Blocks that differ, with switches inside |
+| [4. Transfer](4_transfer.md) | Does adapting to conflict make switching to another task harder? | A second task; mini-blocks with a transition factor inside |
 
 ## How to work
 

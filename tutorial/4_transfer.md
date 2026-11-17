@@ -2,38 +2,43 @@
 
 ## The question
 
-Does the adjustment after a conflict carry over to another task?
+Does adapting to frequent conflict make it harder to switch to another task?
 
-**What it is about.** Whether control is general or tied to a task. Add a
-second task on the same stimuli: read the word instead of naming the ink.
-**Prediction if control is general:** the effect of step 2 (a smaller
-congruency effect after an incongruent trial) shows whether the task repeats
-or switches. **Prediction if control is task-specific:** it shows only when
-the task repeats.
+**What it is about.** Whether shielding a task and switching between tasks
+are the same control setting. Stability (keeping the word out) and
+flexibility (moving to another task) may pull against each other.
+**Prediction if they are one setting:** in a mostly incongruent context,
+where the task is shielded more, the switch cost is larger than in a mostly
+congruent context. **If they are separate:** the switch cost is the same in
+both. **The alternative to rule out:** a mostly incongruent context is simply
+harder, so everything is slower there, switches included.
 
 ## The analysis
 
-The sequential effect of step 2 on trials where the task repeats, against the
-same effect on trials where the task switches.
+The switch cost (switch trials against repeat trials) in mostly incongruent
+mini-blocks against the switch cost in mostly congruent mini-blocks.
 
 ## Ask your assistant
 
-> Now I want to know whether that adjustment transfers across tasks. I add a
-> second task: on some trials people read the word instead of naming the ink,
-> and a cue says which. I want to compare the effect of the trial before when
-> the task repeats and when it switches. What does the design need?
+> Last question. I want to know whether this control setting has a price: if
+> people shield the task more in a mostly incongruent context, are they then
+> worse at switching to another task? I add a second task: on some trials
+> people read the word instead of naming the ink, and a cue says which. I want
+> mini-blocks that are mostly congruent or mostly incongruent, and to compare
+> the switch cost between them. What is the hypothesis, and what does the
+> design need?
 
 ## What to check
 
-- **Two things from the trial before.** Its congruency, and whether the task
-  switched. Count all combinations with the congruency of this trial. Are the
-  cells equal?
-- **How many trials per cell?** There are 16 combinations now. How long does a
-  block have to be, and how many blocks do you need?
+- **Is there a repeat baseline?** A switch cost needs switch trials and repeat
+  trials in the same context. Count both, in each kind of mini-block.
+- **The thin cells.** How many incongruent switch trials does a mostly
+  congruent mini-block have? Is that enough?
 - **What gave way?** Count the ink colour. Is it still even? Did the assistant
   say what it left out of the crossing, and why?
-- **Would mini-blocks help?** Ask what shuffling this in small sets would do
-  to the trial before. The second example on the website is about that.
+- **Short blocks and the trial before.** What does a short, balanced
+  mini-block do to what follows what? The second example on the website is
+  about that.
 
 ## The idea
 
