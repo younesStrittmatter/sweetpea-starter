@@ -9,8 +9,8 @@ except NameError:      # outside a notebook, show tables by printing them
     display = print
 
 import pandas as pd
-from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, Exclude, MinimumTrials,
-                      CrossBlock, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
+                      CrossBlock, synthesize_trials, tabulate_experiments, CMSGen)
 
 colours = ["red", "green", "blue"]
 
@@ -27,28 +27,33 @@ def different(colour, word):
     return colour != word
 
 
-WEIGHTS = {"mostly congruent": (3, 1), "mostly incongruent": (1, 3)}     # (congruent, incongruent)
+mostly_congruent = Factor("congruency", [
+    DerivedLevel("congruent", WithinTrial(same, [colour, word]), 3),
+    DerivedLevel("incongruent", WithinTrial(different, [colour, word]), 1),
+])
+mostly_incongruent = Factor("congruency", [
+    DerivedLevel("congruent", WithinTrial(same, [colour, word]), 1),
+    DerivedLevel("incongruent", WithinTrial(different, [colour, word]), 3),
+])
 
-
-def block(context):
-    congruent_weight, incongruent_weight = WEIGHTS[context]
-    congruency = Factor("congruency", [
-        DerivedLevel("congruent", WithinTrial(same, [colour, word]), congruent_weight),
-        DerivedLevel("incongruent", WithinTrial(different, [colour, word]), incongruent_weight),
-    ])
-    return CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
+block_mc = CrossBlock(design=[colour, word, mostly_congruent], crossing=[colour, mostly_congruent],
+                      constraints=[MinimumTrials(24)])
+block_mi = CrossBlock(design=[colour, word, mostly_incongruent], crossing=[colour, mostly_incongruent],
                       constraints=[MinimumTrials(24)])
 
 
-blocks = []
-for number, context in enumerate(["mostly congruent", "mostly incongruent", "mostly incongruent", "mostly congruent"], start=1):
-    trials = pd.DataFrame(synthesize_trials(block(context), 1, CMSGen)[0])
-    trials.insert(0, "context", context)
-    trials.insert(0, "block", number)
-    blocks.append(trials)
-session = pd.concat(blocks, ignore_index=True)
-display(pd.crosstab(session["context"], session["congruency"]))
+experiments_mc = synthesize_trials(block_mc, 2, CMSGen)
+experiments_mi = synthesize_trials(block_mi, 2, CMSGen)
+tabulate_experiments(block_mc, experiments_mc, [mostly_congruent])
+tabulate_experiments(block_mi, experiments_mi, [mostly_incongruent])
 
 
-session["word_is_ink"] = session["word"] == session["colour"]
-display(session.groupby(["context", "word"])["word_is_ink"].mean().round(2).unstack())
+tabulate_experiments(block_mc, experiments_mc[:1], [word, mostly_congruent])
+tabulate_experiments(block_mi, experiments_mi[:1], [word, mostly_incongruent])
+
+
+order = [("mostly congruent", experiments_mc[0]), ("mostly incongruent", experiments_mi[0]),
+         ("mostly incongruent", experiments_mi[1]), ("mostly congruent", experiments_mc[1])]
+session = pd.concat([pd.DataFrame(trials).assign(block=number, context=context)
+                     for number, (context, trials) in enumerate(order, start=1)], ignore_index=True)
+display(session.head(4))

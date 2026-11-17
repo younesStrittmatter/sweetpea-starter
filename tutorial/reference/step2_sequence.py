@@ -9,8 +9,8 @@ except NameError:      # outside a notebook, show tables by printing them
     display = print
 
 import pandas as pd
-from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, Exclude, MinimumTrials,
-                      CrossBlock, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
+                      CrossBlock, synthesize_trials, tabulate_experiments, CMSGen)
 
 colours = ["red", "green", "blue"]
 
@@ -51,11 +51,27 @@ trial_before = Factor("trial_before", [
 block = CrossBlock(design=[colour, word, congruency, trial_before],
                    crossing=[colour, congruency, trial_before],
                    constraints=[MinimumTrials(25)])
-trials = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
-rest = trials.iloc[1:]                  # without the first trial
-display(pd.crosstab(rest["trial_before"], rest["congruency"]))
+experiments = synthesize_trials(block, 1, CMSGen)
+after_first = list(range(1, 25))        # the trials that have a trial before
+tabulate_experiments(block, experiments, [trial_before, congruency], trials=after_first)
 
 
-trials["response_repeats"] = trials["colour"].eq(trials["colour"].shift())
-rest = trials.iloc[1:]
-display(pd.crosstab([rest["trial_before"], rest["congruency"]], rest["response_repeats"]))
+def response_repeats(colour):
+    return colour[0] == colour[-1]
+
+
+def response_changes(colour):
+    return colour[0] != colour[-1]
+
+
+response = Factor("response", [
+    DerivedLevel("repeats", Transition(response_repeats, [colour])),
+    DerivedLevel("changes", Transition(response_changes, [colour])),
+])
+
+block = CrossBlock(design=[colour, word, congruency, trial_before, response],
+                   crossing=[colour, congruency, trial_before],
+                   constraints=[MinimumTrials(25)])
+experiments = synthesize_trials(block, 1, CMSGen)
+tabulate_experiments(block, experiments, [trial_before, congruency, response], trials=after_first)
+trials = pd.DataFrame(experiments[0])

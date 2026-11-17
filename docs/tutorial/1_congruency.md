@@ -6,7 +6,7 @@
 
 A block from the design built on this page. Press play, or step through it.
 
-<div class="stroop-demo" data-trials='[{"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}]'></div>
+<div class="stroop-demo" data-trials='[{"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "green", "word": "blue", "congruency": "incongruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "green", "word": "red", "congruency": "incongruent"}, {"colour": "blue", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "blue", "congruency": "congruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}, {"colour": "red", "word": "red", "congruency": "congruent"}, {"colour": "blue", "word": "red", "congruency": "incongruent"}, {"colour": "green", "word": "green", "congruency": "congruent"}, {"colour": "red", "word": "green", "congruency": "incongruent"}, {"colour": "red", "word": "blue", "congruency": "incongruent"}]'></div>
 
 ## With your assistant
 
@@ -28,8 +28,8 @@ A regular factor is set freely on every trial. The ink colour and the word are r
 
 ```python
 import pandas as pd
-from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, Exclude, MinimumTrials,
-                      CrossBlock, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
+                      CrossBlock, synthesize_trials, tabulate_experiments, CMSGen)
 
 colours = ["red", "green", "blue"]
 
@@ -63,74 +63,29 @@ Colour and word are crossed, so each of the 9 pairs occurs equally often. `Minim
 ```python
 block_a = CrossBlock(design=[colour, word, congruency], crossing=[colour, word],
                      constraints=[MinimumTrials(18)])
-trials_a = pd.DataFrame(synthesize_trials(block_a, 1, CMSGen)[0])
-display(pd.crosstab(trials_a["colour"], trials_a["word"]))
-display(trials_a["congruency"].value_counts().to_frame("trials"))
+experiments_a = synthesize_trials(block_a, 1, CMSGen)
+tabulate_experiments(block_a, experiments_a, [colour, word])
+tabulate_experiments(block_a, experiments_a, [congruency])
 ```
 
 <div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th>word</th>
-      <th>blue</th>
-      <th>green</th>
-      <th>red</th>
-    </tr>
-    <tr>
-      <th>colour</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>blue</th>
-      <td>2</td>
-      <td>2</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>green</th>
-      <td>2</td>
-      <td>2</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>red</th>
-      <td>2</td>
-      <td>2</td>
-      <td>2</td>
-    </tr>
-  </tbody>
-</table>
+<pre>Experiment 0:
+colour red   | word red   | frequency 2 | proportion 11.11111111111111%
+colour red   | word green | frequency 2 | proportion 11.11111111111111%
+colour red   | word blue  | frequency 2 | proportion 11.11111111111111%
+colour green | word red   | frequency 2 | proportion 11.11111111111111%
+colour green | word green | frequency 2 | proportion 11.11111111111111%
+colour green | word blue  | frequency 2 | proportion 11.11111111111111%
+colour blue  | word red   | frequency 2 | proportion 11.11111111111111%
+colour blue  | word green | frequency 2 | proportion 11.11111111111111%
+colour blue  | word blue  | frequency 2 | proportion 11.11111111111111%
+
+Experiment 0:
+congruency congruent   | frequency 6  | proportion 33.33333333333333%
+congruency incongruent | frequency 12 | proportion 66.66666666666666%</pre>
 </div>
 
-<div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>trials</th>
-    </tr>
-    <tr>
-      <th>congruency</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>incongruent</th>
-      <td>12</td>
-    </tr>
-    <tr>
-      <th>congruent</th>
-      <td>6</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+`tabulate_experiments` is SweetPea's own count: how often each combination of the factors you name occurs, and its share.
 
 ### Option B: half of the trials congruent
 
@@ -139,96 +94,46 @@ Cross the ink colour with congruency. Each ink colour is then congruent on half 
 ```python
 block_b = CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
                      constraints=[MinimumTrials(24)])
-trials_b = pd.DataFrame(synthesize_trials(block_b, 1, CMSGen)[0])
-display(pd.crosstab(trials_b["colour"], trials_b["congruency"]))
-display(pd.crosstab(trials_b["colour"], trials_b["word"]))
+experiments_b = synthesize_trials(block_b, 1, CMSGen)
+tabulate_experiments(block_b, experiments_b, [colour, congruency])
+tabulate_experiments(block_b, experiments_b, [colour, word])
 ```
 
 <div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th>congruency</th>
-      <th>congruent</th>
-      <th>incongruent</th>
-    </tr>
-    <tr>
-      <th>colour</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>blue</th>
-      <td>4</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>green</th>
-      <td>4</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>red</th>
-      <td>4</td>
-      <td>4</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<pre>Experiment 0:
+colour red   | congruency congruent   | frequency 4 | proportion 16.666666666666664%
+colour red   | congruency incongruent | frequency 4 | proportion 16.666666666666664%
+colour green | congruency congruent   | frequency 4 | proportion 16.666666666666664%
+colour green | congruency incongruent | frequency 4 | proportion 16.666666666666664%
+colour blue  | congruency congruent   | frequency 4 | proportion 16.666666666666664%
+colour blue  | congruency incongruent | frequency 4 | proportion 16.666666666666664%
 
-<div class="nb-out">
-<table class="dataframe nb-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th>word</th>
-      <th>blue</th>
-      <th>green</th>
-      <th>red</th>
-    </tr>
-    <tr>
-      <th>colour</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>blue</th>
-      <td>4</td>
-      <td>1</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>green</th>
-      <td>3</td>
-      <td>4</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>red</th>
-      <td>4</td>
-      <td>0</td>
-      <td>4</td>
-    </tr>
-  </tbody>
-</table>
+Experiment 0:
+colour red   | word red   | frequency 4 | proportion 16.666666666666664%
+colour red   | word green | frequency 2 | proportion 8.333333333333332%
+colour red   | word blue  | frequency 2 | proportion 8.333333333333332%
+colour green | word red   | frequency 2 | proportion 8.333333333333332%
+colour green | word green | frequency 4 | proportion 16.666666666666664%
+colour green | word blue  | frequency 2 | proportion 8.333333333333332%
+colour blue  | word red   | frequency 2 | proportion 8.333333333333332%
+colour blue  | word green | frequency 2 | proportion 8.333333333333332%
+colour blue  | word blue  | frequency 4 | proportion 16.666666666666664%</pre>
 </div>
 
 The first table is what was crossed: it is even. The second shows what was not: which word goes with an incongruent ink is left open, so those pairs can come out uneven. Run the cell again and compare.
 
 ### What does each option cost?
 
-How often is a word shown in its own colour? One third means the word tells nothing about the ink.
+A congruent trial is a word in its own colour. In option A that is one third of the trials: the word tells nothing about the ink. In option B it is half: the word tells something.
+
+### The sequence as a table
+
+One row per trial, for your experiment software.
 
 ```python
-cost = pd.DataFrame({
-    "congruent trials (%)": [round((t["congruency"] == "congruent").mean() * 100) for t in (trials_a, trials_b)],
-    "word is in its own colour (%)": [round((t["word"] == t["colour"]).mean() * 100) for t in (trials_a, trials_b)],
-}, index=["A: every pair equally often", "B: half congruent"])
-display(cost)
+trials_a = pd.DataFrame(experiments_a[0])
+trials_b = pd.DataFrame(experiments_b[0])
+display(trials_b.head(8))
 ```
 
 <div class="nb-out">
@@ -236,20 +141,59 @@ display(cost)
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>congruent trials (%)</th>
-      <th>word is in its own colour (%)</th>
+      <th>colour</th>
+      <th>word</th>
+      <th>congruency</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>A: every pair equally often</th>
-      <td>33</td>
-      <td>33</td>
+      <th>0</th>
+      <td>green</td>
+      <td>green</td>
+      <td>congruent</td>
     </tr>
     <tr>
-      <th>B: half congruent</th>
-      <td>50</td>
-      <td>50</td>
+      <th>1</th>
+      <td>red</td>
+      <td>red</td>
+      <td>congruent</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>red</td>
+      <td>green</td>
+      <td>incongruent</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>green</td>
+      <td>red</td>
+      <td>incongruent</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>blue</td>
+      <td>red</td>
+      <td>incongruent</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>red</td>
+      <td>red</td>
+      <td>congruent</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>blue</td>
+      <td>blue</td>
+      <td>congruent</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>green</td>
+      <td>blue</td>
+      <td>incongruent</td>
     </tr>
   </tbody>
 </table>

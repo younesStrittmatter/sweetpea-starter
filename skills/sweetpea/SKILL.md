@@ -195,7 +195,8 @@ happen. The solver does the balancing. So:
   `Exclude`. "Even within every set" and "even over the block" are two
   blocks put together.
 - Python besides the description is for three things only: saving the
-  sequences, counting them, and the checks.
+  sequences, counting them, and the checks. For the first two use
+  SweetPea's own `save_experiments_csv` and `tabulate_experiments`.
 - If you cannot say something in SweetPea, tell the user that it cannot be
   said directly and what the nearest description is. Do not quietly write
   code around it.
@@ -677,33 +678,98 @@ assert all(0.5 <= value <= 1.5 for value in experiments[0]["iti"])
 
 A continuous factor can be in the design but not in the crossing.
 
-### Exporting and checking
+### Counting, checking and saving with SweetPea's own tools
+
+Use these before you write any counting code of your own.
 
 ```python
-import pandas as pd
-from sweetpea import Factor, CrossBlock, synthesize_trials, CMSGen
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials, CrossBlock,
+                      synthesize_trials, tabulate_experiments, sample_mismatch_experiment,
+                      save_experiments_csv, CMSGen)
 
-color = Factor("color", ["red", "blue"])
-size = Factor("size", ["big", "small"])
-block = CrossBlock([color, size], [color, size], [])
-experiments = synthesize_trials(block, 3, CMSGen)
+colour = Factor("colour", ["red", "green", "blue"])
+word = Factor("word", ["red", "green", "blue"])
 
-for index, experiment in enumerate(experiments):
-    pd.DataFrame(experiment).to_csv(f"sequence_{index}.csv", index=False)
+
+def same(colour, word):
+    return colour == word
+
+
+def different(colour, word):
+    return colour != word
+
+
+congruency = Factor("congruency", [
+    DerivedLevel("congruent", WithinTrial(same, [colour, word])),
+    DerivedLevel("incongruent", WithinTrial(different, [colour, word])),
+])
+
+
+def response_repeats(colour):
+    return colour[0] == colour[-1]
+
+
+def response_changes(colour):
+    return colour[0] != colour[-1]
+
+
+# In the design, not in the crossing: SweetPea records it and leaves it free, so it can be counted.
+response = Factor("response", [
+    DerivedLevel("repeats", Transition(response_repeats, [colour])),
+    DerivedLevel("changes", Transition(response_changes, [colour])),
+])
+
+block = CrossBlock(design=[colour, word, congruency, response], crossing=[colour, congruency],
+                   constraints=[MinimumTrials(24)])
+experiments = synthesize_trials(block, 2, CMSGen)
+
+tabulate_experiments(block, experiments, [colour, congruency])       # what was crossed: even
+tabulate_experiments(block, experiments, [colour, word])             # what was not: uneven
+tabulate_experiments(block, experiments, [congruency, response],     # something from the trial before,
+                     trials=list(range(1, 24)))                      # without the first trial
+
+for sequence in experiments:
+    assert sample_mismatch_experiment(block, sequence) == {}         # the sequence meets the description
+
+save_experiments_csv(block, experiments, "sequence")                 # sequence_0.csv, sequence_1.csv
 ```
 
-Write CSV files through pandas as above. `save_experiments_csv` leaves out
-continuous factors.
+- **`tabulate_experiments(block, experiments, factors, trials=None)`** prints,
+  for every sequence, how often each combination of the named factors
+  occurs and its share. One line per question: "is it even?" is a call with
+  those factors. `trials` is a list of trial numbers (from 0) to count: use
+  it to leave out a first trial that has no trial before, or to count one
+  mini-block.
+- **To count a property, make it a factor.** A property of the trial or of
+  the trial before that you want to count goes into the design as a derived
+  or transition factor, not into the crossing. That replaces columns added
+  with pandas afterwards. (Inside `Nest` such a factor must be used by
+  something, see there.)
+- **`sample_mismatch_experiment(block, sequence)`** returns `{}` when a
+  sequence meets the block's factors, crossings and constraints, and names
+  what it violates otherwise. Use it as the first line of `check.py`. It
+  checks the description, not the user's wishes: a requirement you did not
+  write into the block still needs its own count.
+- **`save_experiments_csv(block, experiments, "prefix")`** writes
+  `prefix_0.csv`, `prefix_1.csv`, ... It leaves out continuous factors; for
+  those, write `pd.DataFrame(experiment).to_csv(...)`.
+- **What they do not do.** `tabulate_experiments` prints and returns
+  nothing, so an `assert` in `check.py` still counts with pandas on the
+  saved CSV. It only knows factors of the design. And it cannot compare
+  conditions on everything at once; that is what the script below is for.
 
-Then check the result (the script needs only the Python standard library):
+Then look for what nobody asked about (the script needs only the Python
+standard library):
 
 ```
-python scripts/check_design.py sequence_0.csv --balance color size --runs color
+python scripts/check_design.py sequence_0.csv --compare congruency
+python scripts/check_design.py sequence_0.csv --balance colour congruency --runs congruency
 ```
 
-It prints how often each level and each combination of the `--balance`
-columns occurs, whether those combinations are equally frequent, and the
-longest run of each level of the `--runs` columns.
+`--compare` lists every property that differs between the compared
+conditions. `--balance` prints how often each level and combination occurs
+and whether they are equally frequent; `--runs` the longest run of each
+level.
 
 ## Tasks and paradigms
 

@@ -20,8 +20,8 @@ COLAB = f"https://colab.research.google.com/github/{REPO}/blob/main/tutorial/not
 SETUP = "%pip install -q sweetpea pandas"
 
 BASE = '''import pandas as pd
-from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, Exclude, MinimumTrials,
-                      CrossBlock, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
+                      CrossBlock, synthesize_trials, tabulate_experiments, CMSGen)
 
 colours = ["red", "green", "blue"]
 
@@ -59,21 +59,19 @@ STEPS = [
 ("md", "### Option A: every pair equally often\n\nColour and word are crossed, so each of the 9 pairs occurs equally often. `MinimumTrials(18)` asks for two rounds of the crossing."),
 ("code", '''block_a = CrossBlock(design=[colour, word, congruency], crossing=[colour, word],
                      constraints=[MinimumTrials(18)])
-trials_a = pd.DataFrame(synthesize_trials(block_a, 1, CMSGen)[0])
-display(pd.crosstab(trials_a["colour"], trials_a["word"]))
-display(trials_a["congruency"].value_counts().to_frame("trials"))'''),
-("md", "### Option B: half of the trials congruent\n\nCross the ink colour with congruency. Each ink colour is then congruent on half of its trials: 6 combinations, four rounds."),
+experiments_a = synthesize_trials(block_a, 1, CMSGen)
+tabulate_experiments(block_a, experiments_a, [colour, word])
+tabulate_experiments(block_a, experiments_a, [congruency])'''),
+("md", "`tabulate_experiments` is SweetPea's own count: how often each combination of the factors you name occurs, and its share.\n\n### Option B: half of the trials congruent\n\nCross the ink colour with congruency. Each ink colour is then congruent on half of its trials: 6 combinations, four rounds."),
 ("code", '''block_b = CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
                      constraints=[MinimumTrials(24)])
-trials_b = pd.DataFrame(synthesize_trials(block_b, 1, CMSGen)[0])
-display(pd.crosstab(trials_b["colour"], trials_b["congruency"]))
-display(pd.crosstab(trials_b["colour"], trials_b["word"]))'''),
-("md", "The first table is what was crossed: it is even. The second shows what was not: which word goes with an incongruent ink is left open, so those pairs can come out uneven. Run the cell again and compare.\n\n### What does each option cost?\n\nHow often is a word shown in its own colour? One third means the word tells nothing about the ink."),
-("code", '''cost = pd.DataFrame({
-    "congruent trials (%)": [round((t["congruency"] == "congruent").mean() * 100) for t in (trials_a, trials_b)],
-    "word is in its own colour (%)": [round((t["word"] == t["colour"]).mean() * 100) for t in (trials_a, trials_b)],
-}, index=["A: every pair equally often", "B: half congruent"])
-display(cost)'''),
+experiments_b = synthesize_trials(block_b, 1, CMSGen)
+tabulate_experiments(block_b, experiments_b, [colour, congruency])
+tabulate_experiments(block_b, experiments_b, [colour, word])'''),
+("md", "The first table is what was crossed: it is even. The second shows what was not: which word goes with an incongruent ink is left open, so those pairs can come out uneven. Run the cell again and compare.\n\n### What does each option cost?\n\nA congruent trial is a word in its own colour. In option A that is one third of the trials: the word tells nothing about the ink. In option B it is half: the word tells something.\n\n### The sequence as a table\n\nOne row per trial, for your experiment software."),
+("code", '''trials_a = pd.DataFrame(experiments_a[0])
+trials_b = pd.DataFrame(experiments_b[0])
+display(trials_b.head(8))'''),
 ("md", "**Check.** In which option could a participant guess the ink from the word? In which are there fewer congruent trials? Neither is free: which cost is acceptable depends on what you compare.\n\n**Try.** Add a fourth colour to `colours` and run again. What happens to the share of congruent trials in option A?\n\n**Next.** Step 2 keeps option B and asks what happened on the trial before."),
 ]),
 ("2_sequence", "Step 2. The trial before", "trials", "Now I want to test whether the congruency effect depends on the trial before: is it smaller right after an incongruent trial? What is the hypothesis behind that, and what does the design need?", [
@@ -105,13 +103,29 @@ trial_before = Factor("trial_before", [
 ("code", '''block = CrossBlock(design=[colour, word, congruency, trial_before],
                    crossing=[colour, congruency, trial_before],
                    constraints=[MinimumTrials(25)])
-trials = pd.DataFrame(synthesize_trials(block, 1, CMSGen)[0])
-rest = trials.iloc[1:]                  # without the first trial
-display(pd.crosstab(rest["trial_before"], rest["congruency"]))'''),
-("md", "The four combinations are equal, and that is by design: run the cell again and they stay equal.\n\n### What else repeats?\n\nNot in the design: does the ink colour, and so the response, repeat from the trial before? Count it in each of the four combinations."),
-("code", '''trials["response_repeats"] = trials["colour"].eq(trials["colour"].shift())
-rest = trials.iloc[1:]
-display(pd.crosstab([rest["trial_before"], rest["congruency"]], rest["response_repeats"]))'''),
+experiments = synthesize_trials(block, 1, CMSGen)
+after_first = list(range(1, 25))        # the trials that have a trial before
+tabulate_experiments(block, experiments, [trial_before, congruency], trials=after_first)'''),
+("md", "The four combinations are equal, and that is by design: run the cell again and they stay equal.\n\n### What else repeats?\n\nDoes the ink colour, and so the response, repeat from the trial before? That is a transition factor too. Put it in the design but not in the crossing: SweetPea then records it and leaves it free. Count it in each of the four combinations."),
+("code", '''def response_repeats(colour):
+    return colour[0] == colour[-1]
+
+
+def response_changes(colour):
+    return colour[0] != colour[-1]
+
+
+response = Factor("response", [
+    DerivedLevel("repeats", Transition(response_repeats, [colour])),
+    DerivedLevel("changes", Transition(response_changes, [colour])),
+])
+
+block = CrossBlock(design=[colour, word, congruency, trial_before, response],
+                   crossing=[colour, congruency, trial_before],
+                   constraints=[MinimumTrials(25)])
+experiments = synthesize_trials(block, 1, CMSGen)
+tabulate_experiments(block, experiments, [trial_before, congruency, response], trials=after_first)
+trials = pd.DataFrame(experiments[0])'''),
 ("md", "**Check.** Is the response repeat equal across the four combinations? If not, the alternative explanation is still open. Whatever is not in the crossing is left to chance: run the block cell again and see which counts change.\n\n**Try.** Ask what it would take to forbid all repeats (`Exclude` on a transition factor for the colour), and what that does to the four combinations.\n\n**Next.** Step 3 goes from the trial before to the whole block: mostly congruent and mostly incongruent blocks."),
 ]),
 ("3_adaptation", "Step 3. Adaptation", "session", "Now I want to test whether people adapt to the context. I want blocks in which most trials are congruent and blocks in which most are incongruent, and compare the congruency effect between them. What is the hypothesis, and what should I watch out for?", [
@@ -134,29 +148,33 @@ def different(colour, word):
     return colour != word
 '''.rstrip()),
 ("md", "### New: a weight\n\nA level can have a weight: the third argument of `DerivedLevel`. 3 to 1 makes the first level three times as frequent as the second. Crossed with the ink colour that is 12 combinations, two rounds: 18 of 24 trials."),
-("code", '''WEIGHTS = {"mostly congruent": (3, 1), "mostly incongruent": (1, 3)}     # (congruent, incongruent)
+("code", '''mostly_congruent = Factor("congruency", [
+    DerivedLevel("congruent", WithinTrial(same, [colour, word]), 3),
+    DerivedLevel("incongruent", WithinTrial(different, [colour, word]), 1),
+])
+mostly_incongruent = Factor("congruency", [
+    DerivedLevel("congruent", WithinTrial(same, [colour, word]), 1),
+    DerivedLevel("incongruent", WithinTrial(different, [colour, word]), 3),
+])
 
-
-def block(context):
-    congruent_weight, incongruent_weight = WEIGHTS[context]
-    congruency = Factor("congruency", [
-        DerivedLevel("congruent", WithinTrial(same, [colour, word]), congruent_weight),
-        DerivedLevel("incongruent", WithinTrial(different, [colour, word]), incongruent_weight),
-    ])
-    return CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
+block_mc = CrossBlock(design=[colour, word, mostly_congruent], crossing=[colour, mostly_congruent],
+                      constraints=[MinimumTrials(24)])
+block_mi = CrossBlock(design=[colour, word, mostly_incongruent], crossing=[colour, mostly_incongruent],
                       constraints=[MinimumTrials(24)])'''),
-("md", "### A session of four blocks\n\nEach block is generated on its own and gets its context as a column."),
-("code", '''blocks = []
-for number, context in enumerate(["mostly congruent", "mostly incongruent", "mostly incongruent", "mostly congruent"], start=1):
-    trials = pd.DataFrame(synthesize_trials(block(context), 1, CMSGen)[0])
-    trials.insert(0, "context", context)
-    trials.insert(0, "block", number)
-    blocks.append(trials)
-session = pd.concat(blocks, ignore_index=True)
-display(pd.crosstab(session["context"], session["congruency"]))'''),
-("md", "### How well does the word tell the ink?\n\nFor each word, the share of trials on which it is shown in its own colour. That number is the alternative explanation."),
-("code", '''session["word_is_ink"] = session["word"] == session["colour"]
-display(session.groupby(["context", "word"])["word_is_ink"].mean().round(2).unstack())'''),
+("md", "### Two blocks of each kind\n\nEach kind of block is generated on its own. The second argument of `synthesize_trials` is the number of sequences."),
+("code", '''experiments_mc = synthesize_trials(block_mc, 2, CMSGen)
+experiments_mi = synthesize_trials(block_mi, 2, CMSGen)
+tabulate_experiments(block_mc, experiments_mc, [mostly_congruent])
+tabulate_experiments(block_mi, experiments_mi, [mostly_incongruent])'''),
+("md", "### How well does the word tell the ink?\n\nFor each word, how often it is shown in its own colour (congruent). That number is the alternative explanation. First a mostly congruent block, then a mostly incongruent one."),
+("code", '''tabulate_experiments(block_mc, experiments_mc[:1], [word, mostly_congruent])
+tabulate_experiments(block_mi, experiments_mi[:1], [word, mostly_incongruent])'''),
+("md", "### A session\n\nFour blocks one after the other, each with its context as a column."),
+("code", '''order = [("mostly congruent", experiments_mc[0]), ("mostly incongruent", experiments_mi[0]),
+         ("mostly incongruent", experiments_mi[1]), ("mostly congruent", experiments_mc[1])]
+session = pd.concat([pd.DataFrame(trials).assign(block=number, context=context)
+                     for number, (context, trials) in enumerate(order, start=1)], ignore_index=True)
+display(session.head(4))'''),
 ("md", "**Check.** Are the proportions what was asked for? How many incongruent trials does a mostly congruent block have: is that enough to measure the effect there? A word is in its own colour far more often in one context than in the other: how could learning and control be told apart?\n\n**Try.** Change the weights to `(2, 1)` and `(1, 2)`. What are the proportions and the block lengths now?\n\n**Next.** Step 4 asks whether this adjustment has a price when the task changes. There the weight meets a limit: it cannot depend on another factor."),
 ]),
 ("4_transfer", "Step 4. Transfer", "session", "Last question: does the adaptation transfer to another task? I want mini-blocks that are mostly congruent or mostly incongruent, and each mini-block is either colour naming or word reading. I want the switch cost between mini-blocks: word reading after colour naming against word reading after word reading, compared between the two contexts. I take word reading because it has almost no congruency effect. What is the hypothesis, and can nested blocks keep everything counterbalanced, also at the border between two mini-blocks: which context and which task came before?", [
@@ -224,26 +242,25 @@ between_mini_blocks = CrossBlock(design=[context, context_before, task, task_tra
                                  crossing=[context, context_before, task, task_transition],
                                  constraints=[])
 block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
-session = pd.DataFrame(synthesize_trials(block, 1, IterateGen)[0])       # 204 trials: too long for CMSGen
-
-session.insert(0, "block", session.index // 12 + 1)        # number the mini-blocks, for counting
-overview = session.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
-overview["congruent trials"] = session.groupby("block")["congruency"].apply(lambda c: (c == "congruent").sum())
-display(overview)'''),
-("md", "One row per mini-block. The first has nothing before it; it is the start, and its trials are not crossed. After it, every mini-block has the proportion of its context: 9 or 3 of 12.\n\n### Between mini-blocks: is every kind of border there?"),
-("code", '''counted = session[session["task_transition"] != ""]          # without the first mini-block
-mini_blocks = counted.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
-display(pd.crosstab([mini_blocks["context_before"], mini_blocks["context"]], [mini_blocks["task"], mini_blocks["task_transition"]]))'''),
-("md", "### Within a mini-block: is the ink colour even?"),
-("code", '''display(pd.crosstab([counted["block"], counted["context"]], [counted["congruency"], counted["colour"]]))'''),
-("md", "### What is not in the design?\n\nThe two trials at the border themselves: the last trial of one mini-block and the first trial of the next. Count them for the mini-blocks where the task switches."),
-("code", '''first = session.groupby("block")["congruency"].first().rename("first trial after the border")
-last_before = session.groupby("block")["congruency"].last().shift().rename("last trial before the border")
-switches = mini_blocks[mini_blocks["task_transition"] == "switch"].index
-display(pd.crosstab(last_before[switches], first[switches]))'''),
+experiments = synthesize_trials(block, 1, IterateGen)       # 204 trials: too long for CMSGen
+after_start = list(range(12, 204))                           # without the first mini-block
+tabulate_experiments(block, experiments, [context_before, context, task, task_transition], trials=after_start)'''),
+("md", "Every kind of border has 12 trials: one mini-block each. The first mini-block has nothing before it; it is the start and is left out of the counts.\n\n### Within a mini-block\n\nThe proportion in each context, and the ink colours. Then one mini-block on its own: the second one."),
+("code", '''tabulate_experiments(block, experiments, [context, congruency], trials=after_start)
+tabulate_experiments(block, experiments, [context, colour], trials=after_start)
+tabulate_experiments(block, experiments, [context, task, congruency, colour], trials=list(range(12, 24)))'''),
+("md", "### The sequence as a table\n\nOne row per trial, with the mini-blocks numbered."),
+("code", '''session = pd.DataFrame(experiments[0])
+session.insert(0, "block", session.index // 12 + 1)
+counted = session[session["block"] > 1]
+display(session.iloc[10:14])'''),
+("md", "### What is not in the design?\n\nThe two trials at the border themselves: the last trial of one mini-block and the first trial of the next. They are left to chance."),
 ("md", "**Check.** Both crossings are exact, and every kind of border occurs once. What is thin? Each kind of border is one mini-block of 12 trials; more need several sequences. The two trials at the border are left to chance: is that acceptable, or should the first trial of a mini-block be pinned?\n\n**The sampler.** `CMSGen` did not finish this design in five minutes. `IterateGen` takes a few seconds, but it does not draw at random among all possible sequences: it returns the solutions in the order the solver finds them. Look at the order of the trials before you use it.\n\n**Try.** Take `context_before` out of the outer block. How many mini-blocks are left, and does `CMSGen` work again?\n\n**The idea.** Each question added a factor, and each factor multiplies the design. Nesting keeps both levels counterbalanced at once. What it leaves open is still a choice, and which choice is acceptable depends on what you compare."),
 ]),
 ]
+
+
+NOISE = ("Sampling ", "Encoding ", "Running ", "WARNING", " '", "Generating ", "Counting ")
 
 
 def run(cells):
@@ -257,8 +274,12 @@ def run(cells):
     for kind, text in cells:
         shown.append([])
         if kind == "code":
-            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            printed = io.StringIO()
+            with contextlib.redirect_stdout(printed), contextlib.redirect_stderr(io.StringIO()):
                 exec(compile(text, "cell", "exec"), namespace)
+            text_out = "\n".join(line.rstrip() for line in printed.getvalue().split("\n") if not line.startswith(NOISE)).strip()
+            if text_out:
+                shown[-1].insert(0, text_out)
     return shown, namespace
 
 

@@ -9,8 +9,8 @@ except NameError:      # outside a notebook, show tables by printing them
     display = print
 
 import pandas as pd
-from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, Exclude, MinimumTrials,
-                      CrossBlock, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
+                      CrossBlock, synthesize_trials, tabulate_experiments, CMSGen)
 
 colours = ["red", "green", "blue"]
 
@@ -87,23 +87,17 @@ between_mini_blocks = CrossBlock(design=[context, context_before, task, task_tra
                                  crossing=[context, context_before, task, task_transition],
                                  constraints=[])
 block = Nest(outer_block=between_mini_blocks, inner_block=mini_block, alignment="post preamble")
-session = pd.DataFrame(synthesize_trials(block, 1, IterateGen)[0])       # 204 trials: too long for CMSGen
-
-session.insert(0, "block", session.index // 12 + 1)        # number the mini-blocks, for counting
-overview = session.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
-overview["congruent trials"] = session.groupby("block")["congruency"].apply(lambda c: (c == "congruent").sum())
-display(overview)
+experiments = synthesize_trials(block, 1, IterateGen)       # 204 trials: too long for CMSGen
+after_start = list(range(12, 204))                           # without the first mini-block
+tabulate_experiments(block, experiments, [context_before, context, task, task_transition], trials=after_start)
 
 
-counted = session[session["task_transition"] != ""]          # without the first mini-block
-mini_blocks = counted.groupby("block")[["context_before", "context", "task", "task_transition"]].first()
-display(pd.crosstab([mini_blocks["context_before"], mini_blocks["context"]], [mini_blocks["task"], mini_blocks["task_transition"]]))
+tabulate_experiments(block, experiments, [context, congruency], trials=after_start)
+tabulate_experiments(block, experiments, [context, colour], trials=after_start)
+tabulate_experiments(block, experiments, [context, task, congruency, colour], trials=list(range(12, 24)))
 
 
-display(pd.crosstab([counted["block"], counted["context"]], [counted["congruency"], counted["colour"]]))
-
-
-first = session.groupby("block")["congruency"].first().rename("first trial after the border")
-last_before = session.groupby("block")["congruency"].last().shift().rename("last trial before the border")
-switches = mini_blocks[mini_blocks["task_transition"] == "switch"].index
-display(pd.crosstab(last_before[switches], first[switches]))
+session = pd.DataFrame(experiments[0])
+session.insert(0, "block", session.index // 12 + 1)
+counted = session[session["block"] > 1]
+display(session.iloc[10:14])

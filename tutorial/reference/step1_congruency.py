@@ -9,8 +9,8 @@ except NameError:      # outside a notebook, show tables by printing them
     display = print
 
 import pandas as pd
-from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, Exclude, MinimumTrials,
-                      CrossBlock, synthesize_trials, CMSGen)
+from sweetpea import (Factor, DerivedLevel, WithinTrial, Transition, MinimumTrials,
+                      CrossBlock, synthesize_trials, tabulate_experiments, CMSGen)
 
 colours = ["red", "green", "blue"]
 
@@ -36,20 +36,18 @@ congruency = Factor("congruency", [
 
 block_a = CrossBlock(design=[colour, word, congruency], crossing=[colour, word],
                      constraints=[MinimumTrials(18)])
-trials_a = pd.DataFrame(synthesize_trials(block_a, 1, CMSGen)[0])
-display(pd.crosstab(trials_a["colour"], trials_a["word"]))
-display(trials_a["congruency"].value_counts().to_frame("trials"))
+experiments_a = synthesize_trials(block_a, 1, CMSGen)
+tabulate_experiments(block_a, experiments_a, [colour, word])
+tabulate_experiments(block_a, experiments_a, [congruency])
 
 
 block_b = CrossBlock(design=[colour, word, congruency], crossing=[colour, congruency],
                      constraints=[MinimumTrials(24)])
-trials_b = pd.DataFrame(synthesize_trials(block_b, 1, CMSGen)[0])
-display(pd.crosstab(trials_b["colour"], trials_b["congruency"]))
-display(pd.crosstab(trials_b["colour"], trials_b["word"]))
+experiments_b = synthesize_trials(block_b, 1, CMSGen)
+tabulate_experiments(block_b, experiments_b, [colour, congruency])
+tabulate_experiments(block_b, experiments_b, [colour, word])
 
 
-cost = pd.DataFrame({
-    "congruent trials (%)": [round((t["congruency"] == "congruent").mean() * 100) for t in (trials_a, trials_b)],
-    "word is in its own colour (%)": [round((t["word"] == t["colour"]).mean() * 100) for t in (trials_a, trials_b)],
-}, index=["A: every pair equally often", "B: half congruent"])
-display(cost)
+trials_a = pd.DataFrame(experiments_a[0])
+trials_b = pd.DataFrame(experiments_b[0])
+display(trials_b.head(8))
