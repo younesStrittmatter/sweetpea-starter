@@ -29,7 +29,7 @@ these which side effects a design can have, and its worked examples come from
 them.
 [Slides: Avoidable by design](Avoidable%20by%20design%20-%20Slides.pdf){ target=_blank }.
 
-**The psyche project.** A database of published experiments with open
+**The [psyche](https://huggingface.co/spaces/ystrittm/psyche){ target=_blank } project.** A database of published experiments with open
 trial-level data: 1,544 experiments from 790 studies. The assistant uses it to
 suggest which paradigm fits a research question and what such studies
 compare.
