@@ -1,5 +1,7 @@
 # Step 3. Adaptation
 
+Without an assistant: [notebook](notebooks/3_adaptation.ipynb) · [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/younesStrittmatter/sweetpea-starter/blob/main/tutorial/notebooks/3_adaptation.ipynb)
+
 ## The question
 
 Do people adjust to how frequent conflict is?

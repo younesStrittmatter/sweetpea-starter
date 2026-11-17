@@ -1,5 +1,7 @@
 # Step 4. Transfer
 
+Without an assistant: [notebook](notebooks/4_transfer.ipynb) · [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/younesStrittmatter/sweetpea-starter/blob/main/tutorial/notebooks/4_transfer.ipynb)
+
 ## The question
 
 Does adapting to frequent conflict make it harder to switch to another task?

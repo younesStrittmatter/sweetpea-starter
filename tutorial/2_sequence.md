@@ -1,5 +1,7 @@
 # Step 2. The trial before
 
+Without an assistant: [notebook](notebooks/2_sequence.ipynb) · [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/younesStrittmatter/sweetpea-starter/blob/main/tutorial/notebooks/2_sequence.ipynb)
+
 ## The question
 
 Does a conflict change how the next trial is handled?

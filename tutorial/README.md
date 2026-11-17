@@ -14,6 +14,11 @@ proposes a design and what it costs, writes it, and counts it with you.
 | [3. Adaptation](3_adaptation.md) | Do people adjust to how frequent conflict is? | Weights; blocks |
 | [4. Transfer](4_transfer.md) | Does adapting to conflict make switching to another task harder? | A second task; mini-blocks with a transition factor inside |
 
+## Backup: notebooks
+
+The same four steps without an assistant, in `notebooks/`. They run on Google
+Colab (each step page has an "Open in Colab" button) or in any Jupyter.
+
 ## How to work
 
 You do not write code. Your assistant does.
