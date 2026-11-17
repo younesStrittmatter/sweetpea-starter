@@ -96,6 +96,39 @@ decide what to give up. Do not silently drop a constraint.
    probes in one `scratch/` folder beside the design, so the design folder
    holds only what the user should use.
 
+7. **Check every requirement the user gave, one by one.** Keep a numbered
+   list of what the user asked for, in their words, from the first message on
+   ("mini-blocks of 12", "mostly congruent means three quarters", "switch and
+   repeat equally often", "no more than three repeats in a row"). After
+   generating, write for each requirement a count that would fail if it did
+   not hold, as an `assert` in a `check.py` beside the design, and run it on
+   every generated sequence. Report a table: requirement, the count, holds or
+   not. A requirement you could not meet, changed or dropped is a row too,
+   with the reason. Never report a design without this table, and never mark
+   a requirement as met because the code asks for it: count it in the
+   sequence.
+
+8. **Write everything down.** Every design gets a `DESIGN.md` beside its
+   script, written by you and updated with every change, so that someone who
+   was not in the conversation can understand and defend the design:
+   - the question, the construct, the hypothesis and its prediction, the
+     alternative explanations;
+   - what is compared, on which measure;
+   - each decision: the options, what each costs, which was taken and why
+     (and who decided: the user or you);
+   - the design in words: the regular, derived and transition factors, what
+     is crossed within what stretch of trials, how the blocks are put
+     together, the constraints, the number of trials;
+   - the table of requirements from step 7 with the counts;
+   - what `check_design.py --compare` found, and for each difference whether
+     it was fixed, is a trade-off, or varies by chance;
+   - what stays open: what the design could still fix, and what no trial
+     sequence can control;
+   - how to generate: the command, the sampler, how long it takes, the files.
+
+   What you tell the user in the chat and what the file says must be the
+   same. If it was said and matters, it is in the file.
+
 ## Where differences come from
 
 Three mechanisms produce most differences that nobody chose. They are not tied
@@ -311,6 +344,30 @@ block = CrossBlock(
 trials = synthesize_trials(block, 1, CMSGen)[0]
 assert len(trials["colour"]) == 12      # 3 congruent pairs twice, 6 incongruent pairs once
 ```
+
+### Putting blocks together
+
+A block says what is even within its own length. There are three ways to
+put two blocks together. Choose by what the user said, and say which one you
+chose and why:
+
+| The user says | Use | What it does |
+|---|---|---|
+| "X is even within every mini-block, and Y is even over the whole block" (sets with the transitions balanced over the block) | `Merge` | Side by side: the same trials satisfy both blocks. The shorter block is repeated until the longer one is full. |
+| "Mini-blocks differ in A (a context, a task), and A is counterbalanced between mini-blocks" (also: what the mini-block before was) | `Nest` | One inside the other: each outer combination is held for one whole inner block. A transition factor in the outer block looks back one mini-block. |
+| "Run block 1, then block 2", and nothing has to be balanced across them | generate each and append | One after the other: different trials, generated separately. |
+
+Before you count something by hand with `ExactlyK`, check whether a crossing
+in a second block says the same. A crossing reads as the design; a list of
+counts reads as a work-around. Both `Merge` and `Nest` are shown below, with
+what was found when running them.
+
+**Samplers.** Use `CMSGen` by default. When it does not finish within the
+time limit and the design cannot be shortened (a `Nest` of 200 trials),
+`IterateGen` often finishes in seconds. It returns solutions in the order
+the solver finds them, not a random draw: the order can look clumped and
+several sequences can be alike. Say so, look at the order, and write it into
+`DESIGN.md`.
 
 ### Sets (mini-blocks) and the trial before
 

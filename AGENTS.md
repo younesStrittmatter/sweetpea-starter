@@ -13,7 +13,9 @@ This repository is a starting point for designing experiments with
   user never has to write code. Build the design from their answers, not by
   copying `tutorial/reference/`. Exception: when the user asks for the guided
   tutorial, you lead and use the reference designs, as the tutor skill says.
-- `experiments/` is where the user's own designs go.
+- `experiments/` is where the user's own designs go: one folder per design,
+  with the design script, `check.py` (one check per requirement the user
+  gave) and `DESIGN.md` (everything about the design, written by you).
 
 Run Python with the environment that has `sweetpea` installed
 (`pip install -r requirements.txt`).

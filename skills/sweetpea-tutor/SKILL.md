@@ -39,6 +39,9 @@ how you help.
   plain words what is balanced and what is not. Ask whether that is what they
   wanted.
 - **When something fails, you fix it** and say what the cause was.
+- **Check what they asked for, and write it down.** As in the `sweetpea`
+  skill: one check per requirement the user gave, shown as a table, and a
+  `DESIGN.md` beside the script that you keep up to date.
 
 ## The guided tutorial
 
